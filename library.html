@@ -1,177 +1,357 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#651c2c">
-<title>Digital Library | Sufi Adab Archive</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Nastaliq+Urdu:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#652e36">
+<title>Library | Sufi Adab Archive</title>
 <style>
-:root{--wine:#651c2c;--dark:#48121f;--gold:#b18a48;--paper:#fbf8f1;--white:#fffefa;--ink:#30251f;--muted:#766b61;--border:#e5d9c8}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font:15px "DM Sans",sans-serif;line-height:1.7}
-a{color:inherit}
-header{background:var(--white);border-bottom:1px solid var(--border)}
-nav,.wrap{max-width:1160px;margin:auto;padding:16px 22px}
-nav{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.brand{font:700 22px "Playfair Display",serif;color:var(--wine);text-decoration:none}
-.navlinks{display:flex;gap:17px;align-items:center;flex-wrap:wrap}
-.navlinks a{text-decoration:none;font-size:13px;font-weight:600}
-.languages{display:flex;gap:5px}
-.languages button{border:1px solid var(--border);background:#f3ecdf;border-radius:5px;padding:6px 9px;cursor:pointer}
-.languages button.active{background:var(--wine);color:white}
-.hero{background:linear-gradient(125deg,#f1e5d1,#fbf8f1 60%,#f0e4d1);border-bottom:1px solid var(--border);padding:52px 22px}
-.hero-inner{max-width:1116px;margin:auto}
-.kicker{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:700}
-h1,h2{font-family:"Playfair Display",serif;color:var(--dark);line-height:1.3}
-h1{font-size:clamp(35px,6vw,58px);margin:10px 0}
-.hero p{max-width:680px;color:var(--muted);margin:0}
-.toolbar{display:grid;grid-template-columns:1fr 190px;gap:12px;margin:24px 0}
-input,select{width:100%;min-height:46px;padding:10px 13px;border:1px solid var(--border);border-radius:7px;background:var(--white);color:var(--ink);font:inherit}
-input:focus,select:focus{outline:2px solid #d5bd8f}
-.results{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-.results h2{margin:0;font-size:29px}
-#count{font-size:13px;color:var(--muted)}
-.books{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:19px;margin:22px 0 55px}
-.book{min-width:0;background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
-.book:hover{transform:translateY(-3px);box-shadow:0 10px 25px #41231d12;border-color:#cbb58c}
-.cover{height:220px;background:#f0e7d9;display:grid;place-items:center;overflow:hidden;color:var(--wine);text-align:center;padding:18px}
-.cover img{width:100%;height:100%;object-fit:contain}
-.cover-placeholder{font:600 24px "Playfair Display",serif;overflow-wrap:anywhere}
-.info{padding:17px;display:flex;flex-direction:column;flex:1}
-.title{font:600 19px "Playfair Display",serif;color:var(--wine-dark,#48121f);margin:0 0 6px;overflow-wrap:anywhere}
-.author{font-size:12px;color:var(--muted);margin:0 0 9px}
-.meta{font-size:12px;color:#66584c;margin-bottom:15px}
-.detail{margin-top:auto;background:var(--wine);color:white;text-align:center;text-decoration:none;padding:10px;border-radius:6px;font-size:13px;font-weight:700}
-.state{grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--white);border:1px dashed var(--border);border-radius:10px;color:var(--muted)}
-footer{background:var(--dark);color:#f4e9da;padding:27px 22px}
-.footer-inner{max-width:1160px;margin:auto;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-footer a{color:#f1dfc4;text-decoration:none;font-size:12px}
-footer small{color:#d4c0b2}
-[hidden]{display:none!important}
-@media(max-width:900px){.books{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:650px){nav,.wrap{padding:13px 15px}.hero{padding:40px 18px}.toolbar{grid-template-columns:1fr}.books{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cover{height:170px}.info{padding:12px}.title{font-size:17px}}
-@media(max-width:390px){.books{grid-template-columns:1fr}.cover{height:210px}}
+:root {
+  --wine:#652e36;
+  --deep:#472127;
+  --gold:#b28a4a;
+  --paper:#fbf7ef;
+  --ink:#29231f;
+  --muted:#766b61;
+  --line:#e8ddcc;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Georgia,"Noto Serif",serif;
+  line-height:1.6;
+}
+header {
+  background:var(--deep);
+  color:#fff8ed;
+  border-bottom:3px solid var(--gold);
+  padding:22px max(18px,calc((100% - 1120px)/2));
+}
+.brand { font-size:27px;font-weight:bold; }
+.tag {
+  color:#e2c99b;
+  font:12px Arial,sans-serif;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+nav {
+  display:flex;gap:17px;flex-wrap:wrap;
+  align-items:center;margin-top:15px;
+  font:14px Arial,sans-serif;
+}
+nav a { color:#fff8ed;text-decoration:none; }
+select,input {
+  padding:11px 13px;border:1px solid var(--line);
+  border-radius:7px;background:#fffdf9;color:var(--ink);
+}
+.wrap { max-width:1120px;margin:auto;padding:32px 20px 60px; }
+.eyebrow {
+  color:var(--gold);font:700 12px Arial,sans-serif;
+  letter-spacing:3px;text-transform:uppercase;
+}
+h1 { color:var(--deep);font-size:clamp(34px,5vw,52px);margin:8px 0; }
+.intro { color:var(--muted);max-width:720px; }
+.tools { display:flex;gap:12px;flex-wrap:wrap;margin:25px 0; }
+#search { flex:1;min-width:220px; }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(225px,1fr));
+  gap:20px;
+}
+.card {
+  background:#fffdf9;border:1px solid var(--line);
+  border-radius:11px;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.cover {
+  height:260px;background:#f0e6d5;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--wine);font-size:42px;
+}
+.cover img { width:100%;height:100%;object-fit:contain; }
+.info { padding:17px;display:flex;flex:1;flex-direction:column;gap:8px; }
+.info h2 { color:var(--deep);font-size:21px;line-height:1.3;margin:0; }
+.muted { color:var(--muted);font-size:14px; }
+.btn {
+  display:inline-block;background:var(--wine);color:white;
+  border-radius:7px;padding:11px 15px;text-decoration:none;
+  font:700 13px Arial,sans-serif;
+}
+.actions { margin-top:auto;padding-top:12px; }
+.status {
+  padding:18px;border:1px dashed var(--line);
+  border-radius:8px;color:var(--muted);
+}
+footer {
+  text-align:center;padding:22px;border-top:1px solid var(--line);
+  color:var(--muted);font:12px Arial,sans-serif;
+}
+body.rtl { direction:rtl;text-align:right; }
+body.rtl nav { direction:rtl; }
+@media(max-width:600px) {
+  .wrap { padding:25px 14px 45px; }
+  .cover { height:225px; }
+}
 </style>
 </head>
 <body>
 <header>
-<nav>
-<a class="brand" href="home.html">Sufi Adab Archive</a>
-<div class="navlinks">
-<a href="home.html" data-t="home">Home</a>
-<a href="saints.html" data-t="saints">Saints</a>
-<a href="library.html" data-t="library">Library</a>
-<a href="search.html" data-t="search">Search</a>
-</div>
-<div class="languages" aria-label="Select interface language">
-<button type="button" data-lang="en" class="active">EN</button>
-<button type="button" data-lang="hi">हि</button>
-<button type="button" data-lang="ur">اردو</button>
-</div>
-</nav>
+  <div class="brand">Sufi Adab Archive</div>
+  <div class="tag">A living archive of Sufi literature</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="library.html">Library</a>
+    <a href="saints.html">Saints</a>
+    <select id="language" aria-label="Language">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="ur">اردو</option>
+    </select>
+  </nav>
 </header>
 
-<section class="hero">
-<div class="hero-inner">
-<div class="kicker" data-t="kicker">Books · Manuscripts · Knowledge</div>
-<h1 data-t="heading">Digital Library</h1>
-<p data-t="intro">Explore books, translations and literary heritage preserved in the Sufi Adab Archive.</p>
-</div>
-</section>
-
 <main class="wrap">
-<div class="toolbar">
-<input id="q" type="search" placeholder="Search books or authors…" aria-label="Search books">
-<select id="langFilter" aria-label="Filter books by language">
-<option value="all">All languages</option>
-<option value="en">English</option>
-<option value="hi">Hindi</option>
-<option value="ur">Urdu</option>
-</select>
-</div>
-<div class="results">
-<h2 data-t="collection">The Collection</h2>
-<div id="count" aria-live="polite">Loading books…</div>
-</div>
-<section id="books" class="books">
-<div class="state">Loading published books…</div>
-</section>
+  <div class="eyebrow" id="eyebrow">Digital Collection</div>
+  <h1 id="heading">The Library</h1>
+  <p class="intro" id="intro">
+    Explore books from the Sufi literary tradition.
+    Open any title to view its details and reading availability.
+  </p>
+
+  <div class="tools">
+    <input id="search" type="search"
+      placeholder="Search by title or author…">
+    <select id="bookLanguage" aria-label="Filter books">
+      <option value="">All languages</option>
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+      <option value="ur">Urdu</option>
+      <option value="fa">Persian</option>
+      <option value="ar">Arabic</option>
+    </select>
+  </div>
+
+  <div id="status" class="status">Loading library…</div>
+  <section id="books" class="grid"></section>
 </main>
 
-<footer>
-<div class="footer-inner">
-<div><strong>Sufi Adab Archive</strong><br><small data-t="tagline">Preserving literature, history and heritage.</small></div>
-<div><a href="home.html" data-t="home">Home</a> · <a href="admin.html" data-t="admin">Admin</a></div>
-<small>© <span id="year"></span> Sufi Adab Archive</small>
-</div>
-</footer>
+<footer>Sufi Adab Archive · Preserving literature, history and heritage</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL="https://pooatzegjnegutflkcbm.supabase.co";
-const SUPABASE_KEY="sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN";
-const i18n={
-en:{home:"Home",saints:"Saints",library:"Library",search:"Search",admin:"Admin",kicker:"Books · Manuscripts · Knowledge",heading:"Digital Library",intro:"Explore books, translations and literary heritage preserved in the Sufi Adab Archive.",collection:"The Collection",tagline:"Preserving literature, history and heritage.",query:"Search books or authors…",all:"All languages",loading:"Loading books…",empty:"No published books found.",none:"No matching books. Try another search.",error:"Could not load books. Check Supabase public read permissions.",details:"View book details",by:"By",pages:"pages",entries:"books"},
-hi:{home:"मुखपृष्ठ",saints:"सूफ़ी बुज़ुर्ग",library:"पुस्तकालय",search:"खोजें",admin:"व्यवस्थापक",kicker:"पुस्तकें · पांडुलिपियाँ · ज्ञान",heading:"डिजिटल पुस्तकालय",intro:"सूफ़ी अदब आर्काइव में संरक्षित पुस्तकों, अनुवादों और साहित्यिक विरासत को पढ़ें।",collection:"पुस्तक संग्रह",tagline:"साहित्य, इतिहास और विरासत का संरक्षण।",query:"पुस्तक या लेखक खोजें…",all:"सभी भाषाएँ",loading:"पुस्तकें लोड हो रही हैं…",empty:"कोई प्रकाशित पुस्तक नहीं मिली।",none:"कोई पुस्तक नहीं मिली। दूसरी खोज आज़माएँ।",error:"पुस्तकें लोड नहीं हो सकीं। Supabase की सार्वजनिक पढ़ने की अनुमति जाँचें।",details:"पुस्तक का विवरण",by:"लेखक",pages:"पृष्ठ",entries:"पुस्तकें"},
-ur:{home:"صفحۂ اوّل",saints:"صوفی بزرگ",library:"کتب خانہ",search:"تلاش",admin:"منتظم",kicker:"کتابیں · مخطوطات · علم",heading:"ڈیجیٹل کتب خانہ",intro:"صوفی ادب آرکائیو میں محفوظ کتابوں، تراجم اور ادبی ورثے کا مطالعہ کریں۔",collection:"کتابوں کا ذخیرہ",tagline:"ادب، تاریخ اور ورثے کا تحفظ۔",query:"کتاب یا مصنف تلاش کریں…",all:"تمام زبانیں",loading:"کتابیں لوڈ ہو رہی ہیں…",empty:"کوئی شائع شدہ کتاب نہیں ملی۔",none:"کوئی کتاب نہیں ملی۔ دوسری تلاش کریں۔",error:"کتابیں لوڈ نہیں ہو سکیں۔ Supabase کی عوامی اجازت چیک کریں۔",details:"کتاب کی تفصیل",by:"مصنف",pages:"صفحات",entries:"کتابیں"}
+const SUPABASE_URL =
+  "https://pooatzegjnegutflkcbm.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL, SUPABASE_ANON_KEY
+);
+
+const translations = {
+  en: {
+    heading:"The Library",
+    eyebrow:"Digital Collection",
+    intro:"Explore books from the Sufi literary tradition. Open any title to view its details and reading availability.",
+    search:"Search by title or author…",
+    all:"All languages",
+    read:"Read Now",
+    loading:"Loading library…",
+    empty:"No published books found.",
+    error:"Unable to load books. Please try again later.",
+    author:"Author"
+  },
+  hi: {
+    heading:"पुस्तकालय",
+    eyebrow:"डिजिटल संग्रह",
+    intro:"सूफ़ी साहित्य की पुस्तकों को देखें। विवरण और पढ़ने की उपलब्धता जानने के लिए पुस्तक खोलें।",
+    search:"शीर्षक या लेखक खोजें…",
+    all:"सभी भाषाएँ",
+    read:"अभी देखें",
+    loading:"पुस्तकालय लोड हो रहा है…",
+    empty:"कोई प्रकाशित पुस्तक नहीं मिली।",
+    error:"पुस्तकें लोड नहीं हो सकीं। बाद में कोशिश करें।",
+    author:"लेखक"
+  },
+  ur: {
+    heading:"کتب خانہ",
+    eyebrow:"ڈیجیٹل ذخیرہ",
+    intro:"صوفی ادب کی کتابیں دیکھیں۔ تفصیلات اور مطالعے کی دستیابی کے لیے کتاب کھولیں۔",
+    search:"عنوان یا مصنف تلاش کریں…",
+    all:"تمام زبانیں",
+    read:"ابھی دیکھیں",
+    loading:"کتب خانہ لوڈ ہو رہا ہے…",
+    empty:"کوئی شائع شدہ کتاب نہیں ملی۔",
+    error:"کتابیں لوڈ نہیں ہو سکیں۔ بعد میں کوشش کریں۔",
+    author:"مصنف"
+  }
 };
-let uiLang="en", records=[];
-const $=id=>document.getElementById(id);
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function norm(s){s=String(s||"").toLowerCase();return s==="roman"?"en":s;}
-function trans(r,lang){const a=r.content_translations||[];return a.find(x=>norm(x.language_code)===lang)||a.find(x=>norm(x.language_code)==="en")||a[0]||{};}
-function metadata(r){return Array.isArray(r.book_details)?r.book_details[0]||{}:r.book_details||{};}
-function applyLang(lang){
- uiLang=lang;document.documentElement.lang=lang;document.documentElement.dir=lang==="ur"?"rtl":"ltr";
- document.querySelectorAll("[data-t]").forEach(e=>e.textContent=i18n[lang][e.dataset.t]||i18n.en[e.dataset.t]||e.textContent);
- document.querySelectorAll("[data-lang]").forEach(b=>b.classList.toggle("active",b.dataset.lang===lang));
- $("q").placeholder=i18n[lang].query;$("q").setAttribute("aria-label",i18n[lang].query);
- $("langFilter").options[0].textContent=i18n[lang].all;
- render();
+
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+let lang = params.get("lang") || "en";
+let books = [];
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  }[ch]));
 }
-function render(){
- const q=$("q").value.trim().toLowerCase(), lf=$("langFilter").value;
- const filtered=records.filter(r=>{
-  const all=(r.content_translations||[]).map(t=>[t.title,t.subtitle,t.excerpt,t.body,t.transliteration].join(" ")).join(" ").toLowerCase()+" "+r.slug;
-  const langOk=lf==="all"||(r.content_translations||[]).some(t=>norm(t.language_code)===lf);
-  return all.includes(q)&&langOk;
- });
- $("count").textContent=filtered.length+" "+i18n[uiLang].entries;
- if(!filtered.length){
-  $("books").innerHTML=`<div class="state">${esc(records.length?i18n[uiLang].none:i18n[uiLang].empty)}</div>`;return;
- }
- $("books").innerHTML=filtered.map(r=>{
-  const t=trans(r,uiLang),m=metadata(r);
-  const title=t.title||r.slug||"Untitled book";
-  const author=m.author_name||"";
-  const cover=r.cover_url||r.image_url||r.cover_image_url||"";
-  const href="book.html?slug="+encodeURIComponent(r.slug)+"&lang="+uiLang;
-  const coverHtml=cover?`<img src="${esc(cover)}" alt="${esc(title)} cover" loading="lazy" onerror="this.remove()">`:`<div class="cover-placeholder">${esc(title)}</div>`;
-  return `<article class="book"><div class="cover">${coverHtml}</div><div class="info"><h3 class="title">${esc(title)}</h3><p class="author">${author?esc(i18n[uiLang].by)+": "+esc(author):""}</p><div class="meta">${esc(m.language_name||"")} ${m.pages?" · "+esc(m.pages)+" "+esc(i18n[uiLang].pages):""}</div><a class="detail" href="${esc(href)}">${esc(i18n[uiLang].details)} →</a></div></article>`;
- }).join("");
+
+function getTranslation(record) {
+  const list = record.content_translations || [];
+  return list.find(t => t.language_code === lang)
+      || list.find(t => t.language_code === "en")
+      || list[0] || {};
 }
-async function init(){
- $("year").textContent=new Date().getFullYear();
- try{
-  const client=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  const {data,error}=await client.from("content_items")
-   .select("id,type,slug,status,featured,content_translations(language_code,title,subtitle,excerpt,body,transliteration),book_details(*)")
-   .eq("type","book").eq("status","published")
-   .order("created_at",{ascending:false});
-  if(error)throw error;
-  records=(data||[]).filter(r=>r.slug);
+
+function coverURL(record) {
+  const meta = Array.isArray(record.book_details)
+    ? record.book_details[0] || {}
+    : record.book_details || {};
+
+  return record.cover_url
+      || record.image_url
+      || record.cover_image_url
+      || meta.cover_url
+      || "";
+}
+
+function render() {
+  const t = translations[lang] || translations.en;
+  const query = $("search").value.trim().toLowerCase();
+  const filter = $("bookLanguage").value;
+
+  $("books").innerHTML = "";
+
+  const filtered = books.filter(record => {
+    const tr = getTranslation(record);
+    const meta = Array.isArray(record.book_details)
+      ? record.book_details[0] || {}
+      : record.book_details || {};
+
+    const searchable = [
+      tr.title, tr.subtitle, tr.excerpt,
+      meta.author_name, meta.publisher_name
+    ].join(" ").toLowerCase();
+
+    const languageMatches = !filter
+      || (record.content_translations || [])
+        .some(x => x.language_code === filter)
+      || String(meta.language_name || "").toLowerCase() === filter;
+
+    return searchable.includes(query) && languageMatches;
+  });
+
+  $("status").style.display = filtered.length ? "none" : "block";
+  $("status").textContent = books.length ? t.empty : t.loading;
+
+  filtered.forEach(record => {
+    const tr = getTranslation(record);
+    const meta = Array.isArray(record.book_details)
+      ? record.book_details[0] || {}
+      : record.book_details || {};
+
+    const title = tr.title || record.slug || "Book";
+    const cover = coverURL(record);
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const coverHTML = cover
+      ? `<img loading="lazy" src="${escapeHTML(cover)}"
+           alt="${escapeHTML(title)} cover"
+           onerror="this.parentElement.textContent='✦'">`
+      : "✦";
+
+    card.innerHTML = `
+      <div class="cover">${coverHTML}</div>
+      <div class="info">
+        <h2>${escapeHTML(title)}</h2>
+        ${tr.subtitle
+          ? `<div class="muted">${escapeHTML(tr.subtitle)}</div>` : ""}
+        ${meta.author_name
+          ? `<div class="muted">${escapeHTML(t.author)}: ${escapeHTML(meta.author_name)}</div>` : ""}
+        <div class="actions">
+          <a class="btn"
+             href="book.html?slug=${encodeURIComponent(record.slug)}&lang=${encodeURIComponent(lang)}">
+             ${escapeHTML(t.read)} →
+          </a>
+        </div>
+      </div>`;
+
+    $("books").appendChild(card);
+  });
+}
+
+function applyLanguage() {
+  const t = translations[lang] || translations.en;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "ur" ? "rtl" : "ltr";
+  document.body.classList.toggle("rtl", lang === "ur");
+
+  $("heading").textContent = t.heading;
+  $("eyebrow").textContent = t.eyebrow;
+  $("intro").textContent = t.intro;
+  $("search").placeholder = t.search;
+  $("bookLanguage").options[0].textContent = t.all;
+  $("language").value = lang;
   render();
- }catch(e){
-  console.error(e);$("count").textContent="";
-  $("books").innerHTML=`<div class="state">${esc(i18n[uiLang].error)}</div>`;
- }
 }
-document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>applyLang(b.dataset.lang)));
-$("q").addEventListener("input",render);
-$("langFilter").addEventListener("change",render);
-applyLang("en");init();
+
+async function loadBooks() {
+  const t = translations[lang] || translations.en;
+  $("status").textContent = t.loading;
+
+  try {
+    let result = await db.from("content_items")
+      .select("*,content_translations(*),book_details(*)")
+      .eq("type", "book")
+      .eq("status", "published")
+      .order("created_at", {ascending:false});
+
+    // Fallback if book_details table has not been created yet.
+    if (result.error) {
+      result = await db.from("content_items")
+        .select("*,content_translations(*)")
+        .eq("type", "book")
+        .eq("status", "published")
+        .order("created_at", {ascending:false});
+    }
+
+    if (result.error) throw result.error;
+
+    books = result.data || [];
+    render();
+
+    if (!books.length) {
+      $("status").style.display = "block";
+      $("status").textContent = t.empty;
+    }
+  } catch (error) {
+    console.error(error);
+    $("status").style.display = "block";
+    $("status").textContent = t.error;
+  }
+}
+
+$("search").addEventListener("input", render);
+$("bookLanguage").addEventListener("change", render);
+
+$("language").addEventListener("change", event => {
+  lang = event.target.value;
+  const url = new URL(location.href);
+  url.searchParams.set("lang", lang);
+  history.replaceState({}, "", url);
+  applyLanguage();
+});
+
+applyLanguage();
+loadBooks();
 </script>
 </body>
 </html>
