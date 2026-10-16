@@ -219,7 +219,27 @@ async function changeStatus(id,status){
  if(error){toast('Status update failed: '+error.message);return}
  toast('Status updated');await refreshData();
 }
-$('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(!supabase){notice('loginNotice','Setup required: add your Supabase project URL and publishable/anon key in this file, then redeploy. No credentials have been sent.','bad');return}const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){notice('loginNotice','Sign-in failed: '+error.message,'bad');return}const {data:admin,error:adminError}=await supabase.from('admin_users').select('user_id,role,is_active').eq('user_id',data.user.id).eq('is_active',true).maybeSingle();if(adminError||!admin){await supabase.auth.signOut();notice('loginNotice','This account is not on the authorised editorial team. Ask the platform owner to grant access.','bad');return}hideNotice('loginNotice');setSignedIn(data.user)});
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(!supabase){notice('loginNotice','Setup required: add your Supabase project URL and publishable/anon key in this file, then redeploy. No credentials have been sent.','bad');return}const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){notice('loginNotice','Sign-in failed: '+error.message,'bad');return}const {data:admin,error:adminError}=await supabase.from('admin_users').select('user_id,role,is_active').eq('user_id',data.user.id).eq('is_active',true).maybeSingle();if (adminError) {
+  await supabase.auth.signOut();
+  notice(
+    'loginNotice',
+    'Admin check failed: ' + adminError.message +
+    ' | Code: ' + (adminError.code || 'unknown'),
+    'bad'
+  );
+  return;
+}
+
+if (!admin) {
+  await supabase.auth.signOut();
+  notice(
+    'loginNotice',
+    'No matching admin_users row is visible for signed-in user ID: ' +
+    data.user.id,
+    'bad'
+  );
+  return;
+}hideNotice('loginNotice');setSignedIn(data.user)});
 $('logoutBtn').addEventListener('click',async()=>{if(supabase)await supabase.auth.signOut();setSignedIn(null)});
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
 document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.goto==='editor')blankEditor();showView(b.dataset.goto)}));
