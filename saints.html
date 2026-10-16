@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#651c2c">
+  <meta name="description" content="Explore the Sufi Saints Directory — biographies, teachings and heritage of Sufi saints, scholars and spiritual figures.">
+  <title>Sufi Saints Directory | Sufi Adab Archive</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --wine: #651c2c;
+      --wine-dark: #48121f;
+      --wine-soft: #f5e9eb;
+      --gold: #b18a48;
+      --gold-light: #e6d2a7;
+      --paper: #fbf8f1;
+      --paper-deep: #f1e9da;
+      --white: #fffefa;
+      --ink: #30251f;
+      --muted: #766b61;
+      --border: #e5d9c8;
+      --shadow: 0 12px 32px rgba(65, 35, 29, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; }
+
+    button, input, select { font: inherit; }
+
+    button, a, select, input {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .topline {
+      height: 4px;
+      background: linear-gradient(90deg, var(--wine), var(--gold), var(--wine));
+    }
+
+    header {
+      background: rgba(255, 254, 250, .96);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+    }
+
+    .nav {
+      max-width: 1180px;
+      margin: auto;
+      padding: 15px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: var(--gold-light);
+      background: var(--wine);
+      border: 1px solid var(--gold);
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: 20px;
+    }
+
+    .brand-name {
+      color: var(--wine);
+      font-family: "Playfair Display", serif;
+      font-weight: 700;
+      font-size: 19px;
+      line-height: 1.25;
+    }
+
+    .brand-sub {
+      display: block;
+      color: var(--muted);
+      font-family: "DM Sans", sans-serif;
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 22px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: #55463e;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--wine); }
+
+    .nav-links .nav-cta {
+      color: white;
+      background: var(--wine);
+      padding: 9px 15px;
+      border-radius: 6px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 68px 24px 62px;
+      background:
+        radial-gradient(ellipse at 90% 20%, rgba(177,138,72,.16), transparent 35%),
+        linear-gradient(130deg, #f3e8d6 0%, #fbf8f1 56%, #f3e8d6 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero::after {
+      content: "۞";
+      position: absolute;
+      right: max(5%, calc((100% - 1120px) / 2));
+      top: 4px;
+      font-size: clamp(140px, 25vw, 300px);
+      color: rgba(101, 28, 44, .055);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1120px;
+      margin: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--wine);
+      text-transform: uppercase;
+      letter-spacing: 2.3px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 27px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    h1 {
+      font-family: "Playfair Display", serif;
+      font-weight: 600;
+      color: var(--wine-dark);
+      font-size: clamp(36px, 6vw, 62px);
+      line-height: 1.12;
+      margin: 18px 0 16px;
+      max-width: 760px;
+    }
+
+    .hero p {
+      max-width: 680px;
+      color: #68584d;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold);
+      margin-top: 24px;
+      width: 170px;
+    }
+
+    .ornament::before, .ornament::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--gold);
+    }
+
+    main {
+      max-width: 1180px;
+      padding: 38px 24px 70px;
+      margin: auto;
+    }
+
+    .intro-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .section-kicker {
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    h2 {
+      margin: 4px 0 0;
+      color: var(--wine-dark);
+      font-family: "Playfair Display", serif;
+      font-size: clamp(25px, 3vw, 34px);
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: minmax(200px, 1fr) 190px;
+      gap: 12px;
+      padding: 16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 5px 18px rgba(65, 35, 29, .035);
+      margin-bottom: 25px;
+    }
+
+    .search-wrap { position: relative; }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold);
+      font-size: 18px;
+      pointer-events: none;
+    }
+
+    .filters input, .filters select {
+      width: 100%;
+      min-height: 47px;
+      border: 1px solid var(--border);
+      background: #fffefa;
+      color: var(--ink);
+      border-radius: 7px;
+      padding: 11px 13px;
+      outline: none;
+    }
+
+    .filters input { padding-left: 42px; }
+
+    .filters input:focus, .filters select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(177,138,72,.13);
+    }
+
+    .directory-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .saint-card {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding: 23px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      box-shadow: 0 5px 20px rgba(65, 35, 29, .035);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .saint-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: #cbb58c;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 17px;
+    }
+
+    .seal {
+      width: 43px;
+      height: 43px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: var(--wine);
+      background: var(--wine-soft);
+      border: 1px solid #ead3d7;
+      font-size: 21px;
+    }
+
+    .featured {
+      color: #84632e;
+      background: #f8f0df;
+      border: 1px solid #ead9b7;
+      border-radius: 30px;
+      padding: 4px 9px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+    }
+
+    .saint-name {
+      color: var(--wine-dark);
+      font-family: "Playfair Display", serif;
+      font-size: 23px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      margin: 0 0 9px;
+    }
+
+    .saint-name.urdu {
+      font-family: "Noto Nastaliq Urdu", serif;
+      font-size: 24px;
+      line-height: 2;
+      text-align: right;
+    }
+
+    .saint-excerpt {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      margin: 0 0 20px;
+      overflow-wrap: anywhere;
+      flex: 1;
+    }
+
+    .read-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: flex-start;
+      padding-top: 13px;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      color: var(--wine);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .read-link span {
+      transition: transform .2s ease;
+    }
+
+    .read-link:hover span { transform: translateX(4px); }
+
+    .status-box {
+      text-align: center;
+      padding: 48px 20px;
+      border: 1px dashed #d8c8b2;
+      border-radius: 12px;
+      background: rgba(255,254,250,.7);
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+
+    .status-icon {
+      color: var(--gold);
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .status-box h3 {
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--wine);
+      margin: 0 0 6px;
+    }
+
+    .status-box p {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .footer {
+      background: var(--wine-dark);
+      color: #f4e9da;
+      padding: 32px 24px;
+    }
+
+    .footer-inner {
+      max-width: 1180px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-title {
+      font-family: "Playfair Display", serif;
+      font-size: 20px;
+      color: #fff8eb;
+    }
+
+    .footer small {
+      display: block;
+      color: #d4c0b2;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #f1dfc4;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover { text-decoration: underline; }
+
+    @media (max-width: 900px) {
+      .directory-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-links { gap: 13px; }
+    }
+
+    @media (max-width: 620px) {
+      .nav { padding: 12px 16px; align-items: flex-start; }
+      .brand-name { font-size: 16px; }
+      .brand-mark { width: 38px; height: 38px; }
+      .nav-links { gap: 10px; justify-content: flex-end; }
+      .nav-links a { font-size: 11px; }
+      .nav-links a:not(.nav-cta):nth-child(n+3) { display: none; }
+      .nav-links .nav-cta { padding: 7px 10px; }
+      .hero { padding: 49px 20px 44px; }
+      .hero p { font-size: 14px; }
+      main { padding: 30px 16px 50px; }
+      .intro-row { align-items: flex-start; flex-direction: column; gap: 7px; }
+      .filters { grid-template-columns: 1fr; padding: 12px; }
+      .directory-grid { grid-template-columns: 1fr; gap: 14px; }
+      .saint-card { padding: 20px; }
+      .footer { padding: 27px 18px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topline"></div>
+
+  <header>
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="home.html">
+        <span class="brand-mark" aria-hidden="true">ص</span>
+        <span>
+          <span class="brand-name">Sufi Adab Archive</span>
+          <span class="brand-sub">Literature · Lives · Legacy</span>
+        </span>
+      </a>
+
+      <div class="nav-links">
+        <a href="home.html">Home</a>
+        <a class="active" href="saints.html">Saints</a>
+        <a href="search.html">Search</a>
+        <a class="nav-cta" href="home.html#library">Explore Archive</a>
+      </div>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">People · Heritage · Spirituality</div>
+      <h1>Sufi Saints Directory</h1>
+      <p>
+        Discover the lives, teachings and legacies of Sufi saints and
+        spiritual scholars. Explore biographies and historical records
+        preserved in the Sufi Adab Archive.
+      </p>
+      <div class="ornament" aria-hidden="true">✦</div>
+    </div>
+  </section>
+
+  <main>
+    <div class="intro-row">
+      <div>
+        <div class="section-kicker">Explore the personalities</div>
+        <h2>Saints &amp; Scholars</h2>
+      </div>
+      <div class="count" id="resultCount" aria-live="polite">Loading directory…</div>
+    </div>
+
+    <section class="filters" aria-label="Directory filters">
+      <div class="search-wrap">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search names, biographies or keywords…"
+          aria-label="Search saints and scholars"
+          autocomplete="off"
+        >
+      </div>
+
+      <select id="languageSelect" aria-label="Display language">
+        <option value="roman">Roman / English</option>
+        <option value="ur">Urdu</option>
+        <option value="hi">Hindi</option>
+      </select>
+    </section>
+
+    <section id="directoryGrid" class="directory-grid" aria-label="Sufi saints directory">
+      <div class="status-box">
+        <div class="status-icon">۞</div>
+        <h3>Preparing the directory</h3>
+        <p>Published biographies are being loaded from the archive.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-title">Sufi Adab Archive</div>
+        <small>Preserving Sufi literature, history and heritage.</small>
+      </div>
+      <div class="footer-links">
+        <a href="home.html">Home</a>
+        <a href="search.html">Advanced Search</a>
+        <a href="admin.html">Admin</a>
+      </div>
+      <small>© <span id="year"></span> Sufi Adab Archive</small>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    "use strict";
+
+    // Browser-safe Supabase publishable key.
+    // Never put a service_role or secret key in a public HTML file.
+    const SUPABASE_URL = "https://pooatzegjnegutflkcbm.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN";
+
+    const grid = document.getElementById("directoryGrid");
+    const searchInput = document.getElementById("searchInput");
+    const languageSelect = document.getElementById("languageSelect");
+    const resultCount = document.getElementById("resultCount");
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    let allSaints = [];
+    let loadFailed = false;
+
+    const LANGUAGE_NAMES = {
+      roman: "Roman / English",
+      en: "English",
+      ur: "Urdu",
+      hi: "Hindi"
+    };
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, function (char) {
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[char];
+      });
+    }
+
+    function getTranslationList(record) {
+      return Array.isArray(record.content_translations)
+        ? record.content_translations
+        : [];
+    }
+
+    function getTranslation(record, language) {
+      const translations = getTranslationList(record);
+
+      // Roman may be stored as "roman" or "en" in the language_code field.
+      const preferredCodes = language === "roman"
+        ? ["roman", "en"]
+        : [language];
+
+      for (const code of preferredCodes) {
+        const found = translations.find(
+          item => String(item.language_code || "").toLowerCase() === code
+        );
+        if (found) return found;
+      }
+
+      // Fallback to any available translation rather than hiding a record.
+      return translations[0] || null;
+    }
+
+    function getSearchText(record) {
+      const pieces = [record.slug || ""];
+
+      for (const translation of getTranslationList(record)) {
+        pieces.push(
+          translation.title || "",
+          translation.subtitle || "",
+          translation.excerpt || "",
+          translation.body || "",
+          translation.transliteration || "",
+          translation.translation_note || ""
+        );
+      }
+
+      return pieces.join(" ").toLocaleLowerCase();
+    }
+
+    function showStatus(title, message, symbol = "۞") {
+      grid.innerHTML = `
+        <div class="status-box">
+          <div class="status-icon">${escapeHTML(symbol)}</div>
+          <h3>${escapeHTML(title)}</h3>
+          <p>${escapeHTML(message)}</p>
+        </div>
+      `;
+    }
+
+    function renderDirectory() {
+      if (loadFailed) return;
+
+      const query = searchInput.value.trim().toLocaleLowerCase();
+      const language = languageSelect.value;
+
+      const filtered = allSaints.filter(record => {
+        return !query || getSearchText(record).includes(query);
+      });
+
+      resultCount.textContent =
+        `${filtered.length} ${filtered.length === 1 ? "entry" : "entries"}`;
+
+      if (filtered.length === 0) {
+        showStatus(
+          "No matching entries",
+          "Try another name or keyword, or clear your search."
+        );
+        return;
+      }
+
+      grid.innerHTML = filtered.map(record => {
+        const translation = getTranslation(record, language);
+        const title = translation?.title || record.slug || "Untitled entry";
+        const excerpt = translation?.excerpt ||
+          translation?.subtitle ||
+          "Open this entry to explore its biography and historical details.";
+
+        const isUrdu = language === "ur" &&
+          translation?.language_code === "ur";
+
+        const href = `read.html?slug=${encodeURIComponent(record.slug || "")}`;
+        const isFeatured = record.featured === true;
+
+        return `
+          <article class="saint-card">
+            <div class="card-top">
+              <div class="seal" aria-hidden="true">۞</div>
+              ${isFeatured ? '<span class="featured">Featured</span>' : ""}
+            </div>
+
+            <h3 class="saint-name ${isUrdu ? "urdu" : ""}"
+                ${isUrdu ? 'dir="rtl" lang="ur"' : ""}>
+              ${escapeHTML(title)}
+            </h3>
+
+            <p class="saint-excerpt"
+               ${isUrdu ? 'dir="rtl" lang="ur"' : ""}>
+              ${escapeHTML(excerpt)}
+            </p>
+
+            <a class="read-link" href="${escapeHTML(href)}">
+              Read biography <span aria-hidden="true">→</span>
+            </a>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function loadSaints() {
+      try {
+        if (!window.supabase) {
+          throw new Error("The Supabase client library could not be loaded.");
+        }
+
+        const client = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+        // Only public, published person records are displayed.
+        // Draft, review and archived records are deliberately excluded.
+        const { data, error } = await client
+          .from("content_items")
+          .select(`
+            id,
+            type,
+            slug,
+            status,
+            featured,
+            content_translations (
+              language_code,
+              title,
+              subtitle,
+              excerpt,
+              body,
+              transliteration,
+              translation_note
+            )
+          `)
+          .eq("type", "person")
+          .eq("status", "published")
+          .order("featured", { ascending: false })
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        allSaints = (data || []).filter(record => record.slug);
+        renderDirectory();
+
+        if (allSaints.length === 0) {
+          resultCount.textContent = "0 entries";
+          showStatus(
+            "The directory is ready to grow",
+            "No published saint biographies were found. Publish a Person entry in the admin panel and it will appear here."
+          );
+        }
+      } catch (error) {
+        console.error("Saints directory loading failed:", error);
+        loadFailed = true;
+        resultCount.textContent = "Unable to load";
+        showStatus(
+          "Directory temporarily unavailable",
+          "We could not load published entries. Check the Supabase connection, table permissions and browser console, then try again.",
+          "!"
+        );
+      }
+    }
+
+    searchInput.addEventListener("input", renderDirectory);
+    languageSelect.addEventListener("change", renderDirectory);
+
+    loadSaints();
+  </script>
+</body>
+</html>
