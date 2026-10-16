@@ -73,8 +73,8 @@
       </section>
 
       <section id="contentView" class="view hidden">
-        <div class="welcome"><div><div class="eyebrow">Content management</div><h1>All content</h1><div class="muted">Filter, edit and manage records across the archive.</div></div><button class="btn primary" id="contentNewBtn">＋ New record</button></div>
-        <div class="panel"><div class="tools" style="margin-bottom:14px"><input id="contentSearch" class="search" style="flex:1;min-width:180px" placeholder="Search title or slug…"><select id="typeFilter" class="search" style="max-width:190px"><option value="">All types</option><option value="poem">Poetry / sher</option><option value="person">Saints / poets</option><option value="book">Books</option><option value="article">Articles / research</option><option value="place">Places / heritage</option><option value="media">Media</option><option value="glossary">Glossary</option></select><select id="statusFilter" class="search" style="max-width:160px"><option value="">All statuses</option><option value="draft">Draft</option><option value="review">In review</option><option value="published">Published</option><option value="archived">Archived</option></select></div><div id="contentTable" class="tablewrap"><div class="empty">No records loaded.</div></div></div>
+        <div class="welcome"><div><div class="eyebrow">Content management</div><h1>All content</h1><div class="muted">Search, filter, edit, publish, preview public entries and export your catalogue.</div></div><div class="tools"><button class="btn" id="exportBtn" type="button">↓ Export CSV</button><button class="btn primary" id="contentNewBtn">＋ New record</button></div></div>
+        <div class="panel"><div class="tools" style="margin-bottom:14px"><input id="contentSearch" class="search" style="flex:1;min-width:180px" placeholder="Search title or slug…"><select id="typeFilter" class="search" style="max-width:190px"><option value="">All types</option><option value="poem">Poetry / sher</option><option value="person">Saints / poets</option><option value="book">Books</option><option value="article">Articles / research</option><option value="place">Places / heritage</option><option value="media">Media</option><option value="glossary">Glossary</option><option value="letter">Letters</option><option value="malfuzat">Malfuzat</option><option value="story">Stories / riwayat</option><option value="event">Events / Urs</option></select><select id="statusFilter" class="search" style="max-width:160px"><option value="">All statuses</option><option value="draft">Draft</option><option value="review">In review</option><option value="published">Published</option><option value="archived">Archived</option></select></div><div id="contentTable" class="tablewrap"><div class="empty">No records loaded.</div></div></div>
       </section>
 
       <section id="editorView" class="view hidden">
@@ -88,8 +88,6 @@
             <div class="field"><label for="slug">URL slug *</label><input id="slug" required placeholder="e.g. shah-shoaib-firdausi"><span class="hint">Use lowercase letters, numbers and hyphens. Keep existing published slugs stable.</span></div>
             <div class="field"><label for="contentDate">Historical / publication date (optional)</label><input id="contentDate" placeholder="e.g. 688 AH / 1290 CE"></div>
           </div>
-          <div class="field"><label for="categories">Categories (comma-separated)</label><input id="categories" placeholder="Sufi poetry, Firdausiyya, Bihar"></div>
-          <div class="field"><label for="tags">Tags (comma-separated)</label><input id="tags" placeholder="manqabat, biography, source-critical"></div>
           <div class="panelhead" style="margin-top:20px"><h2>Language editions</h2><span class="tiny muted">Keep each script in its own field</span></div>
           <div class="langtabs"><button class="langtab active" type="button" data-lang="ur">اردو · Urdu</button><button class="langtab" type="button" data-lang="hi">हिन्दी · Hindi</button><button class="langtab" type="button" data-lang="roman">Roman Urdu</button></div>
           <div class="langpane active" data-pane="ur">
@@ -103,8 +101,6 @@
           </div>
           <div class="panelhead" style="margin-top:20px"><h2>Research & attribution</h2></div>
           <div class="formgrid">
-            <div class="field"><label for="author">Author / compiler / editor</label><input id="author" placeholder="Name as credited"></div>
-            <div class="field"><label for="sourceUrl">Primary source URL (optional)</label><input id="sourceUrl" type="url" placeholder="https://…"></div>
             <div class="field span2"><label for="bibliography">Bibliography / source notes</label><textarea id="bibliography" placeholder="Book title, author, edition, page number, archive reference, oral-history date…"></textarea></div>
             <div class="field span2"><label for="rights">Rights / permissions / attribution</label><textarea id="rights" placeholder="Original work, public domain basis, licence, permission holder, image credit…"></textarea></div>
             <div class="field span2"><label for="editorNotes">Private editorial notes</label><textarea id="editorNotes" placeholder="Fact-checking questions, variant dates, pending verification…"></textarea></div>
@@ -119,7 +115,7 @@
         <div class="welcome"><div><div class="eyebrow">Research integrity</div><h1>Sources & bibliography</h1><div class="muted">Source notes are saved with each record in this starter version.</div></div><button class="btn primary" data-goto="editor">＋ Add record</button></div>
         <div class="panel"><h2 style="font:22px Georgia,serif;margin-top:0">Bibliographic practice</h2><p>Record enough detail for another researcher to locate the source: author, full title, publisher or archive, edition, publication year, page or folio, stable URL and access date where relevant.</p><p>For oral histories, note the interview date, place, interviewer, consent status and any restrictions. Distinguish a primary source from a later retelling. Mark uncertain dates as uncertain rather than presenting an estimate as fact.</p><p>Do not upload copyrighted books, photographs or manuscripts unless you have permission or a clear lawful basis. Keep a record of licences and attribution.</p><div class="notice">Dedicated source-library tables and media uploads can be connected after the base content editor is verified.</div></div>
       </section>
-      <div class="footer">Sufi Adab Archive · Private editorial workspace · Starter build, not yet production-connected</div>
+      <div class="footer">Sufi Adab Archive · Private editorial workspace · Keep your publishable key public-safe; never add a service-role key here.</div>
     </main>
   </div>
 </div>
@@ -143,7 +139,7 @@ const $ = id => document.getElementById(id);
 let allRecords = [];
 let currentUser = null;
 let currentView = 'dashboard';
-const typeLabels = {poem:'Poetry / sher',person:'Saint / poet',book:'Book',article:'Article / research',place:'Place / heritage',media:'Media',glossary:'Glossary'};
+const typeLabels = {poem:'Poetry / sher',person:'Saint / poet',book:'Book',article:'Article / research',place:'Place / heritage',media:'Media',glossary:'Glossary',letter:'Letter',malfuzat:'Malfuzat',story:'Story / riwayat',event:'Event / Urs'};
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),3200)}
 function notice(id,msg,kind=''){const el=$(id);el.textContent=msg;el.className='notice'+(kind?' '+kind:'');el.classList.remove('hidden')}
@@ -170,7 +166,7 @@ async function refreshData(){
 function renderTable(){
  const q=($('contentSearch')?.value||'').toLowerCase(), type=$('typeFilter')?.value||'', status=$('statusFilter')?.value||'';
  const rows=allRecords.filter(r=>(!q||recordTitle(r).toLowerCase().includes(q)||r.slug.toLowerCase().includes(q))&&(!type||r.type===type)&&(!status||r.status===status));
- $('contentTable').innerHTML=rows.length?`<table><thead><tr><th>Title / slug</th><th>Type</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(recordTitle(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td><td>${esc(typeLabels[r.type]||r.type)}</td><td>${statusPill(r.status)}</td><td>${fmtDate(r.updated_at)}</td><td><div class="rowactions"><button class="smallbtn" data-edit="${r.id}">Edit</button><button class="smallbtn" data-status="${r.id}" data-next="${r.status==='published'?'draft':'published'}">${r.status==='published'?'Unpublish':'Publish'}</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No matching records. Try a different filter or create a record.</div>';
+ $('contentTable').innerHTML=rows.length?`<table><thead><tr><th>Title / slug</th><th>Type</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(recordTitle(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td><td>${esc(typeLabels[r.type]||r.type)}</td><td>${statusPill(r.status)}</td><td>${fmtDate(r.updated_at)}</td><td><div class="rowactions"><button class="smallbtn" data-edit="${r.id}">Edit</button>${r.status==='published'?`<button class="smallbtn" data-open="${esc(r.slug)}">View</button>`:''}<button class="smallbtn" data-duplicate="${r.id}">Duplicate</button><button class="smallbtn" data-status="${r.id}" data-next="${r.status==='published'?'draft':'published'}">${r.status==='published'?'Unpublish':'Publish'}</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No matching records. Try a different filter or create a record.</div>';
 }
 function blankEditor(){
  $('contentForm').reset();$('recordId').value='';$('editorHeading').textContent='Create content';$('deleteBtn').classList.add('hidden');$('status').value='draft';$('previewArea').classList.add('hidden');hideNotice('editorNotice');setLang('ur');
@@ -179,7 +175,7 @@ function setLang(lang){document.querySelectorAll('.langtab').forEach(b=>b.classL
 function fillEditor(r){
  blankEditor();$('editorHeading').textContent='Edit content';$('recordId').value=r.id;$('contentType').value=r.type;$('status').value=r.status;$('slug').value=r.slug;$('contentDate').value='';
  const tr=getTranslationMap(r.content_translations);for(const lang of ['ur','hi','roman'])for(const field of ['title','summary','body'])$(`${field}_${lang}`).value=tr[lang][field]||'';
- $('categories').value=(r._categories||[]).join(', ');$('tags').value=(r._tags||[]).join(', ');$('author').value=r._author||'';$('sourceUrl').value=r._sourceUrl||'';$('bibliography').value=r._bibliography||'';$('rights').value=r._rights||'';$('editorNotes').value=r._editorNotes||'';
+ $('bibliography').value=r.source_notes||'';$('rights').value='';$('editorNotes').value=r.editorial_notes||'';
  $('deleteBtn').classList.remove('hidden');showView('editor');
 }
 async function loadRecord(id){
@@ -188,11 +184,33 @@ async function loadRecord(id){
  fillEditor(data);
 }
 function splitCsv(v){return v.split(',').map(s=>s.trim()).filter(Boolean)}
+function downloadText(filename, text, mime='text/plain;charset=utf-8'){
+ const blob=new Blob([text],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+function exportCsv(){
+ const q=($('contentSearch')?.value||'').toLowerCase(), type=$('typeFilter')?.value||'', status=$('statusFilter')?.value||'';
+ const rows=allRecords.filter(r=>(!q||recordTitle(r).toLowerCase().includes(q)||r.slug.toLowerCase().includes(q))&&(!type||r.type===type)&&(!status||r.status===status));
+ const header=['id','title','slug','type','status','language','summary','body','created_at','updated_at'];
+ const lines=[header.map(csvCell).join(',')];
+ for(const r of rows){const tr=getTranslationMap(r.content_translations);for(const lang of ['ur','hi','roman']){const t=tr[lang]||{};lines.push([r.id,t.title||recordTitle(r),r.slug,r.type,r.status,lang,t.summary||'',t.body||'',r.created_at||'',r.updated_at||''].map(csvCell).join(','));}}
+ downloadText('sufi-adab-content-'+new Date().toISOString().slice(0,10)+'.csv','\ufeff'+lines.join('\r\n'),'text/csv;charset=utf-8');toast('CSV export prepared');
+}
+async function duplicateRecord(id){
+ const {data,error}=await supabase.from('content_items').select('*,content_translations(*)').eq('id',id).single();
+ if(error){toast('Could not duplicate record: '+error.message);return}
+ blankEditor();$('contentType').value=data.type;$('status').value='draft';$('slug').value=(data.slug+'-copy').replace(/-+/g,'-');
+ const tr=getTranslationMap(data.content_translations);for(const lang of ['ur','hi','roman'])for(const field of ['title','summary','body'])$(`${field}_${lang}`).value=tr[lang][field]||'';
+ $('bibliography').value='';$('rights').value='';$('editorNotes').value='Duplicated from record '+data.slug+'; verify slug, sources and rights before publishing.';
+ $('editorHeading').textContent='Duplicate content';$('deleteBtn').classList.add('hidden');showView('editor');toast('Copy prepared as a draft — save it to create a new record');
+}
+function openPublicEntry(slug){window.open('read.html?slug='+encodeURIComponent(slug),'_blank','noopener,noreferrer')}
+
 async function saveRecord(forceDraft=false){
  if(!supabase||!currentUser){toast('Connect Supabase and sign in first.');return}
  const id=$('recordId').value, status=forceDraft?'draft':$('status').value, slug=$('slug').value.trim().toLowerCase();
  if(!slug||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){notice('editorNotice','Slug must use lowercase letters, numbers and single hyphens.','bad');return}
- const translations=['ur','hi','roman'].map(language=>({language_code:language,title:$(`title_${language}`).value.trim(),excerpt:$(`summary_${language}`).value.trim(),body:$(`body_${language}`).value.trim()})).filter(t=>t.title||t.excerpt||t.body);
+ const translations=['ur','hi','roman'].map(language=>({language_code:language,title:$(`title_${language}`).value.trim(),excerpt:$(`summary_${language}`).value.trim(),body:$(`body_${language}`).value.trim()})).filter(t=>t.title||t.summary||t.body);
  if(!translations.length){notice('editorNotice','Add a title or text in at least one language edition.','bad');return}
  const payload={type:$('contentType').value,slug,status,source_notes:[$('contentDate').value.trim()?'Historical / publication date: '+$('contentDate').value.trim():'',$('bibliography').value.trim()].filter(Boolean).join('\n\n')||null,editorial_notes:[$('editorNotes').value.trim(),$('rights').value.trim()?'Rights: '+$('rights').value.trim():''].filter(Boolean).join('\n\n')||null,updated_by:currentUser.id};
  let result;
@@ -219,55 +237,20 @@ async function changeStatus(id,status){
  if(error){toast('Status update failed: '+error.message);return}
  toast('Status updated');await refreshData();
 }
-$('loginForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!supabase) {
-    notice('loginNotice', 'Supabase is not configured. Check the project URL and publishable/anon key in this file.', 'bad');
-    return;
-  }
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: $('email').value.trim(),
-    password: $('password').value
-  });
-  if (error) {
-    notice('loginNotice', 'Sign-in failed: ' + error.message, 'bad');
-    return;
-  }
-  if (!data.user) {
-    await supabase.auth.signOut();
-    notice('loginNotice', 'Sign-in returned no user account. Please try again.', 'bad');
-    return;
-  }
-  // admin_users schema uses user_id and display_name; it has no role column.
-  const { data: admin, error: adminError } = await supabase
-    .from('admin_users')
-    .select('user_id, display_name')
-    .eq('user_id', data.user.id)
-    .maybeSingle();
-  if (adminError) {
-    await supabase.auth.signOut();
-    notice('loginNotice', 'Admin check failed: ' + adminError.message + ' | Code: ' + (adminError.code || 'unknown'), 'bad');
-    return;
-  }
-  if (!admin) {
-    await supabase.auth.signOut();
-    notice('loginNotice', 'No matching admin_users membership was found for this signed-in user. Verify the user UUID in Supabase.', 'bad');
-    return;
-  }
-  hideNotice('loginNotice');
-  setSignedIn(data.user);
-});
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(!supabase){notice('loginNotice','Setup required: add your Supabase project URL and publishable/anon key in this file, then redeploy. No credentials have been sent.','bad');return}const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){notice('loginNotice','Sign-in failed: '+error.message,'bad');return}const {data:admin,error:adminError}=await supabase.from('admin_users').select('user_id').eq('user_id',data.user.id).maybeSingle();if(adminError||!admin){await supabase.auth.signOut();notice('loginNotice','This account is not on the authorised editorial team. Ask the platform owner to grant access.','bad');return}hideNotice('loginNotice');setSignedIn(data.user)});
 $('logoutBtn').addEventListener('click',async()=>{if(supabase)await supabase.auth.signOut();setSignedIn(null)});
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
 document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.goto==='editor')blankEditor();showView(b.dataset.goto)}));
 document.querySelectorAll('[data-type]').forEach(b=>b.addEventListener('click',()=>{$('typeFilter').value=b.dataset.type;showView('content');renderTable()}));
 $('newContentBtn').addEventListener('click',()=>{blankEditor();showView('editor')});$('contentNewBtn').addEventListener('click',()=>{blankEditor();showView('editor')});
 ['contentSearch','typeFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='contentSearch'?'input':'change',renderTable));
-document.addEventListener('click',e=>{const edit=e.target.closest('[data-edit]');if(edit)loadRecord(edit.dataset.edit);const st=e.target.closest('[data-status]');if(st)changeStatus(st.dataset.status,st.dataset.next)});
+document.addEventListener('click',e=>{const edit=e.target.closest('[data-edit]');if(edit)loadRecord(edit.dataset.edit);const st=e.target.closest('[data-status]');if(st)changeStatus(st.dataset.status,st.dataset.next);const dup=e.target.closest('[data-duplicate]');if(dup)duplicateRecord(dup.dataset.duplicate);const open=e.target.closest('[data-open]');if(open)openPublicEntry(open.dataset.open)});
+$('exportBtn').addEventListener('click',exportCsv);
 document.querySelectorAll('.langtab').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
-$('contentForm').addEventListener('submit',e=>{e.preventDefault();saveRecord(false)});$('saveDraftBtn').addEventListener('click',()=>saveRecord(true));$('deleteBtn').addEventListener('click',deleteRecord);
+$('contentForm').addEventListener('submit',e=>{e.preventDefault();saveRecord(false)});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&currentUser){e.preventDefault();if(!$('editorView').classList.contains('hidden'))saveRecord(false)}});$('saveDraftBtn').addEventListener('click',()=>saveRecord(true));$('deleteBtn').addEventListener('click',deleteRecord);
 $('previewBtn').addEventListener('click',()=>{const lang=document.querySelector('.langtab.active').dataset.lang;const text=`${$('title_'+lang).value}\n\n${$('summary_'+lang).value}\n\n${$('body_'+lang).value}`;$('previewArea').textContent=text;$('previewArea').classList.remove('hidden')});
-if(!configured){notice('loginNotice','Supabase setup is incomplete. Check the URL and publishable/anon key in this file.','bad')}
+if(!configured){notice('loginNotice','Setup required: configure the Supabase project URL and publishable/anon key. Do not use a service-role key in browser code.','bad')}
 else {supabase.auth.getSession().then(({data})=>{if(data.session)setSignedIn(data.session.user)});supabase.auth.onAuthStateChange((_event,session)=>{if(!session)setSignedIn(null)})}
 </script>
 </body>
