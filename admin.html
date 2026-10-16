@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#652e36">
-<title>Markaz.org — Editorial Studio</title>
+<title>Sufi Adab Archive — Editorial Studio</title>
 <style>
 :root{--wine:#652e36;--wine2:#472127;--gold:#b18a4a;--cream:#f8f4ed;--paper:#fffdf9;--ink:#282321;--muted:#766e68;--line:#e7ddd0;--green:#326b50;--red:#9a3939;--shadow:0 12px 35px rgba(54,31,27,.08)}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.55 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
@@ -14,7 +14,7 @@
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">Markaz.org <small>Editorial Studio · Phase 3</small></div>
+  <div class="brand">Sufi Adab Archive <small>Editorial Studio · Phase 3</small></div>
   <div class="top-actions"><span id="userEmail" class="tiny"></span><button id="logoutBtn" class="pill hidden">Sign out</button></div>
 </header>
 
@@ -152,11 +152,11 @@ function showView(name){currentView=name;document.querySelectorAll('.view').forE
 function setSignedIn(user){currentUser=user;$('loginView').classList.toggle('hidden',!!user);$('appView').classList.toggle('hidden',!user);$('logoutBtn').classList.toggle('hidden',!user);$('userEmail').textContent=user?.email||'';if(user)refreshData()}
 function fmtDate(s){if(!s)return '—';const d=new Date(s);return Number.isNaN(+d)?esc(s):d.toLocaleDateString()}
 function statusPill(s){return `<span class="status ${esc(s)}">${esc((s||'draft').replace('_',' '))}</span>`}
-function getTranslationMap(translations){const out={ur:{},hi:{},roman:{}};(translations||[]).forEach(t=>{out[t.language]={title:t.title||'',summary:t.summary||'',body:t.body||''}});return out}
+function getTranslationMap(translations){const out={ur:{},hi:{},roman:{}};(translations||[]).forEach(t=>{out[t.language_code]={title:t.title||'',summary:t.excerpt||'',body:t.body||''}});return out}
 function recordTitle(r){const tr=getTranslationMap(r.content_translations);return tr.roman.title||tr.hi.title||tr.ur.title||r.slug||'Untitled record'}
 async function refreshData(){
   if(!supabase||!currentUser)return;
-  const {data,error}=await supabase.from('content_items').select('id,content_type,slug,status,historical_date,updated_at,created_at,content_translations(language,title,summary,body)').order('updated_at',{ascending:false}).limit(1000);
+  const {data,error}=await supabase.from('content_items').select('id,type,slug,status,updated_at,created_at,content_translations(language_code,title,excerpt,body)').order('updated_at',{ascending:false}).limit(1000);
   if(error){notice('appNotice','Could not load content: '+error.message,'bad');return}
   hideNotice('appNotice');allRecords=data||[];
   $('statTotal').textContent=allRecords.length;
@@ -164,20 +164,20 @@ async function refreshData(){
   $('statDrafts').textContent=allRecords.filter(r=>r.status==='draft').length;
   $('statReview').textContent=allRecords.filter(r=>r.status==='review').length;
   const recent=allRecords.slice(0,6);
-  $('recentList').innerHTML=recent.length?`<table><thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Updated</th><th></th></tr></thead><tbody>${recent.map(r=>`<tr><td><strong>${esc(recordTitle(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td><td>${esc(typeLabels[r.content_type]||r.content_type)}</td><td>${statusPill(r.status)}</td><td>${fmtDate(r.updated_at)}</td><td><button class="smallbtn" data-edit="${r.id}">Edit</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No records yet. Create your first archive record.</div>';
+  $('recentList').innerHTML=recent.length?`<table><thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Updated</th><th></th></tr></thead><tbody>${recent.map(r=>`<tr><td><strong>${esc(recordTitle(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td><td>${esc(typeLabels[r.type]||r.type)}</td><td>${statusPill(r.status)}</td><td>${fmtDate(r.updated_at)}</td><td><button class="smallbtn" data-edit="${r.id}">Edit</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No records yet. Create your first archive record.</div>';
   renderTable();
 }
 function renderTable(){
  const q=($('contentSearch')?.value||'').toLowerCase(), type=$('typeFilter')?.value||'', status=$('statusFilter')?.value||'';
- const rows=allRecords.filter(r=>(!q||recordTitle(r).toLowerCase().includes(q)||r.slug.toLowerCase().includes(q))&&(!type||r.content_type===type)&&(!status||r.status===status));
- $('contentTable').innerHTML=rows.length?`<table><thead><tr><th>Title / slug</th><th>Type</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(recordTitle(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td><td>${esc(typeLabels[r.content_type]||r.content_type)}</td><td>${statusPill(r.status)}</td><td>${fmtDate(r.updated_at)}</td><td><div class="rowactions"><button class="smallbtn" data-edit="${r.id}">Edit</button><button class="smallbtn" data-status="${r.id}" data-next="${r.status==='published'?'draft':'published'}">${r.status==='published'?'Unpublish':'Publish'}</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No matching records. Try a different filter or create a record.</div>';
+ const rows=allRecords.filter(r=>(!q||recordTitle(r).toLowerCase().includes(q)||r.slug.toLowerCase().includes(q))&&(!type||r.type===type)&&(!status||r.status===status));
+ $('contentTable').innerHTML=rows.length?`<table><thead><tr><th>Title / slug</th><th>Type</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(recordTitle(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td><td>${esc(typeLabels[r.type]||r.type)}</td><td>${statusPill(r.status)}</td><td>${fmtDate(r.updated_at)}</td><td><div class="rowactions"><button class="smallbtn" data-edit="${r.id}">Edit</button><button class="smallbtn" data-status="${r.id}" data-next="${r.status==='published'?'draft':'published'}">${r.status==='published'?'Unpublish':'Publish'}</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No matching records. Try a different filter or create a record.</div>';
 }
 function blankEditor(){
  $('contentForm').reset();$('recordId').value='';$('editorHeading').textContent='Create content';$('deleteBtn').classList.add('hidden');$('status').value='draft';$('previewArea').classList.add('hidden');hideNotice('editorNotice');setLang('ur');
 }
 function setLang(lang){document.querySelectorAll('.langtab').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));document.querySelectorAll('.langpane').forEach(p=>p.classList.toggle('active',p.dataset.pane===lang))}
 function fillEditor(r){
- blankEditor();$('editorHeading').textContent='Edit content';$('recordId').value=r.id;$('contentType').value=r.content_type;$('status').value=r.status;$('slug').value=r.slug;$('contentDate').value=r.historical_date||'';
+ blankEditor();$('editorHeading').textContent='Edit content';$('recordId').value=r.id;$('contentType').value=r.type;$('status').value=r.status;$('slug').value=r.slug;$('contentDate').value='';
  const tr=getTranslationMap(r.content_translations);for(const lang of ['ur','hi','roman'])for(const field of ['title','summary','body'])$(`${field}_${lang}`).value=tr[lang][field]||'';
  $('categories').value=(r._categories||[]).join(', ');$('tags').value=(r._tags||[]).join(', ');$('author').value=r._author||'';$('sourceUrl').value=r._sourceUrl||'';$('bibliography').value=r._bibliography||'';$('rights').value=r._rights||'';$('editorNotes').value=r._editorNotes||'';
  $('deleteBtn').classList.remove('hidden');showView('editor');
@@ -192,9 +192,9 @@ async function saveRecord(forceDraft=false){
  if(!supabase||!currentUser){toast('Connect Supabase and sign in first.');return}
  const id=$('recordId').value, status=forceDraft?'draft':$('status').value, slug=$('slug').value.trim().toLowerCase();
  if(!slug||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){notice('editorNotice','Slug must use lowercase letters, numbers and single hyphens.','bad');return}
- const translations=['ur','hi','roman'].map(language=>({language,title:$(`title_${language}`).value.trim(),summary:$(`summary_${language}`).value.trim(),body:$(`body_${language}`).value.trim()})).filter(t=>t.title||t.summary||t.body);
+ const translations=['ur','hi','roman'].map(language=>({language_code:language,title:$(`title_${language}`).value.trim(),excerpt:$(`summary_${language}`).value.trim(),body:$(`body_${language}`).value.trim()})).filter(t=>t.title||t.excerpt||t.body);
  if(!translations.length){notice('editorNotice','Add a title or text in at least one language edition.','bad');return}
- const payload={content_type:$('contentType').value,slug,status,historical_date:$('contentDate').value.trim()||null,updated_by:currentUser.id};
+ const payload={type:$('contentType').value,slug,status,source_notes:[$('contentDate').value.trim()?'Historical / publication date: '+$('contentDate').value.trim():'',$('bibliography').value.trim()].filter(Boolean).join('\n\n')||null,editorial_notes:[$('editorNotes').value.trim(),$('rights').value.trim()?'Rights: '+$('rights').value.trim():''].filter(Boolean).join('\n\n')||null,updated_by:currentUser.id};
  let result;
  if(id) result=await supabase.from('content_items').update(payload).eq('id',id).select('id').single();
  else result=await supabase.from('content_items').insert({...payload,created_by:currentUser.id}).select('id').single();
@@ -219,27 +219,44 @@ async function changeStatus(id,status){
  if(error){toast('Status update failed: '+error.message);return}
  toast('Status updated');await refreshData();
 }
-$('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(!supabase){notice('loginNotice','Setup required: add your Supabase project URL and publishable/anon key in this file, then redeploy. No credentials have been sent.','bad');return}const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){notice('loginNotice','Sign-in failed: '+error.message,'bad');return}const {data:admin,error:adminError}=await supabase.from('admin_users').select('user_id,role,is_active').eq('user_id',data.user.id).eq('is_active',true).maybeSingle();if (adminError) {
-  await supabase.auth.signOut();
-  notice(
-    'loginNotice',
-    'Admin check failed: ' + adminError.message +
-    ' | Code: ' + (adminError.code || 'unknown'),
-    'bad'
-  );
-  return;
-}
-
-if (!admin) {
-  await supabase.auth.signOut();
-  notice(
-    'loginNotice',
-    'No matching admin_users row is visible for signed-in user ID: ' +
-    data.user.id,
-    'bad'
-  );
-  return;
-}hideNotice('loginNotice');setSignedIn(data.user)});
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!supabase) {
+    notice('loginNotice', 'Supabase is not configured. Check the project URL and publishable/anon key in this file.', 'bad');
+    return;
+  }
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: $('email').value.trim(),
+    password: $('password').value
+  });
+  if (error) {
+    notice('loginNotice', 'Sign-in failed: ' + error.message, 'bad');
+    return;
+  }
+  if (!data.user) {
+    await supabase.auth.signOut();
+    notice('loginNotice', 'Sign-in returned no user account. Please try again.', 'bad');
+    return;
+  }
+  // admin_users schema uses user_id and display_name; it has no role column.
+  const { data: admin, error: adminError } = await supabase
+    .from('admin_users')
+    .select('user_id, display_name')
+    .eq('user_id', data.user.id)
+    .maybeSingle();
+  if (adminError) {
+    await supabase.auth.signOut();
+    notice('loginNotice', 'Admin check failed: ' + adminError.message + ' | Code: ' + (adminError.code || 'unknown'), 'bad');
+    return;
+  }
+  if (!admin) {
+    await supabase.auth.signOut();
+    notice('loginNotice', 'No matching admin_users membership was found for this signed-in user. Verify the user UUID in Supabase.', 'bad');
+    return;
+  }
+  hideNotice('loginNotice');
+  setSignedIn(data.user);
+});
 $('logoutBtn').addEventListener('click',async()=>{if(supabase)await supabase.auth.signOut();setSignedIn(null)});
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
 document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.goto==='editor')blankEditor();showView(b.dataset.goto)}));
@@ -250,7 +267,7 @@ document.addEventListener('click',e=>{const edit=e.target.closest('[data-edit]')
 document.querySelectorAll('.langtab').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
 $('contentForm').addEventListener('submit',e=>{e.preventDefault();saveRecord(false)});$('saveDraftBtn').addEventListener('click',()=>saveRecord(true));$('deleteBtn').addEventListener('click',deleteRecord);
 $('previewBtn').addEventListener('click',()=>{const lang=document.querySelector('.langtab.active').dataset.lang;const text=`${$('title_'+lang).value}\n\n${$('summary_'+lang).value}\n\n${$('body_'+lang).value}`;$('previewArea').textContent=text;$('previewArea').classList.remove('hidden')});
-if(!configured){notice('loginNotice','Setup required: configure Supabase URL and publishable/anon key in this file. This starter is not connected to a database yet.','bad')}
+if(!configured){notice('loginNotice','Supabase setup is incomplete. Check the URL and publishable/anon key in this file.','bad')}
 else {supabase.auth.getSession().then(({data})=>{if(data.session)setSignedIn(data.session.user)});supabase.auth.onAuthStateChange((_event,session)=>{if(!session)setSignedIn(null)})}
 </script>
 </body>
