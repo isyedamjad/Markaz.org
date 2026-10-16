@@ -4,8 +4,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#652e36">
+<meta name="theme-color" content="#472127">
+<meta name="description" content="Explore book details and read Sufi literature at Sufi Adab Archive.">
 <title>Book Details | Sufi Adab Archive</title>
+
 <style>
 :root {
   --wine:#652e36;
@@ -15,95 +17,255 @@
   --ink:#29231f;
   --muted:#766b61;
   --line:#e8ddcc;
+  --white:#fffdf9;
+  --soft:#f6eee1;
 }
 * { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
 body {
-  margin:0;background:var(--paper);color:var(--ink);
-  font-family:Georgia,"Noto Serif",serif;line-height:1.7;
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Georgia,"Noto Serif",serif;
+  line-height:1.7;
 }
+a { -webkit-tap-highlight-color:transparent; }
 header {
-  background:var(--deep);color:#fff8ed;
+  background:var(--deep);
+  color:#fff8ed;
   border-bottom:3px solid var(--gold);
-  padding:22px max(18px,calc((100% - 1050px)/2);
+  padding:22px max(18px,calc((100% - 1050px)/2));
 }
-.brand { font-size:27px;font-weight:bold; }
+.brand {
+  font-size:clamp(22px,4vw,29px);
+  font-weight:bold;
+  line-height:1.3;
+}
 .tag {
-  color:#e2c99b;font:12px Arial,sans-serif;
-  letter-spacing:2px;text-transform:uppercase;
+  color:#e2c99b;
+  font:12px Arial,sans-serif;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-top:5px;
 }
-nav { display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:14px; }
-nav a { color:#fff8ed;text-decoration:none;font:14px Arial,sans-serif; }
+nav {
+  display:flex;
+  gap:18px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:16px;
+}
+nav a {
+  color:#fff8ed;
+  text-decoration:none;
+  font:14px Arial,sans-serif;
+}
+nav a:hover { color:#e2c99b; }
 select {
-  padding:8px;border:1px solid #b99c75;
-  border-radius:6px;background:transparent;color:inherit;
+  padding:8px 10px;
+  border:1px solid #b99c75;
+  border-radius:6px;
+  background:var(--deep);
+  color:#fff8ed;
+  font:14px Arial,sans-serif;
+  cursor:pointer;
 }
-.wrap { max-width:1050px;margin:auto;padding:30px 20px 60px; }
-.back { color:var(--wine);text-decoration:none;font:14px Arial,sans-serif; }
+select option { background:#fffdf9;color:#29231f; }
+
+.wrap {
+  max-width:1050px;
+  margin:auto;
+  padding:30px 20px 60px;
+}
+.back {
+  display:inline-block;
+  color:var(--wine);
+  text-decoration:none;
+  font:14px Arial,sans-serif;
+}
+.back:hover { text-decoration:underline; }
+
 .panel {
-  margin-top:22px;padding:clamp(18px,4vw,36px);
-  background:#fffdf9;border:1px solid var(--line);
+  margin-top:22px;
+  padding:clamp(18px,4vw,36px);
+  background:var(--white);
+  border:1px solid var(--line);
   border-radius:12px;
+  box-shadow:0 8px 30px rgba(71,33,39,.045);
 }
 .bookhead {
-  display:grid;grid-template-columns:minmax(180px,260px) 1fr;
-  gap:30px;align-items:start;
+  display:grid;
+  grid-template-columns:minmax(180px,260px) minmax(0,1fr);
+  gap:30px;
+  align-items:start;
 }
 .cover {
-  min-height:300px;background:#f0e6d5;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--wine);font-size:42px;overflow:hidden;
+  min-height:300px;
+  background:#f0e6d5;
+  border:1px solid var(--line);
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--wine);
+  font-size:42px;
+  overflow:hidden;
 }
-.cover img { width:100%;max-height:430px;object-fit:contain; }
+.cover img {
+  display:block;
+  width:100%;
+  max-height:430px;
+  object-fit:contain;
+}
 .eyebrow {
-  color:var(--gold);font:700 12px Arial,sans-serif;
-  letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold);
+  font:700 12px Arial,sans-serif;
+  letter-spacing:2px;
+  text-transform:uppercase;
 }
-h1 { color:var(--deep);font-size:clamp(30px,4vw,46px);line-height:1.2;margin:9px 0; }
-.subtitle { color:var(--muted);font-size:19px; }
-.description { margin-top:18px;white-space:pre-wrap; }
-h2 { color:var(--deep);font-size:23px;margin-top:32px; }
+h1 {
+  color:var(--deep);
+  font-size:clamp(30px,4vw,46px);
+  line-height:1.2;
+  overflow-wrap:anywhere;
+  margin:9px 0;
+}
+.subtitle {
+  color:var(--muted);
+  font-size:19px;
+  overflow-wrap:anywhere;
+}
+.description {
+  margin-top:18px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+h2 {
+  color:var(--deep);
+  font-size:23px;
+  margin-top:32px;
+}
 .metadata {
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
   border-top:1px solid var(--line);
 }
-.item { padding:12px 10px 12px 0;border-bottom:1px solid var(--line); }
+.item {
+  min-width:0;
+  padding:12px 10px 12px 0;
+  border-bottom:1px solid var(--line);
+  overflow-wrap:anywhere;
+}
 .key {
-  display:block;color:var(--muted);
-  font:700 11px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;
+  display:block;
+  color:var(--muted);
+  font:700 11px Arial,sans-serif;
+  letter-spacing:1px;
+  text-transform:uppercase;
 }
 .value { display:block;margin-top:4px; }
-.buttons { display:flex;gap:12px;flex-wrap:wrap;margin-top:24px; }
+.buttons {
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:24px;
+}
 .btn {
-  display:inline-block;background:var(--wine);color:white;
-  border-radius:7px;padding:12px 17px;text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  background:var(--wine);
+  color:white;
+  border:1px solid var(--wine);
+  border-radius:7px;
+  padding:11px 17px;
+  text-decoration:none;
   font:700 14px Arial,sans-serif;
+  text-align:center;
+  cursor:pointer;
+  transition:background .2s,transform .2s;
 }
-.btn.secondary { background:transparent;color:var(--wine);border:1px solid var(--wine); }
-.btn.disabled { background:#e9e0d5;color:#776b5d;cursor:not-allowed; }
+.btn:hover { background:var(--deep);transform:translateY(-1px); }
+.btn.secondary {
+  background:transparent;
+  color:var(--wine);
+  border-color:var(--wine);
+}
+.btn.secondary:hover { background:var(--soft); }
+.btn.disabled {
+  background:#e9e0d5;
+  border-color:#e9e0d5;
+  color:#776b5d;
+  cursor:not-allowed;
+  pointer-events:none;
+  transform:none;
+}
 .notice {
-  margin-top:14px;padding:13px 15px;
-  background:#f6eee1;border-left:3px solid var(--gold);
-  color:#665747;font:14px/1.6 Arial,sans-serif;
+  margin-top:14px;
+  padding:13px 15px;
+  background:var(--soft);
+  border-left:3px solid var(--gold);
+  border-radius:3px;
+  color:#665747;
+  font:14px/1.6 Arial,sans-serif;
 }
-.status { padding:18px;border:1px dashed var(--line);border-radius:8px;color:var(--muted); }
-footer { text-align:center;padding:22px;border-top:1px solid var(--line);color:var(--muted);font:12px Arial,sans-serif; }
+.status {
+  padding:18px;
+  border:1px dashed var(--line);
+  border-radius:8px;
+  color:var(--muted);
+  background:var(--white);
+}
+.status.error {
+  border-color:#d8a9a9;
+  color:#8b2929;
+  background:#fff8f6;
+}
+footer {
+  text-align:center;
+  padding:22px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font:12px/1.7 Arial,sans-serif;
+}
 body.rtl { direction:rtl;text-align:right; }
-body.rtl .notice { border-left:0;border-right:3px solid var(--gold); }
+body.rtl nav { justify-content:flex-start; }
+body.rtl .notice {
+  border-left:0;
+  border-right:3px solid var(--gold);
+}
+body.rtl .item { padding:12px 0 12px 10px; }
+body.rtl .key { letter-spacing:0; }
+body.rtl .eyebrow { letter-spacing:0; }
+[hidden] { display:none !important; }
+
 @media(max-width:650px) {
-  .bookhead { grid-template-columns:1fr; }
-  .cover { min-height:230px; }
+  header { padding:19px 16px; }
+  nav { gap:14px; }
+  .bookhead { grid-template-columns:1fr;gap:20px; }
+  .cover { min-height:220px;max-width:100%; }
+  .cover img { max-height:380px; }
   .metadata { grid-template-columns:1fr; }
   .wrap { padding:22px 14px 45px; }
+  .panel { padding:18px; }
+  .buttons { flex-direction:column; }
+  .btn { width:100%; }
+}
+@media(prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  *,*::before,*::after { transition:none !important; }
 }
 </style>
 </head>
+
 <body>
 <header>
   <div class="brand">Sufi Adab Archive</div>
-  <div class="tag">A living archive of Sufi literature</div>
+  <div class="tag" id="siteTag">A living archive of Sufi literature</div>
   <nav>
-    <a href="index.html">Home</a>
-    <a href="library.html">Library</a>
+    <a href="index.html" id="homeLink">Home</a>
+    <a href="library.html" id="libraryLink">Library</a>
     <select id="language" aria-label="Language">
       <option value="en">English</option>
       <option value="hi">हिन्दी</option>
@@ -114,11 +276,14 @@ body.rtl .notice { border-left:0;border-right:3px solid var(--gold); }
 
 <main class="wrap">
   <a class="back" id="back" href="library.html">← Back to Library</a>
-  <div id="status" class="status" style="margin-top:20px">Loading book…</div>
+
+  <div id="status" class="status" role="status" aria-live="polite"
+       style="margin-top:20px">Loading book…</div>
 
   <article id="panel" class="panel" hidden>
     <div class="bookhead">
-      <div class="cover" id="cover">✦</div>
+      <div class="cover" id="cover" aria-label="Book cover">✦</div>
+
       <div>
         <div class="eyebrow" id="eyebrow">Book Details</div>
         <h1 id="title"></h1>
@@ -126,10 +291,13 @@ body.rtl .notice { border-left:0;border-right:3px solid var(--gold); }
         <div id="description" class="description"></div>
 
         <div class="buttons">
-          <a id="readButton" class="btn disabled"
-             href="#" aria-disabled="true" tabindex="-1">Coming Soon</a>
-          <a id="allBooks" class="btn secondary" href="library.html">Browse All Books</a>
+          <a id="readButton" class="btn disabled" href="#"
+             aria-disabled="true" tabindex="-1">Coming Soon</a>
+          <a id="allBooks" class="btn secondary" href="library.html">
+            Browse All Books
+          </a>
         </div>
+
         <div id="notice" class="notice"></div>
       </div>
     </div>
@@ -139,10 +307,15 @@ body.rtl .notice { border-left:0;border-right:3px solid var(--gold); }
   </article>
 </main>
 
-<footer>Sufi Adab Archive · Preserving literature, history and heritage</footer>
+<footer id="footer">
+  Sufi Adab Archive · Preserving literature, history and heritage
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+"use strict";
+
+/* Supabase configuration */
 const SUPABASE_URL =
   "https://pooatzegjnegutflkcbm.supabase.co";
 
@@ -150,75 +323,206 @@ const SUPABASE_ANON_KEY =
   "sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN";
 
 const db = window.supabase.createClient(
-  SUPABASE_URL, SUPABASE_ANON_KEY
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
 );
+
+/*
+  Tamanna-e-Bakhshish PDF supplied by the site owner.
+  This URL is used only for the matching Tamanna book.
+*/
+const TAMANNA_PDF_URL =
+  "https://pooatzegjnegutflkcbm.supabase.co/storage/v1/object/public/book/TAMANNA%20E%20BAKHSHISH%20THE%20EXPECTATION%20OF%20SALVATION.pdf";
 
 const labels = {
   en: {
-    back:"← Back to Library",eyebrow:"Book Details",
-    details:"Publication Details",all:"Browse All Books",
-    read:"Read Book",soon:"Coming Soon",
+    home:"Home",
+    library:"Library",
+    back:"← Back to Library",
+    eyebrow:"Book Details",
+    details:"Publication Details",
+    all:"Browse All Books",
+    read:"Read Book",
+    soon:"Coming Soon",
     noPdf:"The online reader will be available when a PDF has been added to this book.",
     missing:"This book could not be found or is not published.",
     error:"Unable to load book details. Please try again later.",
-    author:"Author",translator:"Translator",year:"Year of Publication",
-    publisher:"Publisher",language:"Language",pages:"Pages",
-    edition:"Edition",origin:"Origin",genre:"Genre",contributor:"Contributor",
-    sub:"Book Subtitle",none:"Not provided"
+    author:"Author",
+    translator:"Translator",
+    year:"Year of Publication",
+    publisher:"Publisher",
+    language:"Language",
+    pages:"Pages",
+    edition:"Edition",
+    origin:"Origin",
+    genre:"Genre",
+    contributor:"Contributor",
+    sub:"Book Subtitle",
+    none:"Not provided",
+    loading:"Loading book…",
+    footer:"Sufi Adab Archive · Preserving literature, history and heritage",
+    siteTag:"A living archive of Sufi literature",
+    pdfError:"The PDF could not be opened. Please check the file URL or access permissions."
   },
   hi: {
-    back:"← पुस्तकालय पर लौटें",eyebrow:"पुस्तक विवरण",
-    details:"प्रकाशन विवरण",all:"सभी पुस्तकें देखें",
-    read:"पुस्तक पढ़ें",soon:"जल्द उपलब्ध",
+    home:"होम",
+    library:"पुस्तकालय",
+    back:"← पुस्तकालय पर लौटें",
+    eyebrow:"पुस्तक विवरण",
+    details:"प्रकाशन विवरण",
+    all:"सभी पुस्तकें देखें",
+    read:"पुस्तक पढ़ें",
+    soon:"जल्द उपलब्ध",
     noPdf:"PDF जोड़े जाने के बाद ऑनलाइन रीडर उपलब्ध होगा।",
     missing:"पुस्तक नहीं मिली या प्रकाशित नहीं है।",
     error:"पुस्तक विवरण लोड नहीं हो सके। बाद में कोशिश करें।",
-    author:"लेखक",translator:"अनुवादक",year:"प्रकाशन वर्ष",
-    publisher:"प्रकाशक",language:"भाषा",pages:"पृष्ठ",
-    edition:"संस्करण",origin:"मूल/उत्पत्ति",genre:"विधा",contributor:"योगदानकर्ता",
-    sub:"पुस्तक का उपशीर्षक",none:"जानकारी उपलब्ध नहीं"
+    author:"लेखक",
+    translator:"अनुवादक",
+    year:"प्रकाशन वर्ष",
+    publisher:"प्रकाशक",
+    language:"भाषा",
+    pages:"पृष्ठ",
+    edition:"संस्करण",
+    origin:"मूल/उत्पत्ति",
+    genre:"विधा",
+    contributor:"योगदानकर्ता",
+    sub:"पुस्तक का उपशीर्षक",
+    none:"जानकारी उपलब्ध नहीं",
+    loading:"पुस्तक लोड हो रही है…",
+    footer:"सूफ़ी अदब आर्काइव · साहित्य, इतिहास और विरासत का संरक्षण",
+    siteTag:"सूफ़ी साहित्य का जीवंत संग्रह",
+    pdfError:"PDF नहीं खुल सकी। लिंक या एक्सेस की अनुमति जाँचें।"
   },
   ur: {
-    back:"← کتب خانے پر واپس",eyebrow:"کتاب کی تفصیلات",
-    details:"اشاعتی تفصیلات",all:"تمام کتابیں دیکھیں",
-    read:"کتاب پڑھیں",soon:"جلد دستیاب",
+    home:"صفحۂ اول",
+    library:"کتب خانہ",
+    back:"← کتب خانے پر واپس",
+    eyebrow:"کتاب کی تفصیلات",
+    details:"اشاعتی تفصیلات",
+    all:"تمام کتابیں دیکھیں",
+    read:"کتاب پڑھیں",
+    soon:"جلد دستیاب",
     noPdf:"PDF شامل ہونے کے بعد آن لائن مطالعہ دستیاب ہوگا۔",
     missing:"کتاب نہیں ملی یا شائع نہیں ہوئی۔",
     error:"کتاب کی تفصیلات لوڈ نہیں ہو سکیں۔",
-    author:"مصنف",translator:"مترجم",year:"سنِ اشاعت",
-    publisher:"ناشر",language:"زبان",pages:"صفحات",
-    edition:"ایڈیشن",origin:"اصل/ماخذ",genre:"صنف",contributor:"معاون",
-    sub:"ذیلی عنوان",none:"معلومات دستیاب نہیں"
+    author:"مصنف",
+    translator:"مترجم",
+    year:"سنِ اشاعت",
+    publisher:"ناشر",
+    language:"زبان",
+    pages:"صفحات",
+    edition:"ایڈیشن",
+    origin:"اصل/ماخذ",
+    genre:"صنف",
+    contributor:"معاون",
+    sub:"ذیلی عنوان",
+    none:"معلومات دستیاب نہیں",
+    loading:"کتاب لوڈ ہو رہی ہے…",
+    footer:"صوفی ادب آرکائیو · ادب، تاریخ اور ورثے کا تحفظ",
+    siteTag:"صوفی ادب کا زندہ ذخیرہ",
+    pdfError:"PDF نہیں کھل سکی۔ لنک یا رسائی کی اجازت چیک کریں۔"
   }
 };
 
 const $ = id => document.getElementById(id);
-const params = new URLSearchParams(location.search);
-const slug = params.get("slug");
-let lang = params.get("lang") || "en";
+const params = new URLSearchParams(window.location.search);
+const slug = (params.get("slug") || "").trim().toLowerCase();
+
+const allowedLanguages = ["en", "hi", "ur"];
+let lang = allowedLanguages.includes(params.get("lang"))
+  ? params.get("lang")
+  : "en";
+
 let record = null;
 let meta = {};
 
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, ch => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;",
-    '"':"&quot;", "'":"&#39;"
-  }[ch]));
+function safeText(value) {
+  if (value === null || value === undefined) return "";
+  return String(value).trim();
 }
 
-function getTranslation(record) {
-  const list = record.content_translations || [];
-  return list.find(t => t.language_code === lang)
-      || list.find(t => t.language_code === "en")
-      || list[0] || {};
+function normalize(value) {
+  return safeText(value)
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
-function getCover(record) {
-  return record.cover_url
-      || record.image_url
-      || record.cover_image_url
-      || meta.cover_url
-      || "";
+function getTranslation(item) {
+  const list = Array.isArray(item.content_translations)
+    ? item.content_translations
+    : [];
+
+  return list.find(x => x.language_code === lang)
+    || list.find(x => x.language_code === "en")
+    || list[0]
+    || {};
+}
+
+function getCover(item) {
+  return safeText(item.cover_url)
+    || safeText(item.image_url)
+    || safeText(item.cover_image_url)
+    || safeText(item.featured_image)
+    || safeText(meta.cover_url)
+    || safeText(meta.image_url)
+    || "";
+}
+
+/*
+  Identify Tamanna-e-Bakhshish by its slug/title.
+  Other books use a PDF URL stored in their database fields.
+*/
+function isTamannaBook(item, translation) {
+  const possibleNames = [
+    item.slug,
+    translation.title,
+    translation.subtitle,
+    meta.book_subname,
+    meta.title,
+    meta.book_title
+  ].map(normalize);
+
+  return possibleNames.some(name =>
+    name.includes("tamanna-e-bakhshish") ||
+    name.includes("tamanna-bakhshish") ||
+    name.includes("tamanna-e-bakhshish-the-expectation-of-salvation") ||
+    name.includes("tamanna")
+  );
+}
+
+function getPdfURL(item, translation) {
+  if (isTamannaBook(item, translation)) {
+    return TAMANNA_PDF_URL;
+  }
+
+  const candidates = [
+    meta.pdf_url,
+    meta.book_pdf_url,
+    meta.pdf_file_url,
+    meta.file_url,
+    item.pdf_url,
+    item.book_pdf_url,
+    item.pdf_file_url,
+    item.file_url,
+    item.meta && item.meta.pdf_url,
+    item.meta && item.meta.book_pdf_url
+  ];
+
+  const url = candidates.find(value =>
+    typeof value === "string" && value.trim()
+  );
+
+  return url ? url.trim() : "";
+}
+
+function setStatus(message, isError) {
+  $("status").textContent = message;
+  $("status").hidden = false;
+  $("status").classList.toggle("error", Boolean(isError));
+  $("panel").hidden = true;
 }
 
 function render() {
@@ -229,65 +533,91 @@ function render() {
   document.body.classList.toggle("rtl", lang === "ur");
 
   $("language").value = lang;
+  $("homeLink").textContent = t.home;
+  $("libraryLink").textContent = t.library;
+  $("siteTag").textContent = t.siteTag;
   $("back").textContent = t.back;
   $("eyebrow").textContent = t.eyebrow;
   $("detailsHeading").textContent = t.details;
   $("allBooks").textContent = t.all;
-  $("allBooks").href = "library.html?lang=" + encodeURIComponent(lang);
-  $("back").href = "library.html?lang=" + encodeURIComponent(lang);
+  $("footer").textContent = t.footer;
+
+  const libraryURL = "library.html?lang=" + encodeURIComponent(lang);
+  $("homeLink").href = "index.html?lang=" + encodeURIComponent(lang);
+  $("libraryLink").href = libraryURL;
+  $("allBooks").href = libraryURL;
+  $("back").href = libraryURL;
 
   if (!record) return;
 
   const tr = getTranslation(record);
-  const title = tr.title || record.slug || t.eyebrow;
+  const title = safeText(tr.title) || safeText(record.slug) || t.eyebrow;
+  const subtitle = safeText(tr.subtitle);
+  const description =
+    safeText(tr.body) ||
+    safeText(tr.excerpt) ||
+    safeText(meta.about_book) ||
+    "";
 
   $("title").textContent = title;
-  $("subtitle").textContent = tr.subtitle || "";
-  $("description").textContent =
-    tr.body || tr.excerpt || meta.about_book || "";
-  $("description").hidden = !$("description").textContent;
+  $("subtitle").textContent = subtitle;
+  $("subtitle").hidden = !subtitle;
+  $("description").textContent = description;
+  $("description").hidden = !description;
 
   const cover = getCover(record);
-  $("cover").innerHTML = cover
-    ? `<img src="${escapeHTML(cover)}"
-         alt="${escapeHTML(title)} cover"
-         onerror="this.parentElement.textContent='✦'">`
-    : "✦";
+  $("cover").replaceChildren();
+
+  if (cover) {
+    const image = document.createElement("img");
+    image.src = cover;
+    image.alt = title + " cover";
+    image.loading = "lazy";
+    image.onerror = () => {
+      $("cover").textContent = "✦";
+    };
+    $("cover").appendChild(image);
+  } else {
+    $("cover").textContent = "✦";
+  }
 
   const fields = [
-    [t.sub, meta.book_subname || tr.subtitle],
-    [t.author, meta.author_name],
-    [t.translator, meta.translator_name],
-    [t.year, meta.publication_year],
-    [t.publisher, meta.publisher_name],
-    [t.language, meta.language_name],
+    [t.sub, meta.book_subname || subtitle],
+    [t.author, meta.author_name || meta.author],
+    [t.translator, meta.translator_name || meta.translator],
+    [t.year, meta.publication_year || meta.year],
+    [t.publisher, meta.publisher_name || meta.publisher],
+    [t.language, meta.language_name || meta.language],
     [t.pages, meta.pages],
     [t.edition, meta.edition],
     [t.origin, meta.origin],
-    [t.genre, meta.genre_name],
-    [t.contributor, meta.contributor_name]
+    [t.genre, meta.genre_name || meta.genre],
+    [t.contributor, meta.contributor_name || meta.contributor]
   ];
 
-  $("metadata").innerHTML = fields
-    .filter(([label, value]) => value !== null && value !== undefined && value !== "")
-    .map(([label, value]) => `
-      <div class="item">
-        <span class="key">${escapeHTML(label)}</span>
-        <span class="value">${escapeHTML(value)}</span>
-      </div>
-    `).join("");
+  $("metadata").replaceChildren();
 
-  /*
-    PDF support:
-    This checks possible URL fields if one has been added to the database.
-    The admin panel does not currently upload or save a PDF URL automatically.
-  */
-  const pdfURL =
-    meta.pdf_url ||
-    record.pdf_url ||
-    record.book_pdf_url ||
-    "";
+  fields.forEach(([label, value]) => {
+    if (value === null || value === undefined || String(value).trim() === "") {
+      return;
+    }
 
+    const item = document.createElement("div");
+    item.className = "item";
+
+    const key = document.createElement("span");
+    key.className = "key";
+    key.textContent = label;
+
+    const val = document.createElement("span");
+    val.className = "value";
+    val.textContent = String(value);
+
+    item.append(key, val);
+    $("metadata").appendChild(item);
+  });
+
+  const pdfURL = getPdfURL(record, tr);
   const button = $("readButton");
 
   if (pdfURL) {
@@ -298,6 +628,8 @@ function render() {
     button.rel = "noopener noreferrer";
     button.removeAttribute("aria-disabled");
     button.removeAttribute("tabindex");
+    button.hidden = false;
+
     $("notice").textContent = "";
     $("notice").hidden = true;
   } else {
@@ -307,6 +639,8 @@ function render() {
     button.removeAttribute("target");
     button.setAttribute("aria-disabled", "true");
     button.setAttribute("tabindex", "-1");
+    button.hidden = false;
+
     $("notice").textContent = t.noPdf;
     $("notice").hidden = false;
   }
@@ -316,7 +650,12 @@ async function loadBook() {
   const t = labels[lang] || labels.en;
 
   if (!slug) {
-    $("status").textContent = t.missing;
+    setStatus(t.missing, true);
+    return;
+  }
+
+  if (!window.supabase) {
+    setStatus(t.error, true);
     return;
   }
 
@@ -328,8 +667,13 @@ async function loadBook() {
       .eq("status", "published")
       .maybeSingle();
 
-    // Fallback for a setup where book_details is not installed yet.
+    /*
+      If book_details is not installed or the relation is unavailable,
+      try loading the book and translations without that relation.
+    */
     if (result.error) {
+      console.warn("book_details relation unavailable; retrying:", result.error.message);
+
       result = await db.from("content_items")
         .select("*,content_translations(*)")
         .eq("slug", slug)
@@ -341,33 +685,57 @@ async function loadBook() {
     if (result.error) throw result.error;
 
     if (!result.data) {
-      $("status").textContent = t.missing;
+      setStatus((labels[lang] || labels.en).missing, true);
       return;
     }
 
     record = result.data;
-    meta = Array.isArray(record.book_details)
-      ? record.book_details[0] || {}
-      : record.book_details || {};
+
+    const details = record.book_details;
+    meta = Array.isArray(details)
+      ? (details[0] || {})
+      : (details || {});
+
+    /*
+      Some installations may store extra metadata in a JSON column.
+      Use it as a fallback without overwriting book_details values.
+    */
+    const extra = record.meta && typeof record.meta === "object"
+      ? record.meta
+      : {};
+
+    meta = { ...extra, ...meta };
 
     $("status").hidden = true;
     $("panel").hidden = false;
     render();
   } catch (error) {
-    console.error(error);
-    $("status").textContent = t.error;
+    console.error("Book loading error:", error);
+    setStatus((labels[lang] || labels.en).error, true);
   }
 }
 
+/* Switch language while preserving the current book slug. */
 $("language").addEventListener("change", event => {
-  lang = event.target.value;
-  const url = new URL(location.href);
+  const selected = event.target.value;
+
+  lang = allowedLanguages.includes(selected) ? selected : "en";
+
+  const url = new URL(window.location.href);
   url.searchParams.set("lang", lang);
-  history.replaceState({}, "", url);
-  render();
+
+  window.history.replaceState({}, "", url.toString());
+
+  if (record) {
+    render();
+  } else {
+    setStatus((labels[lang] || labels.en).loading, false);
+  }
 });
 
-render();
+/* Initial language and page setup */
+$("language").value = lang;
+setStatus((labels[lang] || labels.en).loading, false);
 loadBook();
 </script>
 </body>
