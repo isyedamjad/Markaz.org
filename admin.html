@@ -49,6 +49,7 @@
         <button class="navbtn" data-type="article"><span>▧</span> Articles & research</button>
         <button class="navbtn" data-type="place"><span>⌖</span> Khanqahs & heritage</button>
         <button class="navbtn" data-view="sources"><span>⌕</span> Sources & bibliography</button>
+        <button class="navbtn" data-view="mediaSeo"><span>✧</span> Images, SEO & featured</button>
       </div>
     </aside>
     <main class="main">
@@ -73,8 +74,8 @@
       </section>
 
       <section id="contentView" class="view hidden">
-        <div class="welcome"><div><div class="eyebrow">Content management</div><h1>All content</h1><div class="muted">Search, filter, edit, publish, preview public entries and export your catalogue.</div></div><div class="tools"><button class="btn" id="exportBtn" type="button">↓ Export CSV</button><button class="btn primary" id="contentNewBtn">＋ New record</button></div></div>
-        <div class="panel"><div class="tools" style="margin-bottom:14px"><input id="contentSearch" class="search" style="flex:1;min-width:180px" placeholder="Search title or slug…"><select id="typeFilter" class="search" style="max-width:190px"><option value="">All types</option><option value="poem">Poetry / sher</option><option value="person">Saints / poets</option><option value="book">Books</option><option value="article">Articles / research</option><option value="place">Places / heritage</option><option value="media">Media</option><option value="glossary">Glossary</option><option value="letter">Letters</option><option value="malfuzat">Malfuzat</option><option value="story">Stories / riwayat</option><option value="event">Events / Urs</option></select><select id="statusFilter" class="search" style="max-width:160px"><option value="">All statuses</option><option value="draft">Draft</option><option value="review">In review</option><option value="published">Published</option><option value="archived">Archived</option></select></div><div id="contentTable" class="tablewrap"><div class="empty">No records loaded.</div></div></div>
+        <div class="welcome"><div><div class="eyebrow">Content management</div><h1>All content</h1><div class="muted">Filter, edit and manage records across the archive.</div></div><button class="btn primary" id="contentNewBtn">＋ New record</button></div>
+        <div class="panel"><div class="tools" style="margin-bottom:14px"><input id="contentSearch" class="search" style="flex:1;min-width:180px" placeholder="Search title or slug…"><select id="typeFilter" class="search" style="max-width:190px"><option value="">All types</option><option value="poem">Poetry / sher</option><option value="person">Saints / poets</option><option value="book">Books</option><option value="article">Articles / research</option><option value="place">Places / heritage</option><option value="media">Media</option><option value="glossary">Glossary</option></select><select id="statusFilter" class="search" style="max-width:160px"><option value="">All statuses</option><option value="draft">Draft</option><option value="review">In review</option><option value="published">Published</option><option value="archived">Archived</option></select></div><div id="contentTable" class="tablewrap"><div class="empty">No records loaded.</div></div></div>
       </section>
 
       <section id="editorView" class="view hidden">
@@ -88,6 +89,8 @@
             <div class="field"><label for="slug">URL slug *</label><input id="slug" required placeholder="e.g. shah-shoaib-firdausi"><span class="hint">Use lowercase letters, numbers and hyphens. Keep existing published slugs stable.</span></div>
             <div class="field"><label for="contentDate">Historical / publication date (optional)</label><input id="contentDate" placeholder="e.g. 688 AH / 1290 CE"></div>
           </div>
+          <div class="field"><label for="categories">Categories (comma-separated)</label><input id="categories" placeholder="Sufi poetry, Firdausiyya, Bihar"></div>
+          <div class="field"><label for="tags">Tags (comma-separated)</label><input id="tags" placeholder="manqabat, biography, source-critical"></div>
           <div class="panelhead" style="margin-top:20px"><h2>Language editions</h2><span class="tiny muted">Keep each script in its own field</span></div>
           <div class="langtabs"><button class="langtab active" type="button" data-lang="ur">اردو · Urdu</button><button class="langtab" type="button" data-lang="hi">हिन्दी · Hindi</button><button class="langtab" type="button" data-lang="roman">Roman Urdu</button></div>
           <div class="langpane active" data-pane="ur">
@@ -101,6 +104,8 @@
           </div>
           <div class="panelhead" style="margin-top:20px"><h2>Research & attribution</h2></div>
           <div class="formgrid">
+            <div class="field"><label for="author">Author / compiler / editor</label><input id="author" placeholder="Name as credited"></div>
+            <div class="field"><label for="sourceUrl">Primary source URL (optional)</label><input id="sourceUrl" type="url" placeholder="https://…"></div>
             <div class="field span2"><label for="bibliography">Bibliography / source notes</label><textarea id="bibliography" placeholder="Book title, author, edition, page number, archive reference, oral-history date…"></textarea></div>
             <div class="field span2"><label for="rights">Rights / permissions / attribution</label><textarea id="rights" placeholder="Original work, public domain basis, licence, permission holder, image credit…"></textarea></div>
             <div class="field span2"><label for="editorNotes">Private editorial notes</label><textarea id="editorNotes" placeholder="Fact-checking questions, variant dates, pending verification…"></textarea></div>
@@ -115,7 +120,41 @@
         <div class="welcome"><div><div class="eyebrow">Research integrity</div><h1>Sources & bibliography</h1><div class="muted">Source notes are saved with each record in this starter version.</div></div><button class="btn primary" data-goto="editor">＋ Add record</button></div>
         <div class="panel"><h2 style="font:22px Georgia,serif;margin-top:0">Bibliographic practice</h2><p>Record enough detail for another researcher to locate the source: author, full title, publisher or archive, edition, publication year, page or folio, stable URL and access date where relevant.</p><p>For oral histories, note the interview date, place, interviewer, consent status and any restrictions. Distinguish a primary source from a later retelling. Mark uncertain dates as uncertain rather than presenting an estimate as fact.</p><p>Do not upload copyrighted books, photographs or manuscripts unless you have permission or a clear lawful basis. Keep a record of licences and attribution.</p><div class="notice">Dedicated source-library tables and media uploads can be connected after the base content editor is verified.</div></div>
       </section>
-      <div class="footer">Sufi Adab Archive · Private editorial workspace · Keep your publishable key public-safe; never add a service-role key here.</div>
+      <section id="mediaSeoView" class="view hidden">
+        <div class="welcome"><div><div class="eyebrow">Publishing tools</div><h1>Images, SEO & featured content</h1><div class="muted">Uses only fields discovered on your existing content_items records. No database columns are created.</div></div></div>
+        <div id="featureNotice" class="notice">Sign in and load records to detect the available image, SEO and featured fields.</div>
+        <div class="panel">
+          <div class="panelhead"><h2>1 · Image upload manager</h2></div>
+          <p class="muted">Upload an image to an existing Supabase Storage bucket. If a compatible image URL column exists on content_items, you can save the URL to that field.</p>
+          <div class="formgrid">
+            <div class="field"><label for="mediaRecord">Content record</label><select id="mediaRecord"><option value="">Choose a record…</option></select></div>
+            <div class="field"><label for="storageBucket">Existing Storage bucket name</label><input id="storageBucket" value="gallery" placeholder="e.g. gallery"><div class="hint">Change this to the exact bucket name in Supabase Storage.</div></div>
+            <div class="field span2"><label for="mediaFile">Image file (JPG, PNG, WebP, GIF)</label><input id="mediaFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><div class="hint">Maximum 8 MB. Upload requires Storage policies allowing the signed-in admin to upload.</div></div>
+          </div>
+          <div id="imagePreviewWrap" class="hidden" style="margin:8px 0 14px"><img id="imagePreview" alt="Selected image preview" style="max-width:220px;max-height:180px;object-fit:contain;border:1px solid var(--line);border-radius:10px;background:white;padding:5px"><div id="imageUrlText" class="tiny muted" style="overflow-wrap:anywhere;margin-top:8px"></div></div>
+          <div class="tools"><button id="uploadImageBtn" class="btn primary" type="button">Upload image</button><button id="copyImageUrlBtn" class="btn" type="button" disabled>Copy image URL</button></div>
+          <div id="imageNotice" class="notice hidden" style="margin-top:12px"></div>
+        </div>
+        <div class="panel">
+          <div class="panelhead"><h2>2 · SEO metadata</h2></div>
+          <p class="muted">Only detected columns will be edited. Fields not present in your schema are shown as unavailable, rather than added automatically.</p>
+          <div class="field"><label for="seoRecord">Content record</label><select id="seoRecord"><option value="">Choose a record…</option></select></div>
+          <div class="formgrid" id="seoFields"></div>
+          <div id="seoPreview" class="preview">Choose a record to preview the available SEO metadata.</div>
+          <div class="tools" style="margin-top:12px"><button id="saveSeoBtn" class="btn primary" type="button">Save SEO fields</button></div>
+          <div id="seoNotice" class="notice hidden" style="margin-top:12px"></div>
+        </div>
+        <div class="panel">
+          <div class="panelhead"><h2>3 · Featured content controls</h2></div>
+          <p class="muted">Manage the existing featured flag only if the column is present. Homepage ordering is determined by your homepage query.</p>
+          <div class="field"><label for="featuredRecord">Content record</label><select id="featuredRecord"><option value="">Choose a record…</option></select></div>
+          <div id="featuredAvailability" class="notice">Checking for an existing featured field…</div>
+          <label style="display:flex;align-items:center;gap:10px;margin:14px 0"><input id="featuredToggle" type="checkbox" disabled> <strong>Feature this content</strong></label>
+          <div class="tools"><button id="saveFeaturedBtn" class="btn primary" type="button" disabled>Save featured setting</button></div>
+          <div id="featuredNotice" class="notice hidden" style="margin-top:12px"></div>
+        </div>
+      </section>
+      <div class="footer">Sufi Adab Archive · Private editorial workspace · Existing-schema tools</div>
     </main>
   </div>
 </div>
@@ -139,12 +178,17 @@ const $ = id => document.getElementById(id);
 let allRecords = [];
 let currentUser = null;
 let currentView = 'dashboard';
-const typeLabels = {poem:'Poetry / sher',person:'Saint / poet',book:'Book',article:'Article / research',place:'Place / heritage',media:'Media',glossary:'Glossary',letter:'Letter',malfuzat:'Malfuzat',story:'Story / riwayat',event:'Event / Urs'};
+let detectedColumns = new Set();
+let lastUploadedUrl = '';
+const imageCandidates = ['image_url','cover_image_url','featured_image_url','thumbnail_url','avatar_url','photo_url','cover_url'];
+const seoCandidates = [{key:'seo_title',label:'SEO title',kind:'input'},{key:'meta_title',label:'Meta title',kind:'input'},{key:'seo_description',label:'SEO description',kind:'textarea'},{key:'meta_description',label:'Meta description',kind:'textarea'},{key:'canonical_url',label:'Canonical URL',kind:'input'},{key:'og_image_url',label:'Social share image URL',kind:'input'},{key:'seo_keywords',label:'SEO keywords',kind:'input'}];
+const featuredCandidates = ['featured'];
+const typeLabels = {poem:'Poetry / sher',person:'Saint / poet',book:'Book',article:'Article / research',place:'Place / heritage',media:'Media',glossary:'Glossary'};
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),3200)}
 function notice(id,msg,kind=''){const el=$(id);el.textContent=msg;el.className='notice'+(kind?' '+kind:'');el.classList.remove('hidden')}
 function hideNotice(id){$(id).classList.add('hidden')}
-function showView(name){currentView=name;document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$(name+'View').classList.remove('hidden');document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===name));if(name==='content')renderTable();if(name==='dashboard')refreshData()}
+function showView(name){currentView=name;document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$(name+'View').classList.remove('hidden');document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===name));if(name==='content')renderTable();if(name==='dashboard')refreshData();if(name==='mediaSeo')renderFeatureTools()}
 function setSignedIn(user){currentUser=user;$('loginView').classList.toggle('hidden',!!user);$('appView').classList.toggle('hidden',!user);$('logoutBtn').classList.toggle('hidden',!user);$('userEmail').textContent=user?.email||'';if(user)refreshData()}
 function fmtDate(s){if(!s)return '—';const d=new Date(s);return Number.isNaN(+d)?esc(s):d.toLocaleDateString()}
 function statusPill(s){return `<span class="status ${esc(s)}">${esc((s||'draft').replace('_',' '))}</span>`}
@@ -152,9 +196,9 @@ function getTranslationMap(translations){const out={ur:{},hi:{},roman:{}};(trans
 function recordTitle(r){const tr=getTranslationMap(r.content_translations);return tr.roman.title||tr.hi.title||tr.ur.title||r.slug||'Untitled record'}
 async function refreshData(){
   if(!supabase||!currentUser)return;
-  const {data,error}=await supabase.from('content_items').select('id,type,slug,status,updated_at,created_at,content_translations(language_code,title,excerpt,body)').order('updated_at',{ascending:false}).limit(1000);
+  const {data,error}=await supabase.from('content_items').select('*,content_translations(language_code,title,excerpt,body)').order('updated_at',{ascending:false}).limit(1000);
   if(error){notice('appNotice','Could not load content: '+error.message,'bad');return}
-  hideNotice('appNotice');allRecords=data||[];
+  hideNotice('appNotice');allRecords=data||[];detectedColumns=new Set(allRecords[0]?Object.keys(allRecords[0]).filter(k=>k!=='content_translations'):[]);renderFeatureTools();
   $('statTotal').textContent=allRecords.length;
   $('statPublished').textContent=allRecords.filter(r=>r.status==='published').length;
   $('statDrafts').textContent=allRecords.filter(r=>r.status==='draft').length;
@@ -166,7 +210,7 @@ async function refreshData(){
 function renderTable(){
  const q=($('contentSearch')?.value||'').toLowerCase(), type=$('typeFilter')?.value||'', status=$('statusFilter')?.value||'';
  const rows=allRecords.filter(r=>(!q||recordTitle(r).toLowerCase().includes(q)||r.slug.toLowerCase().includes(q))&&(!type||r.type===type)&&(!status||r.status===status));
- $('contentTable').innerHTML=rows.length?`<table><thead><tr><th>Title / slug</th><th>Type</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(recordTitle(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td><td>${esc(typeLabels[r.type]||r.type)}</td><td>${statusPill(r.status)}</td><td>${fmtDate(r.updated_at)}</td><td><div class="rowactions"><button class="smallbtn" data-edit="${r.id}">Edit</button>${r.status==='published'?`<button class="smallbtn" data-open="${esc(r.slug)}">View</button>`:''}<button class="smallbtn" data-duplicate="${r.id}">Duplicate</button><button class="smallbtn" data-status="${r.id}" data-next="${r.status==='published'?'draft':'published'}">${r.status==='published'?'Unpublish':'Publish'}</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No matching records. Try a different filter or create a record.</div>';
+ $('contentTable').innerHTML=rows.length?`<table><thead><tr><th>Title / slug</th><th>Type</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>${rows.map(r=>`<tr><td><strong>${esc(recordTitle(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td><td>${esc(typeLabels[r.type]||r.type)}</td><td>${statusPill(r.status)}</td><td>${fmtDate(r.updated_at)}</td><td><div class="rowactions"><button class="smallbtn" data-edit="${r.id}">Edit</button><button class="smallbtn" data-status="${r.id}" data-next="${r.status==='published'?'draft':'published'}">${r.status==='published'?'Unpublish':'Publish'}</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No matching records. Try a different filter or create a record.</div>';
 }
 function blankEditor(){
  $('contentForm').reset();$('recordId').value='';$('editorHeading').textContent='Create content';$('deleteBtn').classList.add('hidden');$('status').value='draft';$('previewArea').classList.add('hidden');hideNotice('editorNotice');setLang('ur');
@@ -175,7 +219,7 @@ function setLang(lang){document.querySelectorAll('.langtab').forEach(b=>b.classL
 function fillEditor(r){
  blankEditor();$('editorHeading').textContent='Edit content';$('recordId').value=r.id;$('contentType').value=r.type;$('status').value=r.status;$('slug').value=r.slug;$('contentDate').value='';
  const tr=getTranslationMap(r.content_translations);for(const lang of ['ur','hi','roman'])for(const field of ['title','summary','body'])$(`${field}_${lang}`).value=tr[lang][field]||'';
- $('bibliography').value=r.source_notes||'';$('rights').value='';$('editorNotes').value=r.editorial_notes||'';
+ $('categories').value=(r._categories||[]).join(', ');$('tags').value=(r._tags||[]).join(', ');$('author').value=r._author||'';$('sourceUrl').value=r._sourceUrl||'';$('bibliography').value=r._bibliography||'';$('rights').value=r._rights||'';$('editorNotes').value=r._editorNotes||'';
  $('deleteBtn').classList.remove('hidden');showView('editor');
 }
 async function loadRecord(id){
@@ -184,28 +228,6 @@ async function loadRecord(id){
  fillEditor(data);
 }
 function splitCsv(v){return v.split(',').map(s=>s.trim()).filter(Boolean)}
-function downloadText(filename, text, mime='text/plain;charset=utf-8'){
- const blob=new Blob([text],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
-}
-function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
-function exportCsv(){
- const q=($('contentSearch')?.value||'').toLowerCase(), type=$('typeFilter')?.value||'', status=$('statusFilter')?.value||'';
- const rows=allRecords.filter(r=>(!q||recordTitle(r).toLowerCase().includes(q)||r.slug.toLowerCase().includes(q))&&(!type||r.type===type)&&(!status||r.status===status));
- const header=['id','title','slug','type','status','language','summary','body','created_at','updated_at'];
- const lines=[header.map(csvCell).join(',')];
- for(const r of rows){const tr=getTranslationMap(r.content_translations);for(const lang of ['ur','hi','roman']){const t=tr[lang]||{};lines.push([r.id,t.title||recordTitle(r),r.slug,r.type,r.status,lang,t.summary||'',t.body||'',r.created_at||'',r.updated_at||''].map(csvCell).join(','));}}
- downloadText('sufi-adab-content-'+new Date().toISOString().slice(0,10)+'.csv','\ufeff'+lines.join('\r\n'),'text/csv;charset=utf-8');toast('CSV export prepared');
-}
-async function duplicateRecord(id){
- const {data,error}=await supabase.from('content_items').select('*,content_translations(*)').eq('id',id).single();
- if(error){toast('Could not duplicate record: '+error.message);return}
- blankEditor();$('contentType').value=data.type;$('status').value='draft';$('slug').value=(data.slug+'-copy').replace(/-+/g,'-');
- const tr=getTranslationMap(data.content_translations);for(const lang of ['ur','hi','roman'])for(const field of ['title','summary','body'])$(`${field}_${lang}`).value=tr[lang][field]||'';
- $('bibliography').value='';$('rights').value='';$('editorNotes').value='Duplicated from record '+data.slug+'; verify slug, sources and rights before publishing.';
- $('editorHeading').textContent='Duplicate content';$('deleteBtn').classList.add('hidden');showView('editor');toast('Copy prepared as a draft — save it to create a new record');
-}
-function openPublicEntry(slug){window.open('read.html?slug='+encodeURIComponent(slug),'_blank','noopener,noreferrer')}
-
 async function saveRecord(forceDraft=false){
  if(!supabase||!currentUser){toast('Connect Supabase and sign in first.');return}
  const id=$('recordId').value, status=forceDraft?'draft':$('status').value, slug=$('slug').value.trim().toLowerCase();
@@ -237,6 +259,31 @@ async function changeStatus(id,status){
  if(error){toast('Status update failed: '+error.message);return}
  toast('Status updated');await refreshData();
 }
+function fillRecordSelect(id){const el=$(id);const old=el.value;el.innerHTML='<option value="">Choose a record…</option>'+allRecords.map(r=>`<option value="${esc(r.id)}">${esc(recordTitle(r))} · /${esc(r.slug)}</option>`).join('');if(allRecords.some(r=>String(r.id)===old))el.value=old}
+function fieldFor(candidates){return candidates.find(k=>detectedColumns.has(k))||null}
+function renderFeatureTools(){
+ if(!currentUser)return;
+ ['mediaRecord','seoRecord','featuredRecord'].forEach(fillRecordSelect);
+ const imageField=fieldFor(imageCandidates);const seoFound=seoCandidates.filter(f=>detectedColumns.has(f.key));const featuredField=fieldFor(featuredCandidates);
+ $('featureNotice').textContent=`Schema detection: ${detectedColumns.size} content_items fields detected. Image URL field: ${imageField||'none detected'}. SEO fields: ${seoFound.length?seoFound.map(f=>f.key).join(', '):'none detected'}. Featured field: ${featuredField||'none detected'}.`;
+ $('seoFields').innerHTML=seoFound.length?seoFound.map(f=>`<div class="field ${f.kind==='textarea'?'span2':''}"><label for="seo_${f.key}">${esc(f.label)} <span class="tiny muted">(${esc(f.key)})</span></label>${f.kind==='textarea'?`<textarea id="seo_${f.key}" data-seo-key="${esc(f.key)}" rows="3"></textarea>`:`<input id="seo_${f.key}" data-seo-key="${esc(f.key)}" type="text">`}</div>`).join(''):'<div class="notice span2">No recognised SEO columns were found on the loaded records. SEO editing is safely disabled; no columns were assumed or created.</div>';
+ $('saveSeoBtn').disabled=!seoFound.length;
+ $('featuredAvailability').textContent=featuredField?`Detected existing field: ${featuredField}.`:'No existing "featured" field was detected. This control is disabled to avoid writing to a non-existent column.';
+ $('featuredToggle').disabled=!featuredField;$('saveFeaturedBtn').disabled=!featuredField;
+ if($('seoRecord').value)loadSeoFields();if($('featuredRecord').value)loadFeaturedValue();
+}
+function currentRecord(id){return allRecords.find(r=>String(r.id)===String($(id).value))||null}
+function loadSeoFields(){const r=currentRecord('seoRecord');if(!r)return;document.querySelectorAll('[data-seo-key]').forEach(el=>el.value=r[el.dataset.seoKey]??'');updateSeoPreview()}
+function updateSeoPreview(){const r=currentRecord('seoRecord');if(!r){$('seoPreview').textContent='Choose a record to preview the available SEO metadata.';return}const titleKey=fieldFor(['seo_title','meta_title']);const descKey=fieldFor(['seo_description','meta_description']);const title=(titleKey&&$("seo_"+titleKey)?.value)||recordTitle(r);const desc=(descKey&&$("seo_"+descKey)?.value)||'';$('seoPreview').textContent=`Search preview\n${title}\n${desc}\n/${r.slug}`}
+function loadFeaturedValue(){const r=currentRecord('featuredRecord');if(!r)return;$('featuredToggle').checked=!!r.featured}
+async function saveExistingFields(id,payload,noticeId){if(!supabase||!currentUser){notice(noticeId,'Please sign in first.','bad');return false}const {error}=await supabase.from('content_items').update({...payload,updated_by:currentUser.id}).eq('id',id);if(error){notice(noticeId,'Save failed: '+error.message,'bad');return false}notice(noticeId,'Saved successfully.','good');await refreshData();return true}
+$('mediaRecord').addEventListener('change',()=>{const r=currentRecord('mediaRecord');if(r){const key=fieldFor(imageCandidates);lastUploadedUrl=key?(r[key]||''):'';$('imageUrlText').textContent=lastUploadedUrl||'No saved image URL on this record yet.';$('copyImageUrlBtn').disabled=!lastUploadedUrl}});
+$('mediaFile').addEventListener('change',()=>{const f=$('mediaFile').files?.[0];if(!f)return;if(!f.type.startsWith('image/')){notice('imageNotice','Choose a valid image file.','bad');return}if(f.size>8*1024*1024){notice('imageNotice','Image must be 8 MB or smaller.','bad');$('mediaFile').value='';return} $('imagePreview').src=URL.createObjectURL(f);$('imagePreviewWrap').classList.remove('hidden');hideNotice('imageNotice')});
+$('uploadImageBtn').addEventListener('click',async()=>{const r=currentRecord('mediaRecord'),file=$('mediaFile').files?.[0],bucket=$('storageBucket').value.trim();if(!r){notice('imageNotice','Choose a content record first.','bad');return}if(!file){notice('imageNotice','Choose an image file first.','bad');return}if(!bucket){notice('imageNotice','Enter the exact name of an existing Storage bucket.','bad');return}if(file.size>8*1024*1024||!file.type.startsWith('image/')){notice('imageNotice','Choose an image no larger than 8 MB.','bad');return}const path=`content/${r.slug}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'-')}`;const {data,error}=await supabase.storage.from(bucket).upload(path,file,{upsert:false,contentType:file.type});if(error){notice('imageNotice','Upload failed: '+error.message+' Check the bucket name and Storage policies.','bad');return}const {data:{publicUrl}}=supabase.storage.from(bucket).getPublicUrl(data.path);lastUploadedUrl=publicUrl;$('imageUrlText').textContent=publicUrl;$('copyImageUrlBtn').disabled=false;const imageField=fieldFor(imageCandidates);if(imageField){const ok=await saveExistingFields(r.id,{[imageField]:publicUrl},'imageNotice');if(ok)notice('imageNotice',`Uploaded and saved URL to existing field ${imageField}.`,'good')}else{notice('imageNotice','Image uploaded. No compatible image URL column was detected, so the URL is ready to copy but was not written to the database.','good')}});
+$('copyImageUrlBtn').addEventListener('click',async()=>{if(!lastUploadedUrl)return;try{await navigator.clipboard.writeText(lastUploadedUrl);toast('Image URL copied')}catch{window.prompt('Copy image URL:',lastUploadedUrl)}});
+$('seoRecord').addEventListener('change',loadSeoFields);$('seoFields').addEventListener('input',updateSeoPreview);
+$('saveSeoBtn').addEventListener('click',async()=>{const r=currentRecord('seoRecord');if(!r){notice('seoNotice','Choose a record first.','bad');return}const payload={};document.querySelectorAll('[data-seo-key]').forEach(el=>{if(detectedColumns.has(el.dataset.seoKey))payload[el.dataset.seoKey]=el.value.trim()||null});if(!Object.keys(payload).length){notice('seoNotice','No compatible existing SEO fields are available.','bad');return}await saveExistingFields(r.id,payload,'seoNotice')});
+$('featuredRecord').addEventListener('change',loadFeaturedValue);$('saveFeaturedBtn').addEventListener('click',async()=>{const r=currentRecord('featuredRecord');const key=fieldFor(featuredCandidates);if(!r||!key){notice('featuredNotice','A record and existing featured field are required.','bad');return}await saveExistingFields(r.id,{[key]:$('featuredToggle').checked},'featuredNotice')});
 $('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(!supabase){notice('loginNotice','Setup required: add your Supabase project URL and publishable/anon key in this file, then redeploy. No credentials have been sent.','bad');return}const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){notice('loginNotice','Sign-in failed: '+error.message,'bad');return}const {data:admin,error:adminError}=await supabase.from('admin_users').select('user_id').eq('user_id',data.user.id).maybeSingle();if(adminError||!admin){await supabase.auth.signOut();notice('loginNotice','This account is not on the authorised editorial team. Ask the platform owner to grant access.','bad');return}hideNotice('loginNotice');setSignedIn(data.user)});
 $('logoutBtn').addEventListener('click',async()=>{if(supabase)await supabase.auth.signOut();setSignedIn(null)});
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
@@ -244,13 +291,11 @@ document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',(
 document.querySelectorAll('[data-type]').forEach(b=>b.addEventListener('click',()=>{$('typeFilter').value=b.dataset.type;showView('content');renderTable()}));
 $('newContentBtn').addEventListener('click',()=>{blankEditor();showView('editor')});$('contentNewBtn').addEventListener('click',()=>{blankEditor();showView('editor')});
 ['contentSearch','typeFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='contentSearch'?'input':'change',renderTable));
-document.addEventListener('click',e=>{const edit=e.target.closest('[data-edit]');if(edit)loadRecord(edit.dataset.edit);const st=e.target.closest('[data-status]');if(st)changeStatus(st.dataset.status,st.dataset.next);const dup=e.target.closest('[data-duplicate]');if(dup)duplicateRecord(dup.dataset.duplicate);const open=e.target.closest('[data-open]');if(open)openPublicEntry(open.dataset.open)});
-$('exportBtn').addEventListener('click',exportCsv);
+document.addEventListener('click',e=>{const edit=e.target.closest('[data-edit]');if(edit)loadRecord(edit.dataset.edit);const st=e.target.closest('[data-status]');if(st)changeStatus(st.dataset.status,st.dataset.next)});
 document.querySelectorAll('.langtab').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
-$('contentForm').addEventListener('submit',e=>{e.preventDefault();saveRecord(false)});
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&currentUser){e.preventDefault();if(!$('editorView').classList.contains('hidden'))saveRecord(false)}});$('saveDraftBtn').addEventListener('click',()=>saveRecord(true));$('deleteBtn').addEventListener('click',deleteRecord);
+$('contentForm').addEventListener('submit',e=>{e.preventDefault();saveRecord(false)});$('saveDraftBtn').addEventListener('click',()=>saveRecord(true));$('deleteBtn').addEventListener('click',deleteRecord);
 $('previewBtn').addEventListener('click',()=>{const lang=document.querySelector('.langtab.active').dataset.lang;const text=`${$('title_'+lang).value}\n\n${$('summary_'+lang).value}\n\n${$('body_'+lang).value}`;$('previewArea').textContent=text;$('previewArea').classList.remove('hidden')});
-if(!configured){notice('loginNotice','Setup required: configure the Supabase project URL and publishable/anon key. Do not use a service-role key in browser code.','bad')}
+if(!configured){notice('loginNotice','Setup required: configure Supabase URL and publishable/anon key in this file. This starter is not connected to a database yet.','bad')}
 else {supabase.auth.getSession().then(({data})=>{if(data.session)setSignedIn(data.session.user)});supabase.auth.onAuthStateChange((_event,session)=>{if(!session)setSignedIn(null)})}
 </script>
 </body>
