@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#652e36">
-<title>Sufi Adab Archive — Editorial Studio</title>
+<title>Markaz.org — Editorial Studio</title>
 <style>
 :root{--wine:#652e36;--wine2:#472127;--gold:#b18a4a;--cream:#f8f4ed;--paper:#fffdf9;--ink:#282321;--muted:#766e68;--line:#e7ddd0;--green:#326b50;--red:#9a3939;--shadow:0 12px 35px rgba(54,31,27,.08)}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.55 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
@@ -14,7 +14,7 @@
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">Sufi Adab Archive <small>Editorial Studio · Phase 3</small></div>
+  <div class="brand">Markaz.org <small>Editorial Studio · Phase 3</small></div>
   <div class="top-actions"><span id="userEmail" class="tiny"></span><button id="logoutBtn" class="pill hidden">Sign out</button></div>
 </header>
 
@@ -130,8 +130,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // Setup: fill these values from Supabase Project Settings → API.
 // Use only the publishable/anon key in this browser file. NEVER place a service_role key here.
-const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY';
+const SUPABASE_URL = 'https://pooatzegjnegutflkcbm.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN';
 
 const configured = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('YOUR_') &&
   SUPABASE_ANON_KEY.length > 20 && !SUPABASE_ANON_KEY.includes('YOUR_');
