@@ -3,106 +3,372 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#651c2c">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#652e36">
 <title>Book Details | Sufi Adab Archive</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Nastaliq+Urdu:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--wine:#651c2c;--dark:#48121f;--gold:#b18a48;--paper:#fbf8f1;--white:#fffefa;--ink:#30251f;--muted:#766b61;--border:#e5d9c8}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px "DM Sans",sans-serif;line-height:1.8}
-header{background:var(--white);border-bottom:1px solid var(--border)}nav,.wrap{max-width:1050px;margin:auto;padding:16px 22px}nav{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}nav a{color:var(--wine);text-decoration:none;font-weight:600}
-.languages{display:flex;gap:5px}.languages button{border:1px solid var(--border);background:#f3ecdf;border-radius:5px;padding:5px 9px;cursor:pointer}.languages button.active{background:var(--wine);color:white}
-.back{display:inline-block;margin:25px 0;color:var(--wine);text-decoration:none;font-weight:700}
-.panel{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:clamp(20px,4vw,40px);box-shadow:0 8px 25px #41231d0a}
-.book-head{display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start}
-.cover{min-height:260px;background:#f1e7d7;border:1px solid var(--border);border-radius:8px;display:grid;place-items:center;padding:15px;text-align:center;color:var(--wine);overflow:hidden}
-.cover img{width:100%;max-height:340px;object-fit:contain}
-h1,h2{font-family:"Playfair Display",serif;color:var(--dark);line-height:1.4}
-h1{font-size:clamp(30px,5vw,46px);margin:0 0 7px;overflow-wrap:anywhere}
-.subname{font-size:17px;color:var(--muted);margin:0 0 15px}
-.kicker{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:700}
-.about{white-space:pre-wrap;overflow-wrap:anywhere}
-.metadata{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 25px;margin-top:30px;border-top:1px solid var(--border)}
-.field{padding:14px 0;border-bottom:1px solid var(--border);min-width:0}
-.label{display:block;color:var(--muted);font-size:12px;margin-bottom:3px}
-.value{font-weight:600;overflow-wrap:anywhere}
-.related a{color:var(--wine)}
-.state{padding:35px;text-align:center;color:var(--muted)}
-footer{margin-top:45px;background:var(--dark);color:#f4e9da;padding:25px;text-align:center}
-@media(max-width:650px){.book-head{grid-template-columns:1fr;gap:20px}.cover{min-height:200px}.cover img{max-height:280px}.metadata{grid-template-columns:1fr}nav,.wrap{padding:13px 15px}}
+:root {
+  --wine:#652e36;
+  --deep:#472127;
+  --gold:#b28a4a;
+  --paper:#fbf7ef;
+  --ink:#29231f;
+  --muted:#766b61;
+  --line:#e8ddcc;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:Georgia,"Noto Serif",serif;line-height:1.7;
+}
+header {
+  background:var(--deep);color:#fff8ed;
+  border-bottom:3px solid var(--gold);
+  padding:22px max(18px,calc((100% - 1050px)/2);
+}
+.brand { font-size:27px;font-weight:bold; }
+.tag {
+  color:#e2c99b;font:12px Arial,sans-serif;
+  letter-spacing:2px;text-transform:uppercase;
+}
+nav { display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:14px; }
+nav a { color:#fff8ed;text-decoration:none;font:14px Arial,sans-serif; }
+select {
+  padding:8px;border:1px solid #b99c75;
+  border-radius:6px;background:transparent;color:inherit;
+}
+.wrap { max-width:1050px;margin:auto;padding:30px 20px 60px; }
+.back { color:var(--wine);text-decoration:none;font:14px Arial,sans-serif; }
+.panel {
+  margin-top:22px;padding:clamp(18px,4vw,36px);
+  background:#fffdf9;border:1px solid var(--line);
+  border-radius:12px;
+}
+.bookhead {
+  display:grid;grid-template-columns:minmax(180px,260px) 1fr;
+  gap:30px;align-items:start;
+}
+.cover {
+  min-height:300px;background:#f0e6d5;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--wine);font-size:42px;overflow:hidden;
+}
+.cover img { width:100%;max-height:430px;object-fit:contain; }
+.eyebrow {
+  color:var(--gold);font:700 12px Arial,sans-serif;
+  letter-spacing:2px;text-transform:uppercase;
+}
+h1 { color:var(--deep);font-size:clamp(30px,4vw,46px);line-height:1.2;margin:9px 0; }
+.subtitle { color:var(--muted);font-size:19px; }
+.description { margin-top:18px;white-space:pre-wrap; }
+h2 { color:var(--deep);font-size:23px;margin-top:32px; }
+.metadata {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  border-top:1px solid var(--line);
+}
+.item { padding:12px 10px 12px 0;border-bottom:1px solid var(--line); }
+.key {
+  display:block;color:var(--muted);
+  font:700 11px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;
+}
+.value { display:block;margin-top:4px; }
+.buttons { display:flex;gap:12px;flex-wrap:wrap;margin-top:24px; }
+.btn {
+  display:inline-block;background:var(--wine);color:white;
+  border-radius:7px;padding:12px 17px;text-decoration:none;
+  font:700 14px Arial,sans-serif;
+}
+.btn.secondary { background:transparent;color:var(--wine);border:1px solid var(--wine); }
+.btn.disabled { background:#e9e0d5;color:#776b5d;cursor:not-allowed; }
+.notice {
+  margin-top:14px;padding:13px 15px;
+  background:#f6eee1;border-left:3px solid var(--gold);
+  color:#665747;font:14px/1.6 Arial,sans-serif;
+}
+.status { padding:18px;border:1px dashed var(--line);border-radius:8px;color:var(--muted); }
+footer { text-align:center;padding:22px;border-top:1px solid var(--line);color:var(--muted);font:12px Arial,sans-serif; }
+body.rtl { direction:rtl;text-align:right; }
+body.rtl .notice { border-left:0;border-right:3px solid var(--gold); }
+@media(max-width:650px) {
+  .bookhead { grid-template-columns:1fr; }
+  .cover { min-height:230px; }
+  .metadata { grid-template-columns:1fr; }
+  .wrap { padding:22px 14px 45px; }
+}
 </style>
 </head>
 <body>
-<header><nav>
-<a href="home.html">Sufi Adab Archive</a>
-<div><a href="library.html" id="backNav">← Library</a> &nbsp;·&nbsp; <a href="home.html" id="homeNav">Home</a></div>
-<div class="languages"><button data-lang="en" class="active">EN</button><button data-lang="hi">हि</button><button data-lang="ur">اردو</button></div>
-</nav></header>
+<header>
+  <div class="brand">Sufi Adab Archive</div>
+  <div class="tag">A living archive of Sufi literature</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="library.html">Library</a>
+    <select id="language" aria-label="Language">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="ur">اردو</option>
+    </select>
+  </nav>
+</header>
+
 <main class="wrap">
-<a class="back" href="library.html" id="backLink">← Back to Library</a>
-<div id="content" class="panel"><div class="state">Loading book details…</div></div>
+  <a class="back" id="back" href="library.html">← Back to Library</a>
+  <div id="status" class="status" style="margin-top:20px">Loading book…</div>
+
+  <article id="panel" class="panel" hidden>
+    <div class="bookhead">
+      <div class="cover" id="cover">✦</div>
+      <div>
+        <div class="eyebrow" id="eyebrow">Book Details</div>
+        <h1 id="title"></h1>
+        <div id="subtitle" class="subtitle"></div>
+        <div id="description" class="description"></div>
+
+        <div class="buttons">
+          <a id="readButton" class="btn disabled"
+             href="#" aria-disabled="true" tabindex="-1">Coming Soon</a>
+          <a id="allBooks" class="btn secondary" href="library.html">Browse All Books</a>
+        </div>
+        <div id="notice" class="notice"></div>
+      </div>
+    </div>
+
+    <h2 id="detailsHeading">Publication Details</h2>
+    <div id="metadata" class="metadata"></div>
+  </article>
 </main>
-<footer>Sufi Adab Archive · Preserving literature, history and heritage.</footer>
+
+<footer>Sufi Adab Archive · Preserving literature, history and heritage</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL="https://pooatzegjnegutflkcbm.supabase.co";
-const SUPABASE_KEY="sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN";
-const labels={
-en:{back:"← Back to Library",author:"Author",translator:"Translator",year:"Year of Publication",publisher:"Publisher",language:"Language",pages:"Pages",edition:"Edition",origin:"Origin",genre:"Genre",contributor:"Contributor",about:"About the Book",subname:"Book sub name",missing:"Not provided",error:"Book not found or it is not published."},
-hi:{back:"← पुस्तकालय में वापस जाएँ",author:"लेखक",translator:"अनुवादक",year:"प्रकाशन वर्ष",publisher:"प्रकाशक",language:"भाषा",pages:"पृष्ठ",edition:"संस्करण",origin:"मूल स्थान",genre:"विधा",contributor:"योगदानकर्ता",about:"पुस्तक के बारे में",subname:"पुस्तक का उपशीर्षक",missing:"जानकारी उपलब्ध नहीं",error:"पुस्तक नहीं मिली या प्रकाशित नहीं है।"},
-ur:{back:"← کتب خانے میں واپس جائیں",author:"مصنف",translator:"مترجم",year:"سنِ اشاعت",publisher:"ناشر",language:"زبان",pages:"صفحات",edition:"ایڈیشن",origin:"اصل مقام",genre:"صنف",contributor:"معاون",about:"کتاب کے بارے میں",subname:"کتاب کا ذیلی عنوان",missing:"معلومات موجود نہیں",error:"کتاب نہیں ملی یا شائع نہیں ہوئی۔"}
+const SUPABASE_URL =
+  "https://pooatzegjnegutflkcbm.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL, SUPABASE_ANON_KEY
+);
+
+const labels = {
+  en: {
+    back:"← Back to Library",eyebrow:"Book Details",
+    details:"Publication Details",all:"Browse All Books",
+    read:"Read Book",soon:"Coming Soon",
+    noPdf:"The online reader will be available when a PDF has been added to this book.",
+    missing:"This book could not be found or is not published.",
+    error:"Unable to load book details. Please try again later.",
+    author:"Author",translator:"Translator",year:"Year of Publication",
+    publisher:"Publisher",language:"Language",pages:"Pages",
+    edition:"Edition",origin:"Origin",genre:"Genre",contributor:"Contributor",
+    sub:"Book Subtitle",none:"Not provided"
+  },
+  hi: {
+    back:"← पुस्तकालय पर लौटें",eyebrow:"पुस्तक विवरण",
+    details:"प्रकाशन विवरण",all:"सभी पुस्तकें देखें",
+    read:"पुस्तक पढ़ें",soon:"जल्द उपलब्ध",
+    noPdf:"PDF जोड़े जाने के बाद ऑनलाइन रीडर उपलब्ध होगा।",
+    missing:"पुस्तक नहीं मिली या प्रकाशित नहीं है।",
+    error:"पुस्तक विवरण लोड नहीं हो सके। बाद में कोशिश करें।",
+    author:"लेखक",translator:"अनुवादक",year:"प्रकाशन वर्ष",
+    publisher:"प्रकाशक",language:"भाषा",pages:"पृष्ठ",
+    edition:"संस्करण",origin:"मूल/उत्पत्ति",genre:"विधा",contributor:"योगदानकर्ता",
+    sub:"पुस्तक का उपशीर्षक",none:"जानकारी उपलब्ध नहीं"
+  },
+  ur: {
+    back:"← کتب خانے پر واپس",eyebrow:"کتاب کی تفصیلات",
+    details:"اشاعتی تفصیلات",all:"تمام کتابیں دیکھیں",
+    read:"کتاب پڑھیں",soon:"جلد دستیاب",
+    noPdf:"PDF شامل ہونے کے بعد آن لائن مطالعہ دستیاب ہوگا۔",
+    missing:"کتاب نہیں ملی یا شائع نہیں ہوئی۔",
+    error:"کتاب کی تفصیلات لوڈ نہیں ہو سکیں۔",
+    author:"مصنف",translator:"مترجم",year:"سنِ اشاعت",
+    publisher:"ناشر",language:"زبان",pages:"صفحات",
+    edition:"ایڈیشن",origin:"اصل/ماخذ",genre:"صنف",contributor:"معاون",
+    sub:"ذیلی عنوان",none:"معلومات دستیاب نہیں"
+  }
 };
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const params=new URLSearchParams(location.search);const slug=params.get("slug");let lang=params.get("lang")||"en";let bookRecord=null;
-function normalized(s){return String(s||"").toLowerCase()==="roman"?"en":String(s||"").toLowerCase();}
-function meta(r){return Array.isArray(r.book_details)?r.book_details[0]||{}:r.book_details||{};}
-function tr(r){const a=r.content_translations||[];return a.find(x=>normalized(x.language_code)===lang)||a.find(x=>normalized(x.language_code)==="en")||a[0]||{};}
-function val(v){return v===null||v===undefined||String(v).trim()===""?labels[lang].missing:String(v);}
-function field(k,v){return `<div class="field"><span class="label">${esc(labels[lang][k])}</span><div class="value">${esc(val(v))}</div></div>`;}
-function render(){
- if(!bookRecord){document.getElementById("content").innerHTML=`<div class="state">${esc(labels[lang].error)}</div>`;return;}
- const t=tr(bookRecord),m=meta(bookRecord);
- const title=t.title||bookRecord.slug;
- const cover=bookRecord.cover_url||bookRecord.image_url||bookRecord.cover_image_url||"";
- const coverHtml=cover?`<img src="${esc(cover)}" alt="${esc(title)}" onerror="this.style.display='none'">`:`<div>${esc(title)}</div>`;
- const about=m.about_book||t.body||t.excerpt||"";
- const details=[
- ["author",m.author_name],["translator",m.translator_name],["year",m.publication_year],
- ["publisher",m.publisher_name],["language",m.language_name],["pages",m.pages],
- ["edition",m.edition],["origin",m.origin],["genre",m.genre_name],["contributor",m.contributor_name]
- ];
- document.documentElement.lang=lang;document.documentElement.dir=lang==="ur"?"rtl":"ltr";
- document.getElementById("backLink").textContent=labels[lang].back;
- document.getElementById("backNav").textContent=labels[lang].back;
- document.getElementById("homeNav").textContent=lang==="ur"?"صفحۂ اوّل":lang==="hi"?"मुखपृष्ठ":"Home";
- document.getElementById("content").innerHTML=`
- <div class="book-head"><div class="cover">${coverHtml}</div><div>
- <div class="kicker">Sufi Adab Archive · Digital Library</div>
- <h1>${esc(title)}</h1>
- <p class="subname">${esc(m.book_subname||t.subtitle||"")}</p>
- <h2>${esc(labels[lang].about)}</h2>
- <div class="about">${esc(about||labels[lang].missing)}</div>
- </div></div>
- <div class="metadata">
- ${details.map(([k,v])=>field(k,v)).join("")}
- ${field("subname",m.book_subname)}
- </div>`;
+
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const slug = params.get("slug");
+let lang = params.get("lang") || "en";
+let record = null;
+let meta = {};
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  }[ch]));
 }
-async function init(){
- document.getElementById("backLink").textContent=labels[lang]?.back||labels.en.back;
- try{
-  if(!slug)throw new Error("Missing slug");
-  const client=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  const {data,error}=await client.from("content_items")
-   .select("id,type,slug,status,content_translations(language_code,title,subtitle,excerpt,body,transliteration),book_details(*)")
-   .eq("type","book").eq("status","published").eq("slug",slug).maybeSingle();
-  if(error)throw error;
-  bookRecord=data;
- }catch(e){console.error(e);}
- render();
+
+function getTranslation(record) {
+  const list = record.content_translations || [];
+  return list.find(t => t.language_code === lang)
+      || list.find(t => t.language_code === "en")
+      || list[0] || {};
 }
-document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang;document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("active",x.dataset.lang===lang));render();}));
-init();
+
+function getCover(record) {
+  return record.cover_url
+      || record.image_url
+      || record.cover_image_url
+      || meta.cover_url
+      || "";
+}
+
+function render() {
+  const t = labels[lang] || labels.en;
+
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "ur" ? "rtl" : "ltr";
+  document.body.classList.toggle("rtl", lang === "ur");
+
+  $("language").value = lang;
+  $("back").textContent = t.back;
+  $("eyebrow").textContent = t.eyebrow;
+  $("detailsHeading").textContent = t.details;
+  $("allBooks").textContent = t.all;
+  $("allBooks").href = "library.html?lang=" + encodeURIComponent(lang);
+  $("back").href = "library.html?lang=" + encodeURIComponent(lang);
+
+  if (!record) return;
+
+  const tr = getTranslation(record);
+  const title = tr.title || record.slug || t.eyebrow;
+
+  $("title").textContent = title;
+  $("subtitle").textContent = tr.subtitle || "";
+  $("description").textContent =
+    tr.body || tr.excerpt || meta.about_book || "";
+  $("description").hidden = !$("description").textContent;
+
+  const cover = getCover(record);
+  $("cover").innerHTML = cover
+    ? `<img src="${escapeHTML(cover)}"
+         alt="${escapeHTML(title)} cover"
+         onerror="this.parentElement.textContent='✦'">`
+    : "✦";
+
+  const fields = [
+    [t.sub, meta.book_subname || tr.subtitle],
+    [t.author, meta.author_name],
+    [t.translator, meta.translator_name],
+    [t.year, meta.publication_year],
+    [t.publisher, meta.publisher_name],
+    [t.language, meta.language_name],
+    [t.pages, meta.pages],
+    [t.edition, meta.edition],
+    [t.origin, meta.origin],
+    [t.genre, meta.genre_name],
+    [t.contributor, meta.contributor_name]
+  ];
+
+  $("metadata").innerHTML = fields
+    .filter(([label, value]) => value !== null && value !== undefined && value !== "")
+    .map(([label, value]) => `
+      <div class="item">
+        <span class="key">${escapeHTML(label)}</span>
+        <span class="value">${escapeHTML(value)}</span>
+      </div>
+    `).join("");
+
+  /*
+    PDF support:
+    This checks possible URL fields if one has been added to the database.
+    The admin panel does not currently upload or save a PDF URL automatically.
+  */
+  const pdfURL =
+    meta.pdf_url ||
+    record.pdf_url ||
+    record.book_pdf_url ||
+    "";
+
+  const button = $("readButton");
+
+  if (pdfURL) {
+    button.textContent = t.read;
+    button.className = "btn";
+    button.href = pdfURL;
+    button.target = "_blank";
+    button.rel = "noopener noreferrer";
+    button.removeAttribute("aria-disabled");
+    button.removeAttribute("tabindex");
+    $("notice").textContent = "";
+    $("notice").hidden = true;
+  } else {
+    button.textContent = t.soon;
+    button.className = "btn disabled";
+    button.href = "#";
+    button.removeAttribute("target");
+    button.setAttribute("aria-disabled", "true");
+    button.setAttribute("tabindex", "-1");
+    $("notice").textContent = t.noPdf;
+    $("notice").hidden = false;
+  }
+}
+
+async function loadBook() {
+  const t = labels[lang] || labels.en;
+
+  if (!slug) {
+    $("status").textContent = t.missing;
+    return;
+  }
+
+  try {
+    let result = await db.from("content_items")
+      .select("*,content_translations(*),book_details(*)")
+      .eq("slug", slug)
+      .eq("type", "book")
+      .eq("status", "published")
+      .maybeSingle();
+
+    // Fallback for a setup where book_details is not installed yet.
+    if (result.error) {
+      result = await db.from("content_items")
+        .select("*,content_translations(*)")
+        .eq("slug", slug)
+        .eq("type", "book")
+        .eq("status", "published")
+        .maybeSingle();
+    }
+
+    if (result.error) throw result.error;
+
+    if (!result.data) {
+      $("status").textContent = t.missing;
+      return;
+    }
+
+    record = result.data;
+    meta = Array.isArray(record.book_details)
+      ? record.book_details[0] || {}
+      : record.book_details || {};
+
+    $("status").hidden = true;
+    $("panel").hidden = false;
+    render();
+  } catch (error) {
+    console.error(error);
+    $("status").textContent = t.error;
+  }
+}
+
+$("language").addEventListener("change", event => {
+  lang = event.target.value;
+  const url = new URL(location.href);
+  url.searchParams.set("lang", lang);
+  history.replaceState({}, "", url);
+  render();
+});
+
+render();
+loadBook();
 </script>
 </body>
 </html>
