@@ -2,271 +2,322 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Studio | Markaz.org</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Markaz.org | Admin Studio</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
- --wine:#652e36;--dark:#472127;--gold:#b58a4b;
- --paper:#fbf7f0;--white:#fffdf9;--ink:#332a27;
- --muted:#81746c;--line:#e8ddd0;--green:#286c4c;
- --red:#a33a36;--shadow:0 12px 35px #4721270d;
+:root {
+  --wine:#652e36;
+  --dark:#472127;
+  --gold:#b58a4b;
+  --paper:#fbf7f0;
+  --white:#fffdf9;
+  --ink:#332a27;
+  --muted:#81746c;
+  --line:#e8ddd0;
+  --green:#286c4c;
+  --red:#a33a36;
+  --shadow:0 12px 35px #4721270d;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);
- font:14px 'DM Sans',sans-serif}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px 'DM Sans',sans-serif}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-a{color:var(--wine)}
+h1,h2,h3{font-family:'Playfair Display',serif;margin:0}
+h1{font-size:30px}
+h2{font-size:23px}
+p{line-height:1.65}
 .hidden{display:none!important}
 .muted{color:var(--muted)}
 .small{font-size:12px}
-h1,h2,h3{font-family:'Playfair Display',serif;margin:0}
-h1{font-size:30px}h2{font-size:23px}h3{font-size:18px}
-p{line-height:1.6}
-button:disabled{opacity:.5;cursor:not-allowed}
-.btn{border:1px solid var(--line);background:white;color:var(--wine);
- border-radius:9px;padding:10px 14px;font-weight:700}
+.btn{border:1px solid var(--line);background:white;color:var(--wine);border-radius:9px;padding:10px 14px;font-weight:700}
 .btn.primary{background:var(--wine);color:white;border-color:var(--wine)}
-.btn.gold{background:var(--gold);color:white;border-color:var(--gold)}
 .btn.danger{color:var(--red)}
-.btn:hover{filter:brightness(.97)}
-input,select,textarea{width:100%;padding:11px 12px;
- border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink)}
-textarea{min-height:100px;resize:vertical}
-label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}
-.field{margin-bottom:15px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink)}
+textarea{min-height:95px;resize:vertical}
+label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
+.field{margin-bottom:15px;min-width:0}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.card{background:var(--white);border:1px solid var(--line);
- border-radius:14px;padding:20px;box-shadow:var(--shadow)}
-.topbar{height:66px;background:var(--dark);color:white;display:flex;
- align-items:center;justify-content:space-between;padding:0 24px;gap:12px}
-.brand{font:600 21px 'Playfair Display',serif}
+.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.topbar{min-height:66px;background:var(--dark);color:white;display:flex;align-items:center;justify-content:space-between;padding:12px 22px;gap:12px}
+.brand{font:600 22px 'Playfair Display',serif}
 .brand span{color:#e2bf83}
-.shell{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:calc(100vh - 66px)}
-.sidebar{background:#f3ebdf;border-right:1px solid var(--line);padding:20px 13px}
-.navlabel{font-size:10px;letter-spacing:1.5px;color:var(--muted);
- font-weight:700;padding:10px}
-.navbtn{display:flex;align-items:center;gap:10px;width:100%;
- padding:12px;border:0;background:transparent;color:var(--ink);
- border-radius:9px;text-align:left;margin:3px 0;font-weight:600}
+.shell{display:grid;grid-template-columns:225px minmax(0,1fr);min-height:calc(100vh - 66px)}
+.sidebar{background:#f3ebdf;border-right:1px solid var(--line);padding:18px 12px}
+.navlabel{font-size:10px;letter-spacing:1.5px;color:var(--muted);font-weight:700;padding:10px}
+.navbtn{display:block;width:100%;padding:12px;border:0;background:transparent;color:var(--ink);border-radius:9px;text-align:left;margin:3px 0;font-weight:600}
 .navbtn.active,.navbtn:hover{background:#e7d8c6;color:var(--wine)}
-.main{padding:28px;min-width:0}
-.pagehead{display:flex;align-items:center;justify-content:space-between;
- gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.main{padding:26px;min-width:0}
+.pagehead{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:20px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:20px}
 .stat-number{font:700 30px 'Playfair Display',serif;color:var(--wine);margin-top:8px}
+.section{display:none}
+.section.active{display:block}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.toolbar input{max-width:330px}
 .tablewrap{overflow:auto;margin-top:16px}
-table{border-collapse:collapse;width:100%;min-width:600px}
+table{border-collapse:collapse;width:100%;min-width:580px}
 th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
 td{font-size:13px}
-.pill{display:inline-block;border-radius:30px;padding:4px 9px;
- font-size:11px;font-weight:700;background:#eee5d8;color:var(--wine)}
+.pill{display:inline-block;border-radius:30px;padding:4px 9px;font-size:11px;font-weight:700;background:#eee5d8;color:var(--wine)}
 .pill.published{background:#dcefe3;color:#246b48}
 .pill.draft{background:#f5e8c9;color:#85611b}
 .actions{display:flex;gap:6px;flex-wrap:wrap}
-.cover-preview{width:90px;height:115px;border:1px solid var(--line);
- border-radius:8px;object-fit:cover;background:#f3ebdf}
-.uploadbox{padding:15px;border:1px dashed #cbb79d;border-radius:10px;background:#fcf8f1}
-#notice{position:fixed;bottom:20px;right:20px;max-width:min(420px,90vw);
- padding:14px 18px;border-radius:10px;background:var(--dark);color:white;
- box-shadow:var(--shadow);z-index:20;white-space:pre-wrap}
-#notice.error{background:#8f302c}
-.loginwrap{min-height:calc(100vh - 66px);display:grid;place-items:center;padding:20px}
-.loginbox{width:min(430px,100%);padding:30px}
-.loginbox .brandmark{font:600 27px 'Playfair Display',serif;color:var(--wine);margin-bottom:8px}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.toolbar input{max-width:330px}
-.section{display:none}.section.active{display:block}
+.uploadbox{padding:14px;border:1px dashed #cbb79d;border-radius:10px;background:#fcf8f1}
+.cover-preview{width:88px;height:115px;border:1px solid var(--line);border-radius:8px;object-fit:cover;background:#f3ebdf}
 .langtabs{display:flex;gap:7px;margin:12px 0 16px;flex-wrap:wrap}
-.langtab{padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:white}
+.langtab{padding:9px 13px;border:1px solid var(--line);border-radius:8px;background:white}
 .langtab.active{background:var(--wine);color:white}
+.formactions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
 .urdu{font-family:'Noto Nastaliq Urdu',serif;line-height:2}
-.formactions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}
-#editor{margin-top:18px}
-.mobilemenu{display:none}
+.loginwrap{min-height:calc(100vh - 66px);display:grid;place-items:center;padding:20px}
+.loginbox{width:min(430px,100%);padding:28px}
+.brandmark{font:600 27px 'Playfair Display',serif;color:var(--wine)}
+#notice{position:fixed;bottom:18px;right:18px;max-width:min(430px,92vw);padding:14px 18px;border-radius:10px;background:var(--dark);color:white;box-shadow:var(--shadow);z-index:99;white-space:pre-wrap}
+#notice.error{background:#8f302c}
 @media(max-width:800px){
  .shell{grid-template-columns:1fr}
- .sidebar{display:flex;overflow:auto;padding:8px;gap:5px;border-right:0;border-bottom:1px solid var(--line)}
+ .sidebar{display:flex;overflow-x:auto;padding:8px;gap:5px;border-right:0;border-bottom:1px solid var(--line)}
  .navlabel{display:none}
  .navbtn{width:auto;white-space:nowrap;margin:0;padding:10px}
- .main{padding:16px}
+ .main{padding:15px}
  .stats{grid-template-columns:1fr}
  .grid{grid-template-columns:1fr}
- .topbar{padding:0 14px}
+ .topbar{padding:12px}
  h1{font-size:25px}
+ .card{padding:15px}
 }
 </style>
 </head>
 
 <body>
 <header class="topbar">
- <div class="brand">Markaz<span>.org</span> <span style="color:#fff;font:400 12px 'DM Sans'">/ Admin Studio</span></div>
- <div class="toolbar">
-  <span id="userEmail" class="small"></span>
-  <button id="logoutBtn" class="btn hidden">Sign out</button>
- </div>
+  <div class="brand">Markaz<span>.org</span> <span style="color:white;font:12px 'DM Sans',sans-serif">/ Admin Studio</span></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span id="userEmail" class="small"></span>
+    <button id="logoutBtn" class="btn hidden">Sign out</button>
+  </div>
 </header>
 
 <div id="loginScreen" class="loginwrap">
- <div class="card loginbox">
-  <div class="brandmark">Archive Administration</div>
-  <p class="muted">Sign in with your authorised archive account.</p>
-  <form id="loginForm">
-   <div class="field"><label for="email">Email address</label>
-    <input id="email" type="email" autocomplete="username" required></div>
-   <div class="field"><label for="password">Password</label>
-    <input id="password" type="password" autocomplete="current-password" required></div>
-   <button class="btn primary" style="width:100%" type="submit">Sign in securely</button>
-  </form>
-  <p class="muted small">Only active accounts listed in the admin_users table may access the studio.</p>
- </div>
+  <div class="card loginbox">
+    <div class="brandmark">Archive Administration</div>
+    <p class="muted">Sign in using your authorised archive account.</p>
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn primary" type="submit" style="width:100%">Sign in</button>
+    </form>
+    <p class="muted small">Only active admin/editor accounts can enter this panel.</p>
+  </div>
 </div>
 
 <div id="app" class="shell hidden">
- <aside class="sidebar">
-  <div class="navlabel">WORKSPACE</div>
-  <button class="navbtn active" data-section="dashboard">◫ Dashboard</button>
-  <button class="navbtn" data-section="books">▤ Books Library</button>
-  <button class="navbtn" data-section="editor">＋ Add / Edit Book</button>
-  <button class="navbtn" data-section="settings">⚙ Configuration</button>
- </aside>
+  <aside class="sidebar">
+    <div class="navlabel">WORKSPACE</div>
+    <button class="navbtn active" data-section="dashboard">◫ Dashboard</button>
+    <button class="navbtn" data-section="books">▤ Books Library</button>
+    <button class="navbtn" data-section="editor">＋ Add / Edit Book</button>
+    <button class="navbtn" data-section="settings">⚙ Configuration</button>
+  </aside>
 
- <main class="main">
-  <section id="section-dashboard" class="section active">
-   <div class="pagehead">
-    <div><h1>Archive Dashboard</h1><p class="muted">Manage published books and digital editions.</p></div>
-    <button class="btn primary" id="newBookBtn">＋ Add a book</button>
-   </div>
-   <div class="stats">
-    <div class="card"><div class="muted">Published books</div><div class="stat-number" id="publishedCount">—</div></div>
-    <div class="card"><div class="muted">Draft books</div><div class="stat-number" id="draftCount">—</div></div>
-    <div class="card"><div class="muted">Total books</div><div class="stat-number" id="totalCount">—</div></div>
-   </div>
-   <div class="card">
-    <h2>Recently updated</h2>
-    <div id="recentBooks" class="tablewrap muted">Loading books…</div>
-   </div>
-  </section>
-
-  <section id="section-books" class="section">
-   <div class="pagehead">
-    <div><h1>Books Library</h1><p class="muted">Find and manage archive book records.</p></div>
-    <button class="btn primary" id="newBookBtn2">＋ Add book</button>
-   </div>
-   <div class="card">
-    <div class="toolbar">
-     <input id="bookSearch" type="search" placeholder="Search by title or slug…">
-     <select id="statusFilter" style="max-width:180px">
-      <option value="">All statuses</option><option value="published">Published</option>
-      <option value="draft">Draft</option><option value="review">Review</option><option value="archived">Archived</option>
-     </select>
-     <button class="btn" id="refreshBtn">Refresh</button>
-    </div>
-    <div id="booksTable" class="tablewrap">Loading…</div>
-   </div>
-  </section>
-
-  <section id="section-editor" class="section">
-   <div class="pagehead">
-    <div><h1 id="editorHeading">Add a book</h1><p class="muted">Complete metadata and attach digital editions.</p></div>
-    <button class="btn" id="cancelEditBtn">Back to library</button>
-   </div>
-
-   <form id="bookForm" class="card">
-    <input type="hidden" id="contentId">
-    <input type="hidden" id="translationId">
-    <input type="hidden" id="bookAuthorContentId">
-
-    <h2>Book information</h2>
-    <div class="grid" style="margin-top:18px">
-     <div class="field"><label for="slug">URL slug *</label>
-      <input id="slug" required placeholder="e.g. tamanna-e-bakhshish">
-      <div class="small muted">Use lowercase letters, digits and hyphens.</div></div>
-     <div class="field"><label for="status">Publication status</label>
-      <select id="status"><option value="draft">Draft</option><option value="review">Review</option><option value="published">Published</option><option value="archived">Archived</option></select></div>
-     <div class="field"><label for="authorId">Author (existing people record)</label>
-      <select id="authorId"><option value="">No author linked</option></select></div>
-     <div class="field"><label for="publisher">Publisher</label><input id="publisher"></div>
-     <div class="field"><label for="year">Publication year</label><input id="year" type="number" min="1000" max="2200"></div>
-     <div class="field"><label for="edition">Edition</label><input id="edition"></div>
-     <div class="field"><label for="isbn">ISBN</label><input id="isbn"></div>
-     <div class="field"><label for="pageCount">Page count</label><input id="pageCount" type="number" min="1"></div>
-     <div class="field"><label for="originalLanguage">Original language</label>
-      <select id="originalLanguage"><option value="ur">Urdu</option><option value="hi">Hindi</option><option value="roman">Roman</option></select></div>
-     <div class="field"><label for="readingMode">Reading mode</label>
-      <select id="readingMode"><option value="metadata">Metadata only</option><option value="pdf">PDF</option><option value="epub">EPUB</option><option value="both">PDF + EPUB</option></select></div>
-    </div>
-
-    <div class="grid">
-     <div class="field"><label for="featured">Featured on homepage</label>
-      <select id="featured"><option value="false">No</option><option value="true">Yes</option></select></div>
-     <div class="field"><label for="coverUrl">Cover image URL</label><input id="coverUrl" type="url" placeholder="https://…"></div>
-    </div>
-
-    <div class="field">
-     <label>Cover image preview</label>
-     <div class="uploadbox" style="display:flex;align-items:center;gap:15px;flex-wrap:wrap">
-      <img id="coverPreview" class="cover-preview" alt="Cover preview">
-      <div style="flex:1;min-width:180px">
-       <input id="coverFile" type="file" accept="image/*">
-       <p class="small muted">Choose an image to upload to the book bucket. Or enter an existing cover URL above.</p>
+  <main class="main">
+    <section id="section-dashboard" class="section active">
+      <div class="pagehead">
+        <div>
+          <h1>Archive Dashboard</h1>
+          <p class="muted">Manage books and digital editions.</p>
+        </div>
+        <button class="btn primary" id="newBookBtn">＋ Add a book</button>
       </div>
-     </div>
-    </div>
+      <div class="stats">
+        <div class="card"><div class="muted">Published books</div><div id="publishedCount" class="stat-number">—</div></div>
+        <div class="card"><div class="muted">Draft books</div><div id="draftCount" class="stat-number">—</div></div>
+        <div class="card"><div class="muted">Total books</div><div id="totalCount" class="stat-number">—</div></div>
+      </div>
+      <div class="card">
+        <h2>Recently updated</h2>
+        <div id="recentBooks" class="tablewrap muted">Loading…</div>
+      </div>
+    </section>
 
-    <h2 style="margin-top:24px">Digital editions</h2>
-    <p class="muted small">Files are uploaded to the existing Supabase Storage bucket named <b>book</b>. Save the record after selecting files.</p>
-    <div class="grid">
-     <div class="field uploadbox"><label for="pdfFile">PDF edition</label>
-      <input id="pdfFile" type="file" accept="application/pdf,.pdf">
-      <div id="pdfCurrent" class="small muted" style="margin-top:8px">No PDF linked.</div></div>
-     <div class="field uploadbox"><label for="epubFile">EPUB edition</label>
-      <input id="epubFile" type="file" accept=".epub,application/epub+zip">
-      <div id="epubCurrent" class="small muted" style="margin-top:8px">No EPUB linked.</div></div>
-    </div>
-    <div class="field"><label for="sourceNotes">Source notes</label><textarea id="sourceNotes"></textarea></div>
-    <div class="field"><label for="editorialNotes">Editorial notes (internal)</label><textarea id="editorialNotes"></textarea></div>
+    <section id="section-books" class="section">
+      <div class="pagehead">
+        <div><h1>Books Library</h1><p class="muted">Search and manage book records.</p></div>
+        <button class="btn primary" id="newBookBtn2">＋ Add book</button>
+      </div>
+      <div class="card">
+        <div class="toolbar">
+          <input id="bookSearch" type="search" placeholder="Search title or slug…">
+          <select id="statusFilter" style="max-width:180px">
+            <option value="">All statuses</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+            <option value="review">Review</option>
+            <option value="archived">Archived</option>
+          </select>
+          <button class="btn" id="refreshBtn">Refresh</button>
+        </div>
+        <div id="booksTable" class="tablewrap">Loading…</div>
+      </div>
+    </section>
 
-    <h2 style="margin-top:24px">Title and description</h2>
-    <p class="muted small">The current database permits language codes ur, hi and roman. English is not an accepted language_code under the existing constraint.</p>
-    <div class="langtabs">
-     <button type="button" class="langtab active" data-lang="roman">Roman</button>
-     <button type="button" class="langtab" data-lang="ur">اردو</button>
-     <button type="button" class="langtab" data-lang="hi">हिन्दी</button>
-    </div>
-    <div class="field"><label for="title">Title *</label><input id="title" required></div>
-    <div class="field"><label for="subtitle">Subtitle</label><input id="subtitle"></div>
-    <div class="field"><label for="excerpt">Short description</label><textarea id="excerpt"></textarea></div>
-    <div class="field"><label for="transliteration">Transliteration</label><textarea id="transliteration"></textarea></div>
-    <div class="field"><label for="translationNote">Translation / language note</label><textarea id="translationNote"></textarea></div>
-    <div class="field"><label for="seoTitle">SEO title</label><input id="seoTitle"></div>
-    <div class="field"><label for="seoDescription">SEO description</label><textarea id="seoDescription"></textarea></div>
+    <section id="section-editor" class="section">
+      <div class="pagehead">
+        <div><h1 id="editorHeading">Add a book</h1><p class="muted">Book metadata, cover and PDF/EPUB editions.</p></div>
+        <button class="btn" id="cancelEditBtn">Back to library</button>
+      </div>
 
-    <div class="formactions">
-     <button class="btn" type="button" id="cancelEditBtn2">Cancel</button>
-     <button class="btn primary" id="saveBtn" type="submit">Save book</button>
-    </div>
-   </form>
-  </section>
+      <form id="bookForm" class="card">
+        <input type="hidden" id="contentId">
 
-  <section id="section-settings" class="section">
-   <div class="pagehead"><div><h1>Configuration</h1><p class="muted">Connection and access status.</p></div></div>
-   <div class="card">
-    <h2>Supabase connection</h2>
-    <p>Project: <b>pooatzegjnegutflkcbm.supabase.co</b></p>
-    <p>Storage bucket: <b>book</b></p>
-    <p>Current session: <span id="sessionStatus">Checking…</span></p>
-    <p>Authorisation: <span id="roleStatus">Checking…</span></p>
-    <p class="muted small">Never paste a service-role key into this file. The browser must use only the publishable/anon key; table and Storage policies must enforce permissions.</p>
-   </div>
-  </section>
- </main>
+        <h2>Book information</h2>
+        <div class="grid" style="margin-top:18px">
+          <div class="field">
+            <label for="slug">URL slug *</label>
+            <input id="slug" required placeholder="e.g. tamanna-e-bakhshish">
+          </div>
+          <div class="field">
+            <label for="status">Publication status</label>
+            <select id="status">
+              <option value="draft">Draft</option>
+              <option value="review">Review</option>
+              <option value="published">Published</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="authorId">Author</label>
+            <select id="authorId"><option value="">No author linked</option></select>
+          </div>
+          <div class="field">
+            <label for="publisher">Publisher</label>
+            <input id="publisher">
+          </div>
+          <div class="field">
+            <label for="year">Publication year</label>
+            <input id="year" type="number" min="1000" max="2200">
+          </div>
+          <div class="field">
+            <label for="edition">Edition</label>
+            <input id="edition">
+          </div>
+          <div class="field">
+            <label for="isbn">ISBN</label>
+            <input id="isbn">
+          </div>
+          <div class="field">
+            <label for="pageCount">Page count</label>
+            <input id="pageCount" type="number" min="1">
+          </div>
+          <div class="field">
+            <label for="originalLanguage">Original language</label>
+            <select id="originalLanguage">
+              <option value="ur">Urdu</option>
+              <option value="hi">Hindi</option>
+              <option value="roman">Roman</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="readingMode">Reading mode</label>
+            <select id="readingMode">
+              <option value="metadata">Metadata only</option>
+              <option value="online_reader">Online reader</option>
+              <option value="download_allowed">Download allowed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label for="featured">Featured on homepage</label>
+            <select id="featured">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="coverUrl">Cover image URL</label>
+            <input id="coverUrl" type="url" placeholder="https://…">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Cover upload / preview</label>
+          <div class="uploadbox" style="display:flex;align-items:center;gap:15px;flex-wrap:wrap">
+            <img id="coverPreview" class="cover-preview" alt="Cover preview">
+            <div style="flex:1;min-width:180px">
+              <input id="coverFile" type="file" accept="image/*">
+              <p class="small muted">Optional. Uploads to the book bucket.</p>
+            </div>
+          </div>
+        </div>
+
+        <h2 style="margin-top:24px">Digital editions</h2>
+        <p class="small muted">Files upload to the existing Supabase Storage bucket named <b>book</b>.</p>
+        <div class="grid">
+          <div class="field uploadbox">
+            <label for="pdfFile">PDF edition</label>
+            <input id="pdfFile" type="file" accept=".pdf,application/pdf">
+            <div id="pdfCurrent" class="small muted" style="margin-top:8px">No PDF linked.</div>
+          </div>
+          <div class="field uploadbox">
+            <label for="epubFile">EPUB edition</label>
+            <input id="epubFile" type="file" accept=".epub,application/epub+zip">
+            <div id="epubCurrent" class="small muted" style="margin-top:8px">No EPUB linked.</div>
+          </div>
+        </div>
+
+        <div class="field"><label for="sourceNotes">Source notes</label><textarea id="sourceNotes"></textarea></div>
+        <div class="field"><label for="editorialNotes">Internal editorial notes</label><textarea id="editorialNotes"></textarea></div>
+
+        <h2 style="margin-top:24px">Title and description</h2>
+        <p class="small muted">Your current database accepts the language codes ur, hi and roman.</p>
+        <div class="langtabs">
+          <button type="button" class="langtab active" data-lang="roman">Roman</button>
+          <button type="button" class="langtab" data-lang="ur">اردو</button>
+          <button type="button" class="langtab" data-lang="hi">हिन्दी</button>
+        </div>
+
+        <div class="field"><label for="title">Title *</label><input id="title" required></div>
+        <div class="field"><label for="subtitle">Subtitle</label><input id="subtitle"></div>
+        <div class="field"><label for="excerpt">Short description</label><textarea id="excerpt"></textarea></div>
+        <div class="field"><label for="transliteration">Transliteration</label><textarea id="transliteration"></textarea></div>
+        <div class="field"><label for="translationNote">Translation / language note</label><textarea id="translationNote"></textarea></div>
+        <div class="field"><label for="seoTitle">SEO title</label><input id="seoTitle"></div>
+        <div class="field"><label for="seoDescription">SEO description</label><textarea id="seoDescription"></textarea></div>
+
+        <div class="formactions">
+          <button class="btn" type="button" id="cancelEditBtn2">Cancel</button>
+          <button class="btn primary" type="submit" id="saveBtn">Save book</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="section-settings" class="section">
+      <div class="pagehead"><div><h1>Configuration</h1><p class="muted">Connection and account status.</p></div></div>
+      <div class="card">
+        <h2>Supabase</h2>
+        <p>Project: <b>pooatzegjnegutflkcbm.supabase.co</b></p>
+        <p>Storage bucket: <b>book</b></p>
+        <p>Session: <span id="sessionStatus">Checking…</span></p>
+        <p>Access: <span id="roleStatus">Checking…</span></p>
+        <p class="small muted">Do not put the service-role key in browser code. RLS and Storage policies must enforce access.</p>
+      </div>
+    </section>
+  </main>
 </div>
 
 <div id="notice" class="hidden" role="status"></div>
@@ -275,48 +326,44 @@ td{font-size:13px}
 (() => {
 'use strict';
 
-/* Browser-safe publishable key only. Never add a service-role key here. */
 const SUPABASE_URL = 'https://pooatzegjnegutflkcbm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN';
-
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const BUCKET = 'book';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
+
 const state = {
- user:null, role:null, books:[], people:[],
- lang:'roman', translations:{}, pdfPath:null, epubPath:null,
- coverPath:null, editing:false, busy:false
+  user:null, role:null, books:[], people:[],
+  lang:'roman', translations:{}, pdfPath:null, epubPath:null,
+  busy:false
 };
 
 function notice(message,error=false){
- const el=$('notice'); el.textContent=message;
- el.classList.toggle('error',error); el.classList.remove('hidden');
- clearTimeout(notice.timer);
- notice.timer=setTimeout(()=>el.classList.add('hidden'),5500);
+  const el=$('notice');
+  el.textContent=message;
+  el.classList.toggle('error',error);
+  el.classList.remove('hidden');
+  clearTimeout(notice.timer);
+  notice.timer=setTimeout(()=>el.classList.add('hidden'),6000);
 }
 function esc(value=''){
- return String(value ?? '').replace(/[&<>"']/g,c=>({
- '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
- })[c]);
+  return String(value??'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[c]);
 }
 function slugify(value){
- return value.toLowerCase().normalize('NFKD')
-  .replace(/[\u0300-\u036f]/g,'').trim()
-  .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-}
-function setBusy(busy){
- state.busy=busy;
- $('saveBtn').disabled=busy;
- $('saveBtn').textContent=busy?'Saving…':'Save book';
+  return value.toLowerCase().normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g,'').trim()
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 }
 function showSection(name){
- document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
- $('section-'+name).classList.add('active');
- document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.section===name));
- if(name==='books'||name==='dashboard') loadBooks();
- if(name==='editor') loadPeople();
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  $('section-'+name).classList.add('active');
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.section===name));
+  if(name==='books'||name==='dashboard')loadBooks();
+  if(name==='editor')loadPeople();
 }
-document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>showSection(b.dataset.section)));
+document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>showSection(b.dataset.section));
 $('newBookBtn').onclick=$('newBookBtn2').onclick=()=>newBook();
 $('cancelEditBtn').onclick=$('cancelEditBtn2').onclick=()=>showSection('books');
 $('refreshBtn').onclick=loadBooks;
@@ -324,344 +371,368 @@ $('bookSearch').addEventListener('input',renderBooks);
 $('statusFilter').addEventListener('change',renderBooks);
 
 async function getActiveAdmin(user){
- const {data,error}=await db.from('admin_users')
-  .select('user_id,display_name,role,is_active')
-  .eq('user_id',user.id).maybeSingle();
- if(error) throw new Error('Cannot verify admin access. Check admin_users SELECT RLS policy: '+error.message);
- if(!data||data.is_active!==true||!['admin','editor'].includes(data.role)){
-  throw new Error('This account is not an active admin/editor. Ask an administrator to activate your admin_users record.');
- }
- return data;
+  const {data,error}=await db.from('admin_users')
+    .select('user_id,display_name,role,is_active')
+    .eq('user_id',user.id).maybeSingle();
+  if(error)throw new Error('Admin access check failed: '+error.message);
+  if(!data||data.is_active!==true||!['admin','editor'].includes(data.role)){
+    throw new Error('Account inactive or not authorised. Check admin_users.');
+  }
+  return data;
 }
 async function activate(user){
- try{
-  state.user=user;
-  state.role=await getActiveAdmin(user);
-  $('loginScreen').classList.add('hidden');
-  $('app').classList.remove('hidden');
-  $('logoutBtn').classList.remove('hidden');
-  $('userEmail').textContent=user.email||'Signed in';
-  $('sessionStatus').textContent='Authenticated';
-  $('roleStatus').textContent=state.role.role+' — active';
-  await loadBooks();
-  await loadPeople();
- }catch(e){
-  console.error(e);
-  $('loginScreen').classList.remove('hidden');
-  $('app').classList.add('hidden');
-  $('roleStatus').textContent='Access denied';
-  notice(e.message,true);
- }
+  try{
+    state.user=user;
+    state.role=await getActiveAdmin(user);
+    $('loginScreen').classList.add('hidden');
+    $('app').classList.remove('hidden');
+    $('logoutBtn').classList.remove('hidden');
+    $('userEmail').textContent=user.email||'Signed in';
+    $('sessionStatus').textContent='Authenticated';
+    $('roleStatus').textContent=state.role.role+' — active';
+    await loadPeople();
+    await loadBooks();
+  }catch(e){
+    console.error(e);
+    state.role=null;
+    $('loginScreen').classList.remove('hidden');
+    $('app').classList.add('hidden');
+    notice(e.message,true);
+  }
 }
 $('loginForm').addEventListener('submit',async e=>{
- e.preventDefault();
- const btn=e.submitter; btn.disabled=true; btn.textContent='Signing in…';
- try{
-  const {data,error}=await db.auth.signInWithPassword({
-   email:$('email').value.trim(),password:$('password').value
-  });
-  if(error) throw error;
-  await activate(data.user);
- }catch(err){notice(err.message||'Sign-in failed.',true);}
- finally{btn.disabled=false;btn.textContent='Sign in securely';}
+  e.preventDefault();
+  const btn=e.submitter;
+  btn.disabled=true;
+  try{
+    const {data,error}=await db.auth.signInWithPassword({
+      email:$('email').value.trim(),
+      password:$('password').value
+    });
+    if(error)throw error;
+    await activate(data.user);
+  }catch(err){notice(err.message||'Sign-in failed.',true);}
+  finally{btn.disabled=false;}
 });
 $('logoutBtn').onclick=async()=>{
- await db.auth.signOut();
- state.user=null;state.role=null;
- $('app').classList.add('hidden');
- $('loginScreen').classList.remove('hidden');
- $('logoutBtn').classList.add('hidden');
- $('userEmail').textContent='';
+  await db.auth.signOut();
+  state.user=null;state.role=null;
+  $('app').classList.add('hidden');
+  $('loginScreen').classList.remove('hidden');
+  $('logoutBtn').classList.add('hidden');
+  $('userEmail').textContent='';
 };
 db.auth.onAuthStateChange((event,session)=>{
- if(event==='SIGNED_IN'&&session?.user&&!state.role){
-  setTimeout(()=>activate(session.user),0);
- }
- if(event==='SIGNED_OUT'){
-  state.user=null;state.role=null;
- }
+  if(event==='SIGNED_IN'&&session?.user&&!state.role)setTimeout(()=>activate(session.user),0);
+  if(event==='SIGNED_OUT'){state.user=null;state.role=null;}
 });
 
-async function loadBooks(){
- if(!state.user||!state.role)return;
- $('booksTable').textContent='Loading…';
- $('recentBooks').textContent='Loading…';
- const {data,error}=await db.from('content_items')
-  .select('id,type,slug,status,featured,cover_image_url,created_at,updated_at,content_translations(language_code,title),book_details(content_id,publisher,publication_year,pdf_storage_path,epub_storage_path)')
-  .eq('type','book').order('updated_at',{ascending:false}).limit(500);
- if(error){
-  $('booksTable').textContent='Could not load books: '+error.message;
-  $('recentBooks').textContent='Database query failed.';
-  notice('Loading books failed: '+error.message,true);return;
- }
- state.books=data||[];
- $('totalCount').textContent=state.books.length;
- $('publishedCount').textContent=state.books.filter(b=>b.status==='published').length;
- $('draftCount').textContent=state.books.filter(b=>b.status==='draft').length;
- renderBooks();
- renderRecent();
-}
 function titleFor(book){
- const translations=book.content_translations||[];
- const t=translations.find(x=>x.language_code==='roman')||translations[0];
- return t?.title||book.slug||'Untitled book';
+  const translations=book.content_translations||[];
+  const t=translations.find(x=>x.language_code==='roman')||translations[0];
+  return t?.title||book.slug||'Untitled book';
+}
+async function loadBooks(){
+  if(!state.user||!state.role)return;
+  $('booksTable').textContent='Loading…';
+  $('recentBooks').textContent='Loading…';
+  const {data,error}=await db.from('content_items')
+    .select('id,type,slug,status,featured,cover_image_url,published_at,created_at,updated_at,source_notes,editorial_notes,seo_title,seo_description,content_translations(id,language_code,title,subtitle,excerpt,transliteration,translation_note,script_direction),book_details(content_id,author_id,publisher,publication_year,edition,isbn,page_count,language_original,pdf_storage_path,epub_storage_path,reading_mode)')
+    .eq('type','book').order('updated_at',{ascending:false}).limit(500);
+  if(error){
+    $('booksTable').textContent='Could not load books: '+error.message;
+    $('recentBooks').textContent='Database query failed.';
+    notice('Book query failed: '+error.message,true);return;
+  }
+  state.books=data||[];
+  $('totalCount').textContent=state.books.length;
+  $('publishedCount').textContent=state.books.filter(b=>b.status==='published').length;
+  $('draftCount').textContent=state.books.filter(b=>b.status==='draft').length;
+  renderBooks();renderRecent();
+}
+function detailsFor(book){
+  return Array.isArray(book.book_details)?(book.book_details[0]||{}):(book.book_details||{});
 }
 function renderBooks(){
- const query=$('bookSearch').value.trim().toLowerCase();
- const status=$('statusFilter').value;
- const list=state.books.filter(b=>{
-  const title=titleFor(b).toLowerCase();
-  return (!query||title.includes(query)||b.slug.toLowerCase().includes(query))
-   &&(!status||b.status===status);
- });
- if(!list.length){$('booksTable').innerHTML='<p class="muted">No books match your search.</p>';return;}
- $('booksTable').innerHTML=`<table><thead><tr><th>Book</th><th>Status</th><th>Files</th><th>Actions</th></tr></thead><tbody>${
- list.map(b=>{
-  const detail=b.book_details?.[0]||b.book_details||{};
-  return `<tr>
-   <td><b>${esc(titleFor(b))}</b><br><span class="muted">${esc(b.slug)}</span></td>
-   <td><span class="pill ${esc(b.status)}">${esc(b.status)}</span></td>
-   <td>${detail.pdf_storage_path?'PDF ':''}${detail.epub_storage_path?'EPUB':''}${!detail.pdf_storage_path&&!detail.epub_storage_path?'—':''}</td>
-   <td><div class="actions">
-    <button class="btn" data-edit="${esc(b.id)}">Edit</button>
-    <button class="btn" data-view="${esc(b.slug)}">Open page</button>
-    <button class="btn danger" data-archive="${esc(b.id)}">Archive</button>
-   </div></td></tr>`;
- }).join('')
- }</tbody></table>`;
- $('booksTable').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editBook(b.dataset.edit));
- $('booksTable').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>window.open('book.html?slug='+encodeURIComponent(b.dataset.view),'_blank','noopener'));
- $('booksTable').querySelectorAll('[data-archive]').forEach(b=>b.onclick=()=>archiveBook(b.dataset.archive));
+  const q=$('bookSearch').value.trim().toLowerCase();
+  const status=$('statusFilter').value;
+  const list=state.books.filter(b=>
+    (!q||titleFor(b).toLowerCase().includes(q)||b.slug.toLowerCase().includes(q))&&
+    (!status||b.status===status)
+  );
+  if(!list.length){$('booksTable').innerHTML='<p class="muted">No books found.</p>';return;}
+  $('booksTable').innerHTML='<table><thead><tr><th>Book</th><th>Status</th><th>Files</th><th>Actions</th></tr></thead><tbody>'+
+    list.map(b=>{
+      const d=detailsFor(b);
+      return '<tr><td><b>'+esc(titleFor(b))+'</b><br><span class="muted">'+esc(b.slug)+'</span></td>'+
+      '<td><span class="pill '+esc(b.status)+'">'+esc(b.status)+'</span></td>'+
+      '<td>'+(d.pdf_storage_path?'PDF ':'')+(d.epub_storage_path?'EPUB':'')+(!d.pdf_storage_path&&!d.epub_storage_path?'—':'')+'</td>'+
+      '<td><div class="actions"><button class="btn" data-edit="'+esc(b.id)+'">Edit</button>'+
+      '<button class="btn" data-view="'+esc(b.slug)+'">Open</button>'+
+      '<button class="btn danger" data-archive="'+esc(b.id)+'">Archive</button></div></td></tr>';
+    }).join('')+'</tbody></table>';
+
+  $('booksTable').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editBook(b.dataset.edit));
+  $('booksTable').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>window.open('book.html?slug='+encodeURIComponent(b.dataset.view),'_blank','noopener'));
+  $('booksTable').querySelectorAll('[data-archive]').forEach(b=>b.onclick=()=>archiveBook(b.dataset.archive));
 }
 function renderRecent(){
- const list=state.books.slice(0,6);
- if(!list.length){$('recentBooks').textContent='No books yet. Add your first book.';return;}
- $('recentBooks').innerHTML=`<table><thead><tr><th>Title</th><th>Status</th><th>Updated</th><th></th></tr></thead><tbody>${
- list.map(b=>`<tr><td>${esc(titleFor(b))}</td><td><span class="pill ${esc(b.status)}">${esc(b.status)}</span></td>
- <td>${b.updated_at?esc(new Date(b.updated_at).toLocaleDateString()):'—'}</td>
- <td><button class="btn" data-recent-edit="${esc(b.id)}">Edit</button></td></tr>`).join('')
- }</tbody></table>`;
- $('recentBooks').querySelectorAll('[data-recent-edit]').forEach(b=>b.onclick=()=>editBook(b.dataset.recentEdit));
+  const list=state.books.slice(0,6);
+  if(!list.length){$('recentBooks').textContent='No books yet. Add your first book.';return;}
+  $('recentBooks').innerHTML='<table><thead><tr><th>Title</th><th>Status</th><th></th></tr></thead><tbody>'+
+    list.map(b=>'<tr><td>'+esc(titleFor(b))+'</td><td><span class="pill '+esc(b.status)+'">'+esc(b.status)+'</span></td><td><button class="btn" data-recent-edit="'+esc(b.id)+'">Edit</button></td></tr>').join('')+
+    '</tbody></table>';
+  $('recentBooks').querySelectorAll('[data-recent-edit]').forEach(b=>b.onclick=()=>editBook(b.dataset.recentEdit));
 }
 async function loadPeople(){
- if(!state.user||!state.role)return;
- const select=$('authorId');
- const previous=select.value;
- const {data,error}=await db.from('content_items')
-  .select('id,slug,content_translations(language_code,title)')
-  .eq('type','person').order('created_at',{ascending:false}).limit(500);
- if(error){console.warn('Could not load authors:',error.message);return;}
- state.people=data||[];
- select.innerHTML='<option value="">No author linked</option>'+
- state.people.map(p=>`<option value="${esc(p.id)}">${esc((p.content_translations||[]).find(t=>t.language_code==='roman')?.title||p.slug)}</option>`).join('');
- if(previous)select.value=previous;
+  if(!state.user||!state.role)return;
+  const {data,error}=await db.from('content_items')
+    .select('id,slug,content_translations(language_code,title)')
+    .eq('type','person').order('created_at',{ascending:false}).limit(500);
+  if(error){console.warn('Author list could not load:',error.message);return;}
+  state.people=data||[];
+  const select=$('authorId'),previous=select.value;
+  select.innerHTML='<option value="">No author linked</option>'+
+    state.people.map(p=>{
+      const ts=p.content_translations||[];
+      const t=ts.find(x=>x.language_code==='roman')||ts[0];
+      return '<option value="'+esc(p.id)+'">'+esc(t?.title||p.slug)+'</option>';
+    }).join('');
+  if(previous)select.value=previous;
 }
 function blankTranslations(){
- return {
-  roman:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:'',script_direction:'ltr'},
-  ur:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:'',script_direction:'rtl'},
-  hi:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:'',script_direction:'ltr'}
- };
+  return {
+    roman:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:''},
+    ur:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:''},
+    hi:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:''}
+  };
 }
-function newBook(){
- state.editing=false;state.translations=blankTranslations();
- state.pdfPath=null;state.epubPath=null;state.coverPath=null;
- $('bookForm').reset();$('contentId').value='';$('translationId').value='';
- $('bookAuthorContentId').value='';$('editorHeading').textContent='Add a book';
- $('pdfCurrent').textContent='No PDF linked.';$('epubCurrent').textContent='No EPUB linked.';
- $('coverPreview').removeAttribute('src');
- switchLang('roman');showSection('editor');
+function storeTranslation(){
+  const t=state.translations[state.lang];
+  t.title=$('title').value.trim();
+  t.subtitle=$('subtitle').value.trim();
+  t.excerpt=$('excerpt').value.trim();
+  t.transliteration=$('transliteration').value.trim();
+  t.translation_note=$('translationNote').value.trim();
 }
 function switchLang(lang){
- state.lang=lang;
- document.querySelectorAll('.langtab').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
- const t=state.translations[lang]||{};
- $('title').value=t.title||'';$('subtitle').value=t.subtitle||'';
- $('excerpt').value=t.excerpt||'';$('transliteration').value=t.transliteration||'';
- $('translationNote').value=t.translation_note||'';
- $('title').dir=lang==='ur'?'rtl':'ltr';
- $('subtitle').dir=lang==='ur'?'rtl':'ltr';
- $('excerpt').dir=lang==='ur'?'rtl':'ltr';
- $('transliteration').dir=lang==='ur'?'rtl':'ltr';
- $('translationNote').dir=lang==='ur'?'rtl':'ltr';
- $('title').classList.toggle('urdu',lang==='ur');
- $('excerpt').classList.toggle('urdu',lang==='ur');
+  state.lang=lang;
+  document.querySelectorAll('.langtab').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+  const t=state.translations[lang]||{};
+  $('title').value=t.title||'';
+  $('subtitle').value=t.subtitle||'';
+  $('excerpt').value=t.excerpt||'';
+  $('transliteration').value=t.transliteration||'';
+  $('translationNote').value=t.translation_note||'';
+  const dir=lang==='ur'?'rtl':'ltr';
+  ['title','subtitle','excerpt','transliteration','translationNote'].forEach(id=>{
+    $(id).dir=dir;
+    $(id).classList.toggle('urdu',lang==='ur');
+  });
 }
 document.querySelectorAll('.langtab').forEach(b=>b.onclick=()=>{
- storeCurrentTranslation();switchLang(b.dataset.lang);
+  storeTranslation();switchLang(b.dataset.lang);
 });
-function storeCurrentTranslation(){
- if(!state.translations[state.lang])state.translations[state.lang]={id:null};
- const t=state.translations[state.lang];
- t.title=$('title').value.trim();t.subtitle=$('subtitle').value.trim();
- t.excerpt=$('excerpt').value.trim();t.transliteration=$('transliteration').value.trim();
- t.translation_note=$('translationNote').value.trim();
- t.script_direction=state.lang==='ur'?'rtl':'ltr';
+function newBook(){
+  state.translations=blankTranslations();
+  state.pdfPath=null;state.epubPath=null;
+  $('bookForm').reset();
+  $('contentId').value='';
+  $('editorHeading').textContent='Add a book';
+  $('pdfCurrent').textContent='No PDF linked.';
+  $('epubCurrent').textContent='No EPUB linked.';
+  $('coverPreview').removeAttribute('src');
+  switchLang('roman');showSection('editor');
 }
 async function editBook(id){
- const b=state.books.find(x=>x.id===id);if(!b)return;
- newBook();state.editing=true;
- $('editorHeading').textContent='Edit book';
- $('contentId').value=b.id;$('slug').value=b.slug;
- $('status').value=b.status;$('featured').value=String(!!b.featured);
- $('coverUrl').value=b.cover_image_url||'';
- if(b.cover_image_url)$('coverPreview').src=b.cover_image_url;
- const d=b.book_details?.[0]||b.book_details||{};
- $('publisher').value=d.publisher||'';$('year').value=d.publication_year||'';
- $('edition').value=d.edition||'';$('isbn').value=d.isbn||'';
- $('pageCount').value=d.page_count||'';
- $('originalLanguage').value=d.language_original||'ur';
- $('readingMode').value=d.reading_mode||'metadata';
- $('authorId').value=d.author_id||'';
- $('sourceNotes').value=b.source_notes||'';
- $('editorialNotes').value=b.editorial_notes||'';
- state.pdfPath=d.pdf_storage_path||null;state.epubPath=d.epub_storage_path||null;
- state.coverPath=b.cover_image_url||null;
- $('pdfCurrent').textContent=state.pdfPath?'Linked: '+state.pdfPath:'No PDF linked.';
- $('epubCurrent').textContent=state.epubPath?'Linked: '+state.epubPath:'No EPUB linked.';
- state.translations=blankTranslations();
- (b.content_translations||[]).forEach(t=>{
-  if(state.translations[t.language_code])state.translations[t.language_code]={...t};
- });
- switchLang('roman');showSection('editor');
+  const b=state.books.find(x=>x.id===id);if(!b)return;
+  newBook();
+  const d=detailsFor(b);
+  $('contentId').value=b.id;
+  $('editorHeading').textContent='Edit book';
+  $('slug').value=b.slug||'';
+  $('status').value=b.status||'draft';
+  $('featured').value=String(!!b.featured);
+  $('coverUrl').value=b.cover_image_url||'';
+  if(b.cover_image_url)$('coverPreview').src=b.cover_image_url;
+  $('publisher').value=d.publisher||'';
+  $('year').value=d.publication_year||'';
+  $('edition').value=d.edition||'';
+  $('isbn').value=d.isbn||'';
+  $('pageCount').value=d.page_count||'';
+  $('originalLanguage').value=d.language_original||'ur';
+  $('readingMode').value=['metadata','online_reader','download_allowed'].includes(d.reading_mode)?d.reading_mode:'metadata';
+  $('authorId').value=d.author_id||'';
+  $('sourceNotes').value=b.source_notes||'';
+  $('editorialNotes').value=b.editorial_notes||'';
+  $('seoTitle').value=b.seo_title||'';
+  $('seoDescription').value=b.seo_description||'';
+  state.pdfPath=d.pdf_storage_path||null;
+  state.epubPath=d.epub_storage_path||null;
+  $('pdfCurrent').textContent=state.pdfPath?'Linked: '+state.pdfPath:'No PDF linked.';
+  $('epubCurrent').textContent=state.epubPath?'Linked: '+state.epubPath:'No EPUB linked.';
+  (b.content_translations||[]).forEach(t=>{
+    if(state.translations[t.language_code])state.translations[t.language_code]={...t};
+  });
+  switchLang('roman');showSection('editor');
 }
 async function uploadFile(file,folder,contentId){
- if(!file)return null;
- const safeName=file.name.normalize('NFKD').replace(/[^\w.\-]+/g,'_');
- const path=`${folder}/${contentId}/${Date.now()}-${safeName}`;
- const {data,error}=await db.storage.from(BUCKET).upload(path,file,{
-  upsert:false,contentType:file.type||'application/octet-stream'
- });
- if(error)throw new Error('Storage upload failed: '+error.message);
- return data.path;
+  if(!file)return null;
+  const safeName=file.name.normalize('NFKD').replace(/[^\w.-]+/g,'_');
+  const path=folder+'/'+contentId+'/'+Date.now()+'-'+safeName;
+  const {data,error}=await db.storage.from(BUCKET).upload(path,file,{
+    upsert:false,contentType:file.type||'application/octet-stream'
+  });
+  if(error)throw new Error('Storage upload failed: '+error.message);
+  return data.path;
 }
 $('coverUrl').addEventListener('input',()=>{
- if($('coverUrl').value)$('coverPreview').src=$('coverUrl').value;
+  if($('coverUrl').value)$('coverPreview').src=$('coverUrl').value;
 });
 $('coverFile').addEventListener('change',()=>{
- const f=$('coverFile').files[0];
- if(f)$('coverPreview').src=URL.createObjectURL(f);
+  const f=$('coverFile').files[0];
+  if(f)$('coverPreview').src=URL.createObjectURL(f);
 });
 $('slug').addEventListener('blur',()=>{$('slug').value=slugify($('slug').value);});
 $('title').addEventListener('blur',()=>{
- if(!$('slug').value&&$('title').value)$('slug').value=slugify($('title').value);
+  if(!$('slug').value&&$('title').value)$('slug').value=slugify($('title').value);
 });
 
 async function saveTranslation(contentId,lang,t){
- if(!t||!t.title)return;
- const payload={
-  content_id:contentId,language_code:lang,title:t.title,
-  subtitle:t.subtitle||null,excerpt:t.excerpt||null,
-  transliteration:t.transliteration||null,
-  translation_note:t.translation_note||null,
-  script_direction:lang==='ur'?'rtl':'ltr',
-  updated_at:new Date().toISOString()
- };
- if(t.id){
-  const {error}=await db.from('content_translations').update(payload).eq('id',t.id);
-  if(error)throw new Error('Translation update failed ('+lang+'): '+error.message);
- }else{
-  const {data,error}=await db.from('content_translations').insert(payload).select('id').single();
-  if(error)throw new Error('Translation insert failed ('+lang+'): '+error.message);
-  t.id=data.id;
- }
+  if(!t||!t.title)return;
+  const payload={
+    content_id:contentId,language_code:lang,title:t.title,
+    subtitle:t.subtitle||null,excerpt:t.excerpt||null,
+    transliteration:t.transliteration||null,
+    translation_note:t.translation_note||null,
+    script_direction:lang==='ur'?'rtl':'ltr',
+    updated_at:new Date().toISOString()
+  };
+  if(t.id){
+    const {error}=await db.from('content_translations').update(payload).eq('id',t.id);
+    if(error)throw new Error('Translation update ('+lang+') failed: '+error.message);
+  }else{
+    const {data,error}=await db.from('content_translations').insert(payload).select('id').single();
+    if(error)throw new Error('Translation insert ('+lang+') failed: '+error.message);
+    t.id=data.id;
+  }
 }
 $('bookForm').addEventListener('submit',async e=>{
- e.preventDefault();
- if(state.busy)return;
- if(!state.user||!state.role){notice('Please sign in first.',true);return;}
- storeCurrentTranslation();
- if(!state.translations[state.lang]?.title){notice('Please enter a title for the selected language.',true);return;}
- const slug=slugify($('slug').value);
- if(!slug){notice('A valid URL slug is required.',true);return;}
- setBusy(true);
- try{
-  let id=$('contentId').value||null;
-  const now=new Date().toISOString();
-  const itemPayload={
-   type:'book',slug,status:$('status').value,featured:$('featured').value==='true',
-   cover_image_url:$('coverUrl').value.trim()||null,
-   source_notes:$('sourceNotes').value.trim()||null,
-   editorial_notes:$('editorialNotes').value.trim()||null,
-   seo_title:$('seoTitle').value.trim()||null,
-   seo_description:$('seoDescription').value.trim()||null,
-   updated_by:state.user.id,updated_at:now
-  };
-  if(!id){
-   itemPayload.created_by=state.user.id;itemPayload.created_at=now;
-   if(itemPayload.status==='published')itemPayload.published_at=now;
-   const {data,error}=await db.from('content_items').insert(itemPayload).select('id').single();
-   if(error)throw new Error('Book record creation failed: '+error.message);
-   id=data.id;$('contentId').value=id;
-  }else{
-   if(itemPayload.status==='published'&&!state.books.find(b=>b.id===id)?.published_at)itemPayload.published_at=now;
-   const {error}=await db.from('content_items').update(itemPayload).eq('id',id);
-   if(error)throw new Error('Book record update failed: '+error.message);
+  e.preventDefault();
+  if(state.busy)return;
+  if(!state.user||!state.role){notice('Please sign in first.',true);return;}
+  storeTranslation();
+  if(!state.translations[state.lang].title){notice('Enter a title first.',true);return;}
+  const slug=slugify($('slug').value);
+  if(!slug){notice('Enter a valid slug.',true);return;}
+
+  state.busy=true;
+  $('saveBtn').disabled=true;
+  $('saveBtn').textContent='Saving…';
+  try{
+    let id=$('contentId').value||null;
+    const now=new Date().toISOString();
+    const previous=state.books.find(b=>b.id===id);
+    const payload={
+      type:'book',slug,status:$('status').value,
+      featured:$('featured').value==='true',
+      cover_image_url:$('coverUrl').value.trim()||null,
+      source_notes:$('sourceNotes').value.trim()||null,
+      editorial_notes:$('editorialNotes').value.trim()||null,
+      seo_title:$('seoTitle').value.trim()||null,
+      seo_description:$('seoDescription').value.trim()||null,
+      updated_by:state.user.id,updated_at:now
+    };
+    if(!id){
+      payload.created_by=state.user.id;
+      payload.created_at=now;
+      if(payload.status==='published')payload.published_at=now;
+      const {data,error}=await db.from('content_items').insert(payload).select('id').single();
+      if(error)throw new Error('Creating book failed: '+error.message);
+      id=data.id;
+      $('contentId').value=id;
+    }else{
+      if(payload.status==='published'&&!previous?.published_at)payload.published_at=now;
+      const {error}=await db.from('content_items').update(payload).eq('id',id);
+      if(error)throw new Error('Updating book failed: '+error.message);
+    }
+
+    const coverFile=$('coverFile').files[0];
+    if(coverFile){
+      const path=await uploadFile(coverFile,'covers',id);
+      const {data}=db.storage.from(BUCKET).getPublicUrl(path);
+      payload.cover_image_url=data.publicUrl;
+      $('coverUrl').value=data.publicUrl;
+      $('coverPreview').src=data.publicUrl;
+      const {error}=await db.from('content_items')
+        .update({cover_image_url:data.publicUrl,updated_by:state.user.id})
+        .eq('id',id);
+      if(error)throw new Error('Saving cover URL failed: '+error.message);
+   }
+
+    const pdfFile=$('pdfFile').files[0];
+    if(pdfFile)state.pdfPath=await uploadFile(pdfFile,'pdf',id);
+    const epubFile=$('epubFile').files[0];
+    if(epubFile)state.epubPath=await uploadFile(epubFile,'epub',id);
+
+    /* These values match the database CHECK constraint exactly. */
+    const details={
+      content_id:id,
+      author_id:$('authorId').value||null,
+      publisher:$('publisher').value.trim()||null,
+      publication_year:$('year').value?Number($('year').value):null,
+      edition:$('edition').value.trim()||null,
+      isbn:$('isbn').value.trim()||null,
+      page_count:$('pageCount').value?Number($('pageCount').value):null,
+      language_original:$('originalLanguage').value,
+      pdf_storage_path:state.pdfPath,
+      epub_storage_path:state.epubPath,
+      reading_mode:$('readingMode').value
+    };
+
+    const {data:existing,error:checkError}=await db.from('book_details')
+      .select('content_id').eq('content_id',id).maybeSingle();
+    if(checkError)throw new Error('Checking book details failed: '+checkError.message);
+
+    const result=existing
+      ?await db.from('book_details').update(details).eq('content_id',id)
+      :await db.from('book_details').insert(details);
+    if(result.error)throw new Error('Book details save failed: '+result.error.message);
+
+    for(const lang of ['roman','ur','hi']){
+      const t=state.translations[lang];
+      if(t?.title)await saveTranslation(id,lang,t);
+    }
+
+    notice('Book saved successfully.');
+    $('pdfFile').value='';
+    $('epubFile').value='';
+    $('coverFile').value='';
+    await loadBooks();
+    showSection('books');
+  }catch(err){
+    console.error(err);
+    notice(err.message||'Saving failed.',true);
+  }finally{
+    state.busy=false;
+    $('saveBtn').disabled=false;
+    $('saveBtn').textContent='Save book';
   }
-
-  const coverFile=$('coverFile').files[0];
-  if(coverFile){
-   const path=await uploadFile(coverFile,'covers',id);
-   const {data}=db.storage.from(BUCKET).getPublicUrl(path);
-   itemPayload.cover_image_url=data.publicUrl;
-   $('coverUrl').value=data.publicUrl;
-   $('coverPreview').src=data.publicUrl;
-   const {error}=await db.from('content_items').update({cover_image_url:data.publicUrl,updated_by:state.user.id}).eq('id',id);
-   if(error)throw new Error('Cover URL save failed: '+error.message);
-  }
-
-  const pdfFile=$('pdfFile').files[0];
-  if(pdfFile)state.pdfPath=await uploadFile(pdfFile,'pdf',id);
-  const epubFile=$('epubFile').files[0];
-  if(epubFile)state.epubPath=await uploadFile(epubFile,'epub',id);
-
-  const details={
-   content_id:id,author_id:$('authorId').value||null,
-   publisher:$('publisher').value.trim()||null,
-   publication_year:$('year').value?Number($('year').value):null,
-   edition:$('edition').value.trim()||null,
-   isbn:$('isbn').value.trim()||null,
-   page_count:$('pageCount').value?Number($('pageCount').value):null,
-   language_original:$('originalLanguage').value,
-   pdf_storage_path:state.pdfPath,epub_storage_path:state.epubPath,
-   reading_mode:$('readingMode').value
-  };
-  const {data:existing,error:lookupError}=await db.from('book_details')
-   .select('content_id').eq('content_id',id).maybeSingle();
-  if(lookupError)throw new Error('Could not check book details: '+lookupError.message);
-  const detailResult=existing
-   ?await db.from('book_details').update(details).eq('content_id',id)
-   :await db.from('book_details').insert(details);
-  if(detailResult.error)throw new Error('Book details save failed: '+detailResult.error.message);
-
-  for(const lang of ['roman','ur','hi']){
-   const t=state.translations[lang];
-   if(t?.title)await saveTranslation(id,lang,t);
-  }
-  notice('Book saved successfully.');
-  $('pdfFile').value='';$('epubFile').value='';$('coverFile').value='';
-  await loadBooks();showSection('books');
- }catch(err){
-  console.error(err);
-  notice(err.message||'Unable to save book.',true);
- }finally{setBusy(false);}
 });
-
 async function archiveBook(id){
- const b=state.books.find(x=>x.id===id);
- if(!b)return;
- if(!confirm('Archive "'+titleFor(b)+'"? It will no longer be published.'))return;
- const {error}=await db.from('content_items')
-  .update({status:'archived',updated_by:state.user.id,updated_at:new Date().toISOString()})
-  .eq('id',id);
- if(error){notice('Archive failed: '+error.message,true);return;}
- notice('Book archived.');await loadBooks();
+  const b=state.books.find(x=>x.id===id);if(!b)return;
+  if(!confirm('Archive "'+titleFor(b)+'"?'))return;
+  const {error}=await db.from('content_items').update({
+    status:'archived',updated_by:state.user.id,updated_at:new Date().toISOString()
+  }).eq('id',id);
+  if(error){notice('Archive failed: '+error.message,true);return;}
+  notice('Book archived.');
+  await loadBooks();
 }
-
 (async()=>{
- const {data,error}=await db.auth.getSession();
- if(error){notice(error.message,true);return;}
- if(data.session?.user)await activate(data.session.user);
+  const {data,error}=await db.auth.getSession();
+  if(error){notice(error.message,true);return;}
+  if(data.session?.user)await activate(data.session.user);
 })();
 })();
 </script>
