@@ -1,134 +1,214 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#472127">
-<title>Sufi Adab Archive — Editorial Studio</title>
+<title>Sufi Adab Archive — Admin Studio</title>
+
 <style>
-:root{
-  --wine:#652e36;--wine-dark:#472127;--gold:#b18a4a;
-  --cream:#f8f4ed;--paper:#fffdf9;--ink:#282321;
-  --muted:#766e68;--line:#e7ddd0;--green:#326b50;
-  --red:#9a3939;--shadow:0 12px 35px #361f1b0d
+:root {
+  --wine: #652e36;
+  --deep: #472127;
+  --gold: #b18a4a;
+  --cream: #f8f4ed;
+  --paper: #fffdf9;
+  --ink: #282321;
+  --muted: #766e68;
+  --line: #e7ddd0;
+  --green: #326b50;
+  --red: #963939;
+  --shadow: 0 12px 35px #361f1b12;
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--ink);
-font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.hidden{display:none!important}
-.topbar{background:var(--wine-dark);color:white;padding:14px 22px;
-display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{font:21px Georgia,serif}
-.brand small{display:block;color:#e6d5bb;font:10px system-ui;
-letter-spacing:1.5px;text-transform:uppercase}
-.top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.pill{border:1px solid #ffffff50;background:transparent;color:white;
-border-radius:99px;padding:7px 12px}
-.wrap{max-width:1500px;margin:auto;padding:22px}
-.layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:20px}
-.sidebar,.panel,.stat,.login-card{background:var(--paper);
-border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
-.sidebar{padding:14px;height:max-content;position:sticky;top:14px}
-.side-label{font-size:10px;letter-spacing:1.5px;color:var(--muted);
-text-transform:uppercase;margin:12px 10px 5px}
-.navbtn{width:100%;border:0;background:transparent;color:#4e4641;
-text-align:left;padding:10px 11px;border-radius:9px;margin:2px 0;
-display:flex;gap:9px;align-items:center}
-.navbtn:hover,.navbtn.active{background:#f1e6dc;color:var(--wine);font-weight:700}
-.main{min-width:0}
-.welcome{display:flex;justify-content:space-between;align-items:flex-start;
-gap:14px;margin:2px 0 20px}
-.eyebrow{font-size:10px;letter-spacing:1.7px;text-transform:uppercase;
-color:var(--gold);font-weight:800}
-h1{font:clamp(25px,3vw,36px)/1.2 Georgia,serif;margin:6px 0}
-h2{font:22px Georgia,serif;margin:0}
-.muted{color:var(--muted)}
-.btn{border:1px solid var(--line);background:white;color:var(--wine);
-padding:9px 13px;border-radius:9px;font-weight:650}
-.btn.primary{background:var(--wine);border-color:var(--wine);color:white}
-.btn.gold{background:var(--gold);border-color:var(--gold);color:white}
-.btn.danger{color:var(--red);border-color:#e6c8c8}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-gap:12px;margin-bottom:18px}
-.stat{padding:16px}
-.stat .label{font-size:12px;color:var(--muted)}
-.stat .num{font:30px Georgia,serif;color:var(--wine);margin-top:5px}
-.stat .foot{font-size:11px;color:var(--muted)}
-.panel{padding:19px;margin-bottom:17px}
-.panelhead{display:flex;justify-content:space-between;align-items:center;
-gap:12px;margin-bottom:14px;flex-wrap:wrap}
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}
-.field label{font-size:12px;font-weight:750;color:#554944}
-.field input,.field select,.field textarea,.search{
-  width:100%;border:1px solid #ddd0c2;border-radius:8px;
-  padding:10px 11px;background:#fffefa;color:var(--ink);outline:none
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font: 15px/1.55 system-ui, sans-serif;
 }
-.field input:focus,.field select:focus,.field textarea:focus,.search:focus{
-border-color:var(--gold);box-shadow:0 0 0 3px #b18a4a20}
-.field textarea{min-height:100px;resize:vertical}
-.field .hint{font-size:11px;color:var(--muted)}
-.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 15px}
-.span2{grid-column:1/-1}
-.langtabs,.tools{display:flex;gap:8px;flex-wrap:wrap}
-.langtabs{margin:0 0 14px}
-.langtab{border:1px solid var(--line);background:white;border-radius:99px;
-padding:7px 12px;color:var(--muted)}
-.langtab.active{background:#f0e4d8;color:var(--wine);
-border-color:#d8c0a7;font-weight:750}
-.langpane{display:none}.langpane.active{display:block}
-.tablewrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:650px}
-th,td{padding:11px 9px;border-bottom:1px solid var(--line);
-text-align:left;vertical-align:top}
-th{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
-td{font-size:13px}
-.status{display:inline-block;border-radius:99px;padding:4px 8px;
-font-size:10px;font-weight:800;background:#eee8e1;color:#665c55}
-.status.published{background:#e0eee5;color:var(--green)}
-.status.review{background:#f7ecd5;color:#8b641c}
-.status.archived{background:#ece8e5;color:#777}
-.rowactions{display:flex;gap:5px;flex-wrap:wrap}
-.smallbtn{padding:6px 9px;font-size:11px;border-radius:7px;
-border:1px solid var(--line);background:white;color:var(--wine)}
-.notice{padding:12px 14px;border-radius:10px;background:#f7ecd5;
-color:#775a24;font-size:13px;margin-bottom:14px;overflow-wrap:anywhere}
-.notice.good{background:#e2efe6;color:#2f6448}
-.notice.bad{background:#f7e5e3;color:#8c3434}
-.empty{padding:28px;text-align:center;color:var(--muted)}
-.login-shell{max-width:440px;margin:8vh auto;padding:18px}
-.login-card{padding:27px}
-.login-card h1{font-size:30px}
-.login-mark{width:48px;height:48px;display:grid;place-items:center;
-border-radius:50%;background:#efe1d1;color:var(--wine);font:25px Georgia,serif}
-.login-card .btn{width:100%}
-.tiny{font-size:11px}
-.preview{white-space:pre-wrap;background:#f7f1e9;border-radius:10px;
-padding:14px;font-size:13px;max-height:260px;overflow:auto}
-.footer{text-align:center;font-size:11px;color:var(--muted);padding:12px}
-.cover-preview{max-width:220px;max-height:240px;object-fit:contain;
-border:1px solid var(--line);border-radius:8px;background:white;padding:5px}
-.upload-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.checkrow{display:flex;align-items:center;gap:9px;margin:8px 0 14px}
-.checkrow input{width:18px;height:18px;accent-color:var(--wine)}
-@media(max-width:900px){
- .layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;
- gap:4px;overflow:auto;padding:8px}.sidebar>div{display:flex;gap:4px}
- .side-label{display:none}.navbtn{width:auto;white-space:nowrap}
- .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
- .wrap{padding:12px}.welcome{flex-direction:column}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
+.hidden { display: none !important; }
+.topbar {
+  background: var(--deep);
+  color: white;
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
-@media(max-width:560px){
- .stats{gap:8px}.stat{padding:12px}.stat .num{font-size:25px}
- .panel{padding:13px}.formgrid{grid-template-columns:1fr}
- .span2{grid-column:auto}.topbar{padding:12px}
- .brand{font-size:17px}.top-actions .tiny{max-width:130px;overflow-wrap:anywhere}
+.brand { font: 21px Georgia, serif; }
+.brand small {
+  display: block;
+  color: #e6d5bb;
+  font: 10px system-ui, sans-serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.top-actions { display: flex; align-items: center; gap: 10px; }
+.pill {
+  border: 1px solid #ffffff55;
+  background: transparent;
+  color: white;
+  border-radius: 99px;
+  padding: 7px 12px;
+}
+.login-shell { max-width: 460px; margin: 7vh auto; padding: 18px; }
+.login-card, .panel, .stat, .sidebar {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+.login-card { padding: 28px; }
+.login-mark {
+  width: 48px; height: 48px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: #efe1d1;
+  color: var(--wine);
+  font: 25px Georgia, serif;
+}
+.login-card h1 { font: 32px Georgia, serif; margin: 10px 0; }
+.muted { color: var(--muted); }
+.tiny { font-size: 11px; }
+.eyebrow {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+.wrap { max-width: 1450px; margin: auto; padding: 22px; }
+.layout { display: grid; grid-template-columns: 225px minmax(0,1fr); gap: 20px; }
+.sidebar { padding: 13px; height: max-content; position: sticky; top: 14px; }
+.side-label {
+  margin: 10px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+.navbtn {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #4e4641;
+  padding: 10px 12px;
+  text-align: left;
+  margin: 2px 0;
+}
+.navbtn:hover, .navbtn.active {
+  background: #f1e6dc;
+  color: var(--wine);
+  font-weight: 700;
+}
+.main { min-width: 0; }
+.welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 2px 0 20px;
+}
+.welcome h1 { font: clamp(25px,3vw,36px)/1.15 Georgia,serif; margin: 6px 0; }
+.stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin-bottom: 18px; }
+.stat { padding: 17px; }
+.stat .label { font-size: 12px; color: var(--muted); }
+.stat .num { font: 30px Georgia,serif; color: var(--wine); margin-top: 6px; }
+.panel { padding: 19px; margin-bottom: 17px; }
+.panelhead { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; }
+.panelhead h2 { font: 22px Georgia,serif; margin: 0; }
+.btn {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--wine);
+  padding: 10px 14px;
+  border-radius: 9px;
+  font-weight: 700;
+}
+.btn.primary { background: var(--wine); border-color: var(--wine); color: white; }
+.btn.danger { color: var(--red); border-color: #e6c8c8; }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 12px; font-weight: 750; color: #554944; }
+.field input, .field select, .field textarea, .search {
+  width: 100%;
+  border: 1px solid #ddd0c2;
+  border-radius: 8px;
+  padding: 10px 11px;
+  background: #fffefa;
+  color: var(--ink);
+  outline: none;
+}
+.field textarea { min-height: 110px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus, .search:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px #b18a4a20;
+}
+.formgrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 15px; }
+.span2 { grid-column: 1/-1; }
+.langtabs { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:13px; }
+.langtab {
+  border:1px solid var(--line);
+  background:white;
+  border-radius:99px;
+  padding:7px 12px;
+  color:var(--muted);
+}
+.langtab.active { background:#f0e4d8; color:var(--wine); border-color:#d8c0a7; font-weight:750; }
+.langpane { display:none; }
+.langpane.active { display:block; }
+.tools, .rowactions { display:flex; gap:8px; flex-wrap:wrap; }
+.tablewrap { overflow:auto; }
+table { width:100%; border-collapse:collapse; min-width:650px; }
+th, td { padding:11px 9px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
+td { font-size:13px; }
+.status { display:inline-block; border-radius:99px; padding:3px 8px; font-size:11px; font-weight:750; background:#eee8e1; color:#665c55; }
+.status.published { background:#e0eee5; color:var(--green); }
+.status.review { background:#f7ecd5; color:#8b641c; }
+.smallbtn { padding:6px 9px; font-size:11px; border-radius:7px; border:1px solid var(--line); background:white; color:var(--wine); }
+.notice { padding:12px 14px; border-radius:10px; background:#f7ecd5; color:#775a24; font-size:13px; margin:12px 0; }
+.notice.good { background:#e2efe6; color:#2f6448; }
+.notice.bad { background:#f7e5e3; color:#8c3434; }
+.empty { padding:28px; text-align:center; color:var(--muted); }
+.preview { white-space:pre-wrap; background:#f7f1e9; border-radius:10px; padding:14px; font-size:13px; max-height:240px; overflow:auto; }
+.toast {
+  position:fixed; right:18px; bottom:18px;
+  background:#2c2927; color:white;
+  padding:12px 16px; border-radius:10px;
+  box-shadow:var(--shadow); z-index:20; max-width:90vw;
+}
+.footer { text-align:center; padding:14px; color:var(--muted); font-size:11px; }
+@media(max-width:900px) {
+  .layout { grid-template-columns:1fr; }
+  .sidebar { position:static; display:flex; gap:4px; overflow:auto; padding:8px; }
+  .side-label { display:none; }
+  .navbtn { width:auto; white-space:nowrap; }
+  .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .wrap { padding:12px; }
+  .welcome { flex-direction:column; }
+}
+@media(max-width:560px) {
+  .panel { padding:13px; }
+  .formgrid { grid-template-columns:1fr; }
+  .span2 { grid-column:auto; }
+  .topbar { padding:12px; }
+  .brand { font-size:17px; }
+  .stats { gap:8px; }
+  .stat { padding:12px; }
+  .stat .num { font-size:25px; }
 }
 </style>
 </head>
 <body>
+
 <header class="topbar">
   <div class="brand">Sufi Adab Archive
     <small>Markaz.org · Editorial Studio</small>
@@ -142,516 +222,564 @@ border:1px solid var(--line);border-radius:8px;background:white;padding:5px}
 <section id="loginView" class="login-shell">
   <div class="login-card">
     <div class="login-mark">س</div>
-    <div class="eyebrow" style="margin-top:15px">Restricted editorial access</div>
+    <div class="eyebrow" style="margin-top:16px">Restricted editorial access</div>
     <h1>Welcome back.</h1>
-    <p class="muted">Sign in with an authorised archive account.</p>
-    <div id="loginNotice" class="notice hidden"></div>
+    <p class="muted">Sign in with your authorised archive account.</p>
+    <div id="loginNotice" class="notice hidden" role="alert"></div>
     <form id="loginForm">
       <div class="field">
         <label for="email">Email address</label>
-        <input id="email" type="email" autocomplete="username" required>
+        <input id="email" type="email" autocomplete="username" required placeholder="Your admin email">
       </div>
       <div class="field">
         <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" required>
+        <input id="password" type="password" autocomplete="current-password" required placeholder="Your account password">
       </div>
-      <button class="btn primary" type="submit">Sign in securely</button>
+      <button id="loginBtn" class="btn primary" type="submit" style="width:100%">Sign in securely</button>
     </form>
-    <p class="tiny muted">Public sign-up is disabled. The account must exist in Supabase Auth and be authorised in admin_users.</p>
+    <p class="tiny muted" style="margin-top:15px">Only authorised Supabase accounts with active admin access can enter. Public sign-up is disabled.</p>
   </div>
 </section>
 
 <div id="appView" class="wrap hidden">
-<div class="layout">
-<aside class="sidebar"><div style="width:100%">
-  <div class="side-label">Workspace</div>
-  <button class="navbtn active" data-view="dashboard">◈ Dashboard</button>
-  <button class="navbtn" data-view="content">▤ All content</button>
-  <button class="navbtn" data-view="editor">✎ Create content</button>
-  <div class="side-label">Collections</div>
-  <button class="navbtn" data-type="poem">❧ Poetry & shers</button>
-  <button class="navbtn" data-type="person">♙ Saints & poets</button>
-  <button class="navbtn" data-type="book">▣ Books</button>
-  <button class="navbtn" data-type="article">▧ Articles & research</button>
-  <button class="navbtn" data-type="place">⌖ Khanqahs & heritage</button>
-  <button class="navbtn" data-type="media">▧ Media</button>
-  <button class="navbtn" data-type="glossary">Aa Glossary</button>
-  <div class="side-label">Tools</div>
-  <button class="navbtn" data-view="media">▧ Image manager</button>
-  <button class="navbtn" data-view="seo">◎ SEO manager</button>
-</div></aside>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-label">Workspace</div>
+      <button class="navbtn active" type="button" data-view="dashboard">◈ Dashboard</button>
+      <button class="navbtn" type="button" data-view="content">▤ All content</button>
+      <button class="navbtn" type="button" data-view="editor">✎ Create content</button>
+      <div class="side-label" style="margin-top:16px">Browse by type</div>
+      <button class="navbtn" type="button" data-type="poem">❧ Poetry & shers</button>
+      <button class="navbtn" type="button" data-type="person">♙ Saints & poets</button>
+      <button class="navbtn" type="button" data-type="book">▣ Books</button>
+      <button class="navbtn" type="button" data-type="article">▧ Articles & research</button>
+      <button class="navbtn" type="button" data-type="place">⌖ Khanqahs & heritage</button>
+      <button class="navbtn" type="button" data-view="sources">⌕ Sources & bibliography</button>
+    </aside>
 
-<main class="main">
-<section id="dashboardView" class="view">
-  <div class="welcome">
-    <div><div class="eyebrow">Editorial overview</div>
-      <h1>Your archive, thoughtfully organised.</h1>
-      <div class="muted">Manage multilingual Sufi literature, poetry and heritage.</div>
-    </div>
-    <button class="btn primary" id="newContentBtn">＋ New content</button>
+    <main class="main">
+      <section id="dashboardView" class="view">
+        <div class="welcome">
+          <div>
+            <div class="eyebrow">Editorial overview</div>
+            <h1>Your archive, thoughtfully organised.</h1>
+            <div class="muted">Manage multilingual Sufi literature, poetry and heritage records.</div>
+          </div>
+          <button class="btn primary" id="newContentBtn" type="button">＋ New content</button>
+        </div>
+        <div id="appNotice" class="notice hidden" role="alert"></div>
+        <div class="stats">
+          <div class="stat"><div class="label">Total records</div><div class="num" id="statTotal">—</div></div>
+          <div class="stat"><div class="label">Published</div><div class="num" id="statPublished">—</div></div>
+          <div class="stat"><div class="label">Drafts</div><div class="num" id="statDrafts">—</div></div>
+          <div class="stat"><div class="label">Needs review</div><div class="num" id="statReview">—</div></div>
+        </div>
+        <div class="panel">
+          <div class="panelhead">
+            <h2>Recently updated</h2>
+            <button class="btn" type="button" data-goto="content">View all</button>
+          </div>
+          <div id="recentList" class="tablewrap"><div class="empty">Loading archive…</div></div>
+        </div>
+      </section>
+
+      <section id="contentView" class="view hidden">
+        <div class="welcome">
+          <div><div class="eyebrow">Content library</div><h1>All content</h1><div class="muted">Search, edit and publish archive records.</div></div>
+          <button class="btn primary" id="contentNewBtn" type="button">＋ New content</button>
+        </div>
+        <div class="panel">
+          <div class="formgrid">
+            <div class="field"><label for="contentSearch">Search title or slug</label><input id="contentSearch" class="search" placeholder="Search the archive…"></div>
+            <div class="field"><label for="typeFilter">Content type</label>
+              <select id="typeFilter">
+                <option value="">All types</option><option value="poem">Poetry / sher</option>
+                <option value="person">Saint / poet</option><option value="book">Book</option>
+                <option value="article">Article / research</option><option value="place">Place / heritage</option>
+                <option value="media">Media</option><option value="glossary">Glossary</option>
+              </select>
+            </div>
+            <div class="field"><label for="statusFilter">Publication status</label>
+              <select id="statusFilter">
+                <option value="">All statuses</option><option value="draft">Draft</option>
+                <option value="review">Needs review</option><option value="published">Published</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          <div id="contentTable" class="tablewrap"><div class="empty">Loading…</div></div>
+        </div>
+      </section>
+
+      <section id="editorView" class="view hidden">
+        <div class="welcome">
+          <div><div class="eyebrow">Editorial workspace</div><h1 id="editorHeading">Create content</h1><div class="muted">Enter Urdu, Hindi and Roman editions for one archive record.</div></div>
+          <button class="btn" type="button" data-goto="content">← Back to content</button>
+        </div>
+        <div id="editorNotice" class="notice hidden" role="alert"></div>
+
+        <form id="contentForm" class="panel">
+          <input type="hidden" id="recordId">
+          <div class="formgrid">
+            <div class="field"><label for="contentType">Content type</label>
+              <select id="contentType" required>
+                <option value="poem">Poetry / sher</option><option value="person">Saint / poet</option>
+                <option value="book">Book</option><option value="article">Article / research</option>
+                <option value="place">Khanqah / heritage place</option><option value="media">Media</option>
+                <option value="glossary">Glossary</option>
+              </select>
+            </div>
+            <div class="field"><label for="status">Status</label>
+              <select id="status"><option value="draft">Draft</option><option value="review">Needs review</option><option value="published">Published</option><option value="archived">Archived</option></select>
+            </div>
+            <div class="field"><label for="slug">URL slug</label><input id="slug" required placeholder="e.g. hazrat-shah-shoaib"><span class="tiny muted">Lowercase letters, numbers and hyphens only.</span></div>
+            <div class="field"><label for="contentDate">Historical / publication date</label><input id="contentDate" placeholder="e.g. 688 AH / 1290 CE"></div>
+          </div>
+
+          <div class="langtabs">
+            <button type="button" class="langtab active" data-lang="ur">اردو · Urdu</button>
+            <button type="button" class="langtab" data-lang="hi">हिन्दी · Hindi</button>
+            <button type="button" class="langtab" data-lang="roman">Roman Urdu / Hindi</button>
+          </div>
+
+          <div class="langpane active" data-pane="ur" dir="rtl">
+            <div class="field"><label for="title_ur">عنوان · Title</label><input id="title_ur" placeholder="عنوان"></div>
+            <div class="field"><label for="summary_ur">خلاصہ · Summary</label><textarea id="summary_ur" rows="3"></textarea></div>
+            <div class="field"><label for="body_ur">متن · Full text</label><textarea id="body_ur" rows="9" placeholder="اصل متن یہاں درج کریں"></textarea></div>
+          </div>
+          <div class="langpane" data-pane="hi" dir="ltr">
+            <div class="field"><label for="title_hi">शीर्षक</label><input id="title_hi" placeholder="शीर्षक"></div>
+            <div class="field"><label for="summary_hi">सारांश</label><textarea id="summary_hi" rows="3"></textarea></div>
+            <div class="field"><label for="body_hi">पूरा पाठ</label><textarea id="body_hi" rows="9"></textarea></div>
+          </div>
+          <div class="langpane" data-pane="roman" dir="ltr">
+            <div class="field"><label for="title_roman">Title — Roman</label><input id="title_roman" placeholder="Roman Urdu / Hindi title"></div>
+            <div class="field"><label for="summary_roman">Summary</label><textarea id="summary_roman" rows="3"></textarea></div>
+            <div class="field"><label for="body_roman">Full text</label><textarea id="body_roman" rows="9"></textarea></div>
+          </div>
+
+          <div class="field"><label for="author">Author / attributed to (optional)</label><input id="author"></div>
+          <div class="field"><label for="sourceUrl">Source URL (optional)</label><input id="sourceUrl" type="url" placeholder="https://…"></div>
+          <div class="field"><label for="bibliography">Bibliography / source details (optional)</label><textarea id="bibliography" rows="3" placeholder="Author, title, publisher, year, page / folio…"></textarea></div>
+          <div class="field"><label for="editorNotes">Private editorial notes (optional)</label><textarea id="editorNotes" rows="3"></textarea></div>
+          <div class="field"><label for="previewLang">Preview edition</label><select id="previewLang"><option value="ur">Urdu</option><option value="hi">Hindi</option><option value="roman">Roman</option></select></div>
+          <div id="previewArea" class="preview hidden"></div>
+          <div class="tools">
+            <button id="saveBtn" class="btn primary" type="submit">Save record</button>
+            <button id="saveDraftBtn" class="btn" type="button">Save as draft</button>
+            <button id="previewBtn" class="btn" type="button">Preview text</button>
+            <button id="deleteBtn" class="btn danger hidden" type="button">Delete record</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="sourcesView" class="view hidden">
+        <div class="welcome"><div><div class="eyebrow">Research integrity</div><h1>Sources & bibliography</h1><div class="muted">Guidance for reliable archive records.</div></div><button class="btn primary" type="button" data-goto="editor">＋ Add record</button></div>
+        <div class="panel">
+          <h2 style="font:22px Georgia,serif">Record sources carefully</h2>
+          <p>For books, record author, full title, publisher, edition, year and page numbers. For manuscripts, record collection, shelfmark, folio and repository.</p>
+          <p>For oral histories, record interview date, place, interviewer, consent status and restrictions. Distinguish primary evidence from later retellings, and mark uncertain dates clearly.</p>
+          <p>Only publish copyrighted texts, photographs or manuscripts when you have permission or a lawful basis. Keep licence and attribution details with the record.</p>
+        </div>
+      </section>
+      <div class="footer">Sufi Adab Archive · Private editorial workspace</div>
+    </main>
   </div>
-  <div id="appNotice" class="notice hidden"></div>
-  <div class="stats">
-    <div class="stat"><div class="label">Total records</div><div class="num" id="statTotal">—</div></div>
-    <div class="stat"><div class="label">Published</div><div class="num" id="statPublished">—</div></div>
-    <div class="stat"><div class="label">Drafts</div><div class="num" id="statDrafts">—</div></div>
-    <div class="stat"><div class="label">Needs review</div><div class="num" id="statReview">—</div></div>
-  </div>
-  <div class="panel">
-    <div class="panelhead"><h2>Recently updated</h2>
-      <button class="btn" data-goto="content">View all</button></div>
-    <div id="recentList" class="tablewrap"><div class="empty">Loading records…</div></div>
-  </div>
-  <div class="panel">
-    <div class="panelhead"><h2>Editorial checklist</h2></div>
-    <p class="muted">Verify names, dates, locations, citations, image rights and all language editions before publishing.</p>
-  </div>
-</section>
-
-<section id="contentView" class="view hidden">
-  <div class="welcome"><div><div class="eyebrow">Content management</div>
-    <h1>All content</h1><div class="muted">Search, edit, feature and manage records.</div></div>
-    <button class="btn primary" id="contentNewBtn">＋ New record</button>
-  </div>
-  <div class="panel">
-    <div class="tools" style="margin-bottom:14px">
-      <input id="contentSearch" class="search" style="flex:1;min-width:180px" placeholder="Search title or slug…">
-      <select id="typeFilter" class="search" style="max-width:190px">
-        <option value="">All types</option><option value="poem">Poetry / sher</option>
-        <option value="person">Saints / poets</option><option value="book">Books</option>
-        <option value="article">Articles / research</option><option value="place">Heritage places</option>
-        <option value="media">Media</option><option value="glossary">Glossary</option>
-      </select>
-      <select id="statusFilter" class="search" style="max-width:160px">
-        <option value="">All statuses</option><option value="draft">Draft</option>
-        <option value="review">In review</option><option value="published">Published</option>
-        <option value="archived">Archived</option>
-      </select>
-    </div>
-    <div id="contentTable" class="tablewrap"><div class="empty">No records loaded.</div></div>
-  </div>
-</section>
-
-<section id="editorView" class="view hidden">
-  <div class="welcome"><div><div class="eyebrow">Editorial workspace</div>
-    <h1 id="editorHeading">Create content</h1>
-    <div class="muted">One record, three language editions.</div></div>
-    <button class="btn" data-goto="content">← Back to list</button>
-  </div>
-  <div id="editorNotice" class="notice hidden"></div>
-  <form id="contentForm" class="panel">
-    <input type="hidden" id="recordId">
-    <div class="formgrid">
-      <div class="field"><label for="contentType">Content type *</label>
-        <select id="contentType" required>
-          <option value="poem">Poetry / sher</option><option value="person">Saint / poet / scholar</option>
-          <option value="book">Book</option><option value="article">Article / research</option>
-          <option value="place">Khanqah / dargah / heritage</option>
-          <option value="media">Media item</option><option value="glossary">Glossary term</option>
-        </select>
-      </div>
-      <div class="field"><label for="status">Status *</label>
-        <select id="status" required><option value="draft">Draft</option>
-          <option value="review">In review</option><option value="published">Published</option>
-          <option value="archived">Archived</option></select>
-      </div>
-      <div class="field"><label for="slug">URL slug *</label>
-        <input id="slug" required placeholder="e.g. shah-shoaib-firdausi">
-        <span class="hint">Lowercase letters, numbers and single hyphens. Keep existing public URLs stable.</span>
-      </div>
-      <div class="field"><label for="contentDate">Historical / publication date</label>
-        <input id="contentDate" placeholder="e.g. 688 AH / 1290 CE"></div>
-    </div>
-
-    <div class="panelhead"><h2>Language editions</h2><span class="tiny muted">Urdu · Hindi · Roman Urdu</span></div>
-    <div class="langtabs">
-      <button class="langtab active" type="button" data-lang="ur">اردو · Urdu</button>
-      <button class="langtab" type="button" data-lang="hi">हिन्दी · Hindi</button>
-      <button class="langtab" type="button" data-lang="roman">Roman Urdu</button>
-    </div>
-    <div class="langpane active" data-pane="ur">
-      <div class="formgrid">
-        <div class="field span2"><label for="title_ur">Urdu title</label><input id="title_ur" dir="rtl" lang="ur"></div>
-        <div class="field span2"><label for="subtitle_ur">Urdu subtitle</label><input id="subtitle_ur" dir="rtl" lang="ur"></div>
-        <div class="field span2"><label for="excerpt_ur">Urdu summary</label><textarea id="excerpt_ur" dir="rtl" lang="ur"></textarea></div>
-        <div class="field span2"><label for="body_ur">Urdu full text</label><textarea id="body_ur" dir="rtl" lang="ur" style="min-height:210px"></textarea></div>
-        <div class="field span2"><label for="translit_ur">Transliteration / notes</label><textarea id="translit_ur" dir="rtl" lang="ur"></textarea></div>
-      </div>
-    </div>
-    <div class="langpane" data-pane="hi">
-      <div class="formgrid">
-        <div class="field span2"><label for="title_hi">Hindi title</label><input id="title_hi" lang="hi"></div>
-        <div class="field span2"><label for="subtitle_hi">Hindi subtitle</label><input id="subtitle_hi" lang="hi"></div>
-        <div class="field span2"><label for="excerpt_hi">Hindi summary</label><textarea id="excerpt_hi" lang="hi"></textarea></div>
-        <div class="field span2"><label for="body_hi">Hindi full text</label><textarea id="body_hi" lang="hi" style="min-height:210px"></textarea></div>
-        <div class="field span2"><label for="translit_hi">Transliteration / notes</label><textarea id="translit_hi" lang="hi"></textarea></div>
-      </div>
-    </div>
-    <div class="langpane" data-pane="roman">
-      <div class="formgrid">
-        <div class="field span2"><label for="title_roman">Roman Urdu title</label><input id="title_roman"></div>
-        <div class="field span2"><label for="subtitle_roman">Roman Urdu subtitle</label><input id="subtitle_roman"></div>
-        <div class="field span2"><label for="excerpt_roman">Roman Urdu summary</label><textarea id="excerpt_roman"></textarea></div>
-        <div class="field span2"><label for="body_roman">Roman Urdu full text</label><textarea id="body_roman" style="min-height:210px"></textarea></div>
-        <div class="field span2"><label for="translit_roman">Translation / editorial notes</label><textarea id="translit_roman"></textarea></div>
-      </div>
-  </div>
-
-        <div class="panelhead" style="margin-top:22px"><h2>Publication settings</h2></div>
-    <div class="formgrid">
-      <div class="field"><label for="coverUrl">Cover / image URL</label>
-        <input id="coverUrl" type="url" placeholder="https://…">
-        <span class="hint">A public image URL stored in your existing content record, if supported.</span>
-      </div>
-      <div class="field"><label for="pdfUrl">Book PDF URL</label>
-        <input id="pdfUrl" type="url" placeholder="https://…">
-        <span class="hint">For books, paste the public Supabase Storage PDF link.</span>
-      </div>
-      <div class="field"><label for="author">Author / compiler / editor</label><input id="author"></div>
-      <div class="field"><label for="sourceUrl">Primary source URL</label><input id="sourceUrl" type="url" placeholder="https://…"></div>
-      <div class="field span2"><label for="bibliography">Bibliography / source notes</label><textarea id="bibliography" placeholder="Author, full title, edition, publisher, year, page / folio, archive reference…"></textarea></div>
-      <div class="field span2"><label for="rights">Rights / permissions / attribution</label><textarea id="rights" placeholder="Licence, permission holder, image credit, public-domain basis…"></textarea></div>
-      <div class="field span2"><label for="editorNotes">Private editorial notes</label><textarea id="editorNotes" placeholder="Fact-checking questions, uncertain dates, pending verification…"></textarea></div>
-    </div>
-
-    <div class="panelhead" style="margin-top:22px"><h2>Featured & discovery</h2></div>
-    <label class="checkrow"><input id="featured" type="checkbox"> <span><strong>Mark as featured</strong><br><span class="tiny muted">This setting can only persist if your existing content table has a compatible featured field.</span></span></label>
-    <div class="field"><label for="categories">Categories (comma-separated)</label><input id="categories" placeholder="Sufi poetry, Firdausiyya, Bihar"></div>
-    <div class="field"><label for="tags">Tags (comma-separated)</label><input id="tags" placeholder="manqabat, biography, source-critical"></div>
-
-    <div class="panelhead" style="margin-top:22px"><h2>SEO & social preview</h2></div>
-    <div class="notice">SEO fields are editable here, but saving them permanently requires compatible columns or a metadata field in your database. This code will report unsupported fields rather than silently claiming they were saved.</div>
-    <div class="formgrid">
-      <div class="field"><label for="seoTitle">SEO title</label><input id="seoTitle" maxlength="70" placeholder="Page title for search results"></div>
-      <div class="field"><label for="seoImage">Social share image URL</label><input id="seoImage" type="url" placeholder="https://…"></div>
-      <div class="field span2"><label for="seoDescription">Meta description</label><textarea id="seoDescription" maxlength="180" placeholder="A concise, accurate description of this record."></textarea><span class="hint">Aim for a clear description, generally around 150–160 characters.</span></div>
-      <div class="field span2"><label for="canonicalUrl">Canonical URL</label><input id="canonicalUrl" type="url" placeholder="https://markazorg.vercel.app/…"></div>
-    </div>
-
-    <div class="panelhead" style="margin-top:22px"><h2>Image upload manager</h2></div>
-    <p class="muted tiny">Choose an image and upload it to a public Supabase Storage bucket. The bucket must already exist and your Storage policies must allow authorised uploads.</p>
-    <div class="formgrid">
-      <div class="field"><label for="storageBucket">Storage bucket name</label><input id="storageBucket" value="book" placeholder="Existing bucket name"><span class="hint">Default is the known lowercase `book` bucket. Change this only to an existing bucket.</span></div>
-      <div class="field"><label for="imageFile">Select image</label><input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><span class="hint">PNG, JPG, WEBP or GIF. Maximum 8 MB.</span></div>
-    </div>
-    <div class="upload-row">
-      <button class="btn gold" id="uploadImageBtn" type="button">Upload image</button>
-      <span id="uploadMessage" class="tiny muted"></span>
-    </div>
-    <div style="margin-top:12px">
-      <img id="coverPreview" class="cover-preview hidden" alt="Selected cover preview">
-    </div>
-
-    <div class="notice" style="margin-top:18px">Before publishing: verify historical claims, dates, citations, image rights and all language editions.</div>
-    <div class="tools">
-      <button class="btn primary" type="submit" id="saveBtn">Save record</button>
-      <button class="btn" type="button" id="saveDraftBtn">Save as draft</button>
-      <button class="btn" type="button" id="previewBtn">Preview text</button>
-      <button class="btn danger hidden" type="button" id="deleteBtn">Delete record</button>
-    </div>
-    <div id="previewArea" class="preview hidden" style="margin-top:15px"></div>
-  </form>
-</section>
-
-<section id="mediaView" class="view hidden">
-  <div class="welcome"><div><div class="eyebrow">Media library</div>
-    <h1>Image manager</h1><div class="muted">Upload an image from the editor or manage image URLs here.</div>
-  </div></div>
-  <div class="panel">
-    <div class="field"><label for="mediaUrl">Public image URL</label><input id="mediaUrl" type="url" placeholder="https://…"></div>
-    <div class="tools"><button class="btn" id="previewMediaBtn" type="button">Preview URL</button><button class="btn" id="copyMediaBtn" type="button">Copy URL</button></div>
-    <div style="margin-top:14px"><img id="mediaPreview" class="cover-preview hidden" alt="Image preview"></div>
-    <p class="tiny muted">This tool previews and copies a URL; it does not delete Storage objects or change bucket permissions.</p>
-  </div>
-</section>
-
-<section id="seoView" class="view hidden">
-  <div class="welcome"><div><div class="eyebrow">Search visibility</div>
-    <h1>SEO manager</h1><div class="muted">Edit SEO details in a record and save them when your schema supports them.</div>
-  </div></div>
-  <div class="panel">
-    <p>Choose a record below to edit its SEO and social preview fields.</p>
-    <div class="field"><label for="seoRecordSelect">Select content record</label><select id="seoRecordSelect"><option value="">Load records first…</option></select></div>
-    <button class="btn primary" id="openSeoRecordBtn" type="button">Open record SEO settings</button>
-    <div id="seoNotice" class="notice hidden" style="margin-top:14px"></div>
-    <p class="tiny muted">This is an editor interface, not a substitute for rendering the corresponding meta tags in each public page. Public pages must read saved SEO fields to show custom search/social metadata.</p>
-  </div>
-</section>
-
-<div class="footer">Sufi Adab Archive · Private editorial workspace</div>
-</main>
 </div>
-</div>
+
 <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
-
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
+/* Supabase browser-safe key only. Never use a service_role or secret key here. */
 const SUPABASE_URL = "https://pooatzegjnegutflkcbm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true
-  }
-});
-
 const $ = id => document.getElementById(id);
-const LANGS = ["ur", "hi", "roman"];
-const TYPES = {
+const state = {
+  supabase: null,
+  user: null,
+  records: [],
+  busy: false
+};
+
+const TYPE_LABELS = {
   poem: "Poetry / sher",
   person: "Saint / poet",
   book: "Book",
   article: "Article / research",
-  place: "Heritage place",
+  place: "Place / heritage",
   media: "Media",
   glossary: "Glossary"
 };
 
-let currentUser = null;
-let allRecords = [];
-let knownItemKeys = new Set();
-let knownTranslationKeys = new Set();
-
-const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
-  "&": "&amp;", "<": "&lt;", ">": "&gt;",
-  '"': "&quot;", "'": "&#39;"
+const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;"
 })[ch]);
 
-function toast(message) {
-  const el = $("toast");
-  el.textContent = message;
-  el.classList.remove("hidden");
-  clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => el.classList.add("hidden"), 3500);
+function notify(message) {
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.classList.remove("hidden");
+  window.setTimeout(() => toast.classList.add("hidden"), 3500);
 }
 
-function notice(id, message, kind = "") {
-  const el = $(id);
-  el.textContent = message;
-  el.className = "notice" + (kind ? " " + kind : "");
-  el.classList.remove("hidden");
+function showNotice(id, message, kind = "") {
+  const element = $(id);
+  element.textContent = message;
+  element.className = "notice" + (kind ? " " + kind : "");
+  element.classList.remove("hidden");
 }
 
 function hideNotice(id) {
-  $(id)?.classList.add("hidden");
+  $(id).classList.add("hidden");
+}
+
+function setButtonBusy(button, busy, busyText, normalText) {
+  button.disabled = busy;
+  button.textContent = busy ? busyText : normalText;
+}
+
+function setSignedIn(user) {
+  state.user = user;
+  $("loginView").classList.toggle("hidden", !!user);
+  $("appView").classList.toggle("hidden", !user);
+  $("logoutBtn").classList.toggle("hidden", !user);
+  $("userEmail").textContent = user?.email || "";
+
+  if (!user) {
+    state.records = [];
+    $("statTotal").textContent = "—";
+    $("statPublished").textContent = "—";
+    $("statDrafts").textContent = "—";
+    $("statReview").textContent = "—";
+    $("recentList").innerHTML = '<div class="empty">Sign in to view records.</div>';
+    $("contentTable").innerHTML = '<div class="empty">Sign in to view records.</div>';
+  }
 }
 
 function showView(name) {
-  document.querySelectorAll(".view").forEach(el => el.classList.add("hidden"));
-  $(name + "View")?.classList.remove("hidden");
+  document.querySelectorAll(".view").forEach(view => view.classList.add("hidden"));
+  const view = $(name + "View");
+  if (view) view.classList.remove("hidden");
 
-  document.querySelectorAll(".navbtn").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.view === name);
+  document.querySelectorAll(".navbtn").forEach(button => {
+    button.classList.toggle("active", button.dataset.view === name);
   });
 
-  if (name === "content") renderTable();
-  if (name === "dashboard") refreshData();
-  if (name === "seo") populateSeoSelect();
+  if (name === "content") renderContentTable();
 }
 
-function setLang(lang) {
-  document.querySelectorAll(".langtab").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.lang === lang);
+function switchLanguage(language) {
+  document.querySelectorAll(".langtab").forEach(button => {
+    button.classList.toggle("active", button.dataset.lang === language);
   });
+
   document.querySelectorAll(".langpane").forEach(pane => {
-    pane.classList.toggle("active", pane.dataset.pane === lang);
+    pane.classList.toggle("active", pane.dataset.pane === language);
   });
 }
 
-function translationMap(rows) {
-  const map = { ur: {}, hi: {}, roman: {} };
-
-  (rows || []).forEach(row => {
-    const lang = row.language_code || row.language;
-    if (map[lang]) map[lang] = row;
-  });
-
-  return map;
+/* The existing archive schema uses content_type and translation language. */
+function getType(record) {
+  return record.content_type || record.type || "article";
 }
 
-function titleOf(record) {
-  const tr = translationMap(record.content_translations);
-  return tr.roman.title || tr.hi.title || tr.ur.title ||
-    record.slug || "Untitled record";
+function getLanguage(translation) {
+  return translation.language || translation.language_code || translation.lang || "";
 }
 
-function typeOf(record) {
-  return record.type || record.content_type || "article";
+function getTranslationMap(translations) {
+  const result = { ur: {}, hi: {}, roman: {} };
+
+  for (const translation of translations || []) {
+    const language = getLanguage(translation);
+    if (Object.prototype.hasOwnProperty.call(result, language)) {
+      result[language] = translation;
+    }
+  }
+
+  return result;
 }
 
-function statusPill(status) {
-  const safe = esc(status || "draft");
-  return `<span class="status ${safe}">${safe}</span>`;
+function getTitle(record) {
+  const translations = getTranslationMap(record.content_translations);
+  return translations.roman.title ||
+    translations.hi.title ||
+    translations.ur.title ||
+    record.slug ||
+    "Untitled";
 }
 
 function formatDate(value) {
   if (!value) return "—";
-  const d = new Date(value);
-  return Number.isNaN(+d) ? esc(value) : d.toLocaleDateString();
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? escapeHtml(value)
+    : date.toLocaleDateString();
 }
 
-function getOptionalField(keys, candidates) {
-  return candidates.find(key => keys.has(key)) || null;
+function statusBadge(status) {
+  const safeStatus = status || "draft";
+  const cssStatus = safeStatus.replace(/[^a-z0-9_-]/gi, "");
+  return `<span class="status ${cssStatus}">${escapeHtml(safeStatus.replaceAll("_", " "))}</span>`;
 }
 
-function detectSchema(records) {
-  knownItemKeys = new Set();
-  knownTranslationKeys = new Set();
-
-  if (records.length) {
-    Object.keys(records[0]).forEach(key => {
-      if (key !== "content_translations") knownItemKeys.add(key);
-    });
-
-    (records[0].content_translations || []).slice(0, 1).forEach(row => {
-      Object.keys(row).forEach(key => knownTranslationKeys.add(key));
-    });
-  }
-}
-
-async function refreshData() {
-  if (!currentUser) return;
-
-  const { data, error } = await supabase
-    .from("content_items")
-    .select("*,content_translations(*)")
-    .order("updated_at", { ascending: false })
-    .limit(1000);
+/*
+ * IMPORTANT:
+ * The admin_users table must contain:
+ * user_id, role, is_active
+ *
+ * The signed-in user must have an active admin row.
+ * RLS policies must allow an authorised admin to read that row.
+ */
+async function verifyAdmin(user) {
+  const { data, error } = await state.supabase
+    .from("admin_users")
+    .select("user_id, role, is_active")
+    .eq("user_id", user.id)
+    .eq("is_active", true)
+    .maybeSingle();
 
   if (error) {
-    notice("appNotice",
-      "Unable to load content: " + error.message +
-      ". Check table names, permissions and RLS policies.", "bad");
+    throw new Error(
+      "Authentication worked, but admin permission could not be checked. " +
+      "Check public.admin_users, its column names, and its SELECT RLS policy. " +
+      error.message
+    );
+  }
+
+  if (!data) {
+    throw new Error(
+      "This account has no active admin permission. Add its Supabase Auth user ID " +
+      "to public.admin_users and set is_active = true."
+    );
+  }
+
+  if (data.role && !["admin", "editor"].includes(data.role)) {
+    throw new Error("Your account role does not permit access to this editor.");
+  }
+
+  return data;
+}
+
+async function handleSession(session) {
+  if (!session?.user) {
+    setSignedIn(null);
     return;
   }
 
-  allRecords = data || [];
-  detectSchema(allRecords);
+  try {
+    await verifyAdmin(session.user);
+    hideNotice("loginNotice");
+    setSignedIn(session.user);
+    await refreshRecords();
+  } catch (error) {
+    try {
+      await state.supabase.auth.signOut();
+    } catch (_) {}
 
-  $("statTotal").textContent = allRecords.length;
-  $("statPublished").textContent =
-    allRecords.filter(r => r.status === "published").length;
-  $("statDrafts").textContent =
-    allRecords.filter(r => r.status === "draft").length;
-  $("statReview").textContent =
-    allRecords.filter(r => r.status === "review").length;
-
-  hideNotice("appNotice");
-
-  const recent = allRecords.slice(0, 6);
-  $("recentList").innerHTML = recent.length
-    ? `<table><thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Updated</th><th></th></tr></thead><tbody>
-      ${recent.map(r => `<tr>
-        <td><strong>${esc(titleOf(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td>
-        <td>${esc(TYPES[typeOf(r)] || typeOf(r))}</td>
-        <td>${statusPill(r.status)}</td>
-        <td>${formatDate(r.updated_at)}</td>
-        <td><button class="smallbtn" data-edit="${esc(r.id)}">Edit</button></td>
-      </tr>`).join("")}</tbody></table>`
-    : `<div class="empty">No records found. Create your first record.</div>`;
-
-  renderTable();
-  populateSeoSelect();
+    setSignedIn(null);
+    showNotice("loginNotice", error.message || "Admin access verification failed.", "bad");
+  }
 }
 
-function renderTable() {
+/* FIXED LOGIN HANDLER */
+async function signIn(event) {
+  event.preventDefault();
+
+  if (state.busy) return;
+
+  const button = $("loginBtn");
+  const email = $("email").value.trim();
+  const password = $("password").value;
+
+  hideNotice("loginNotice");
+
+  if (!state.supabase) {
+    showNotice(
+      "loginNotice",
+      "Supabase could not initialise. Check your project URL, key and browser console.",
+      "bad"
+    );
+    return;
+  }
+
+  if (!email || !password) {
+    showNotice("loginNotice", "Enter both your email and password.", "bad");
+    return;
+  }
+
+  state.busy = true;
+  setButtonBusy(button, true, "Signing in…", "Sign in securely");
+
+  try {
+    const { data, error } = await state.supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) throw error;
+
+    await verifyAdmin(data.user);
+
+    hideNotice("loginNotice");
+    setSignedIn(data.user);
+    await refreshRecords();
+    showView("dashboard");
+    notify("Signed in successfully.");
+  } catch (error) {
+    try {
+      await state.supabase.auth.signOut();
+    } catch (_) {}
+
+    setSignedIn(null);
+    showNotice(
+      "loginNotice",
+      error.message || "Sign-in failed. Check your credentials and admin permissions.",
+      "bad"
+    );
+  } finally {
+    state.busy = false;
+    setButtonBusy(button, false, "Signing in…", "Sign in securely");
+  }
+}
+
+async function refreshRecords() {
+  if (!state.supabase || !state.user) return;
+
+  $("recentList").innerHTML = '<div class="empty">Loading records…</div>';
+
+  const { data, error } = await state.supabase
+    .from("content_items")
+    .select("*, content_translations(*)")
+    .order("updated_at", { ascending: false })
+    .limit(500);
+
+  if (error) {
+    showNotice("appNotice", "Could not load records: " + error.message, "bad");
+    $("recentList").innerHTML =
+      '<div class="empty">Records could not be loaded. Check table names and RLS policies.</div>';
+    $("contentTable").innerHTML =
+      '<div class="empty">Records could not be loaded.</div>';
+    return;
+  }
+
+  hideNotice("appNotice");
+  state.records = data || [];
+
+  $("statTotal").textContent = state.records.length;
+  $("statPublished").textContent =
+    state.records.filter(record => record.status === "published").length;
+  $("statDrafts").textContent =
+    state.records.filter(record => record.status === "draft").length;
+  $("statReview").textContent =
+    state.records.filter(record =>
+      ["review", "needs_review"].includes(record.status)
+    ).length;
+
+  $("recentList").innerHTML = state.records.length
+    ? makeTable(state.records.slice(0, 6), true)
+    : '<div class="empty">No records yet. Create your first archive entry.</div>';
+
+  renderContentTable();
+}
+
+function makeTable(records, recent = false) {
+  if (!records.length) {
+    return '<div class="empty">No matching records found.</div>';
+  }
+
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>Title / slug</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Updated</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${records.map(record => `
+          <tr>
+            <td>
+              <strong>${escapeHtml(getTitle(record))}</strong>
+              <div class="tiny muted">/${escapeHtml(record.slug || "")}</div>
+            </td>
+            <td>${escapeHtml(TYPE_LABELS[getType(record)] || getType(record))}</td>
+            <td>${statusBadge(record.status)}</td>
+            <td>${formatDate(record.updated_at || record.created_at)}</td>
+            <td>
+              <div class="rowactions">
+                <button type="button" class="smallbtn" data-edit="${escapeHtml(record.id)}">Edit</button>
+                ${recent ? "" : `
+                  <button
+                    type="button"
+                    class="smallbtn"
+                    data-status="${escapeHtml(record.id)}"
+                    data-next="${record.status === "published" ? "draft" : "published"}"
+                  >${record.status === "published" ? "Unpublish" : "Publish"}</button>
+                `}
+              </div>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>`;
+}
+
+function renderContentTable() {
   if (!$("contentTable")) return;
 
-  const q = ($("contentSearch").value || "").trim().toLowerCase();
+  const query = $("contentSearch").value.trim().toLowerCase();
   const type = $("typeFilter").value;
   const status = $("statusFilter").value;
 
-  const filtered = allRecords.filter(r => {
-    const title = titleOf(r).toLowerCase();
-    const slug = String(r.slug || "").toLowerCase();
+  const filtered = state.records.filter(record => {
+    const title = getTitle(record).toLowerCase();
+    const slug = String(record.slug || "").toLowerCase();
 
-    return (!q || title.includes(q) || slug.includes(q)) &&
-      (!type || typeOf(r) === type) &&
-      (!status || r.status === status);
+    return (!query || title.includes(query) || slug.includes(query)) &&
+      (!type || getType(record) === type) &&
+      (!status || record.status === status);
   });
 
-  $("contentTable").innerHTML = filtered.length
-    ? `<table><thead><tr><th>Title / slug</th><th>Type</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead><tbody>
-      ${filtered.map(r => `<tr>
-        <td><strong>${esc(titleOf(r))}</strong><div class="tiny muted">/${esc(r.slug)}</div></td>
-        <td>${esc(TYPES[typeOf(r)] || typeOf(r))}</td>
-        <td>${statusPill(r.status)}</td>
-        <td>${formatDate(r.updated_at)}</td>
-        <td><div class="rowactions">
-          <button class="smallbtn" data-edit="${esc(r.id)}">Edit</button>
-          <button class="smallbtn" data-status="${esc(r.id)}" data-next="${r.status === "published" ? "draft" : "published"}">${r.status === "published" ? "Unpublish" : "Publish"}</button>
-        </div></td>
-      </tr>`).join("")}</tbody></table>`
-    : `<div class="empty">No matching records. Change the filters or create a record.</div>`;
+  $("contentTable").innerHTML = makeTable(filtered);
 }
 
-function blankEditor() {
+function resetEditor() {
   $("contentForm").reset();
   $("recordId").value = "";
   $("editorHeading").textContent = "Create content";
   $("status").value = "draft";
   $("deleteBtn").classList.add("hidden");
   $("previewArea").classList.add("hidden");
-  $("coverPreview").classList.add("hidden");
-  $("uploadMessage").textContent = "";
   hideNotice("editorNotice");
-  setLang("ur");
+  switchLanguage("ur");
 }
 
 function fillEditor(record) {
-  blankEditor();
+  resetEditor();
 
   $("editorHeading").textContent = "Edit content";
   $("recordId").value = record.id;
-  $("contentType").value = typeOf(record);
+  $("contentType").value = getType(record);
   $("status").value = record.status || "draft";
   $("slug").value = record.slug || "";
   $("contentDate").value = record.historical_date || "";
 
-  const tr = translationMap(record.content_translations);
+  const translations = getTranslationMap(record.content_translations || []);
 
-  LANGS.forEach(lang => {
-    const row = tr[lang] || {};
-    $("title_" + lang).value = row.title || "";
-    $("subtitle_" + lang).value = row.subtitle || "";
-    $("excerpt_" + lang).value = row.excerpt || row.summary || "";
-    $("body_" + lang).value = row.body || "";
-    $("translit_" + lang).value =
-      row.transliteration || row.translation_note || "";
-  });
-
-  const coverField = getOptionalField(knownItemKeys,
-    ["cover_image_url", "image_url", "cover_url"]);
-  const pdfField = getOptionalField(knownItemKeys, ["pdf_url", "book_pdf_url"]);
-
-  $("coverUrl").value = coverField ? record[coverField] || "" : "";
-  $("pdfUrl").value = pdfField ? record[pdfField] || "" : "";
-  $("featured").checked = record.featured === true;
-
-  $("author").value = record.author || "";
-  $("sourceUrl").value = record.source_url || "";
-  $("bibliography").value = record.source_notes || record.bibliography || "";
-  $("rights").value = record.rights || "";
-  $("editorNotes").value = record.editorial_notes || "";
-  $("categories").value = Array.isArray(record.categories) ? record.categories.join(", ") : "";
-  $("tags").value = Array.isArray(record.tags) ? record.tags.join(", ") : "";
-
-  const seoTitle = getOptionalField(knownItemKeys, ["seo_title", "meta_title"]);
-  const seoDesc = getOptionalField(knownItemKeys, ["seo_description", "meta_description"]);
-  const seoImage = getOptionalField(knownItemKeys, ["og_image", "social_image_url"]);
-  const canonical = getOptionalField(knownItemKeys, ["canonical_url"]);
-
-  $("seoTitle").value = seoTitle ? record[seoTitle] || "" : "";
-  $("seoDescription").value = seoDesc ? record[seoDesc] || "" : "";
-  $("seoImage").value = seoImage ? record[seoImage] || "" : "";
-  $("canonicalUrl").value = canonical ? record[canonical] || "" : "";
-
-  if ($("coverUrl").value) {
-    $("coverPreview").src = $("coverUrl").value;
-    $("coverPreview").classList.remove("hidden");
+  for (const language of ["ur", "hi", "roman"]) {
+    for (const field of ["title", "summary", "body"]) {
+      $(`${field}_${language}`).value = translations[language][field] || "";
+    }
   }
 
   $("deleteBtn").classList.remove("hidden");
@@ -659,499 +787,299 @@ function fillEditor(record) {
 }
 
 async function loadRecord(id) {
-  const { data, error } = await supabase
+  const { data, error } = await state.supabase
     .from("content_items")
-    .select("*,content_translations(*)")
+    .select("*, content_translations(*)")
     .eq("id", id)
     .single();
 
   if (error) {
-    toast("Unable to open record: " + error.message);
+    notify("Unable to open record: " + error.message);
     return;
   }
 
   fillEditor(data);
 }
 
-function csv(value) {
-  return value.split(",").map(x => x.trim()).filter(Boolean);
-}
+/*
+ * Only uses the core fields confirmed by the earlier admin.html:
+ * content_items: content_type, slug, status, historical_date
+ * content_translations: content_id, language, title, summary, body
+ *
+ * Does not write unverified optional columns.
+ */
+async function saveRecord(forceDraft = false) {
+  if (!state.user || !state.supabase) {
+    notify("Please sign in first.");
+    return;
+  }
 
-function makeTranslationRows(id) {
-  return LANGS.map(lang => {
-    const row = {
-      content_id: id,
-      title: $("title_" + lang).value.trim(),
-      body: $("body_" + lang).value.trim()
+  const saveButton = $("saveBtn");
+  const draftButton = $("saveDraftBtn");
+  saveButton.disabled = true;
+  draftButton.disabled = true;
+  hideNotice("editorNotice");
+
+  try {
+    const id = $("recordId").value;
+    const slug = $("slug").value.trim().toLowerCase();
+    const status = forceDraft ? "draft" : $("status").value;
+
+    if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      throw new Error("Slug must use lowercase letters, numbers and single hyphens.");
+    }
+
+    const languages = ["ur", "hi", "roman"].filter(language =>
+      ["title", "summary", "body"].some(field =>
+        $(`${field}_${language}`).value.trim()
+      )
+    );
+
+    if (!languages.length) {
+      throw new Error("Enter a title or text in at least one language.");
+    }
+
+    const payload = {
+      content_type: $("contentType").value,
+      slug,
+      status,
+      historical_date: $("contentDate").value.trim() || null
     };
 
-    if (knownTranslationKeys.has("language")) {
-      row.language = lang;
+    let result;
+
+    if (id) {
+      result = await state.supabase
+        .from("content_items")
+        .update({ ...payload, updated_by: state.user.id })
+        .eq("id", id)
+        .select("id")
+        .single();
     } else {
-      row.language_code = lang;
+      result = await state.supabase
+        .from("content_items")
+        .insert({ ...payload, created_by: state.user.id, updated_by: state.user.id })
+        .select("id")
+        .single();
     }
 
-    const subtitle = $("subtitle_" + lang).value.trim();
-    const excerpt = $("excerpt_" + lang).value.trim();
-    const notes = $("translit_" + lang).value.trim();
-
-    if (knownTranslationKeys.has("subtitle")) row.subtitle = subtitle;
-
-    if (knownTranslationKeys.has("summary") && !knownTranslationKeys.has("excerpt")) {
-      row.summary = excerpt;
-    } else {
-      row.excerpt = excerpt;
+    if (result.error) {
+      throw new Error("Could not save record: " + result.error.message);
     }
 
-    if (knownTranslationKeys.has("transliteration")) row.transliteration = notes;
-    if (knownTranslationKeys.has("translation_note")) row.translation_note = notes;
+    const recordId = result.data.id;
 
-    return row;
-  }).filter(row =>
-    row.title || row.body || row.excerpt || row.summary || row.subtitle
-  );
-}
-
-function makeItemPayload(status, slug) {
-  const payload = { slug, status };
-
-  if (knownItemKeys.has("content_type") && !knownItemKeys.has("type")) {
-    payload.content_type = $("contentType").value;
-  } else {
-    payload.type = $("contentType").value;
-  }
-
-  if (knownItemKeys.has("updated_by")) payload.updated_by = currentUser.id;
-  if (knownItemKeys.has("created_by") && !$("recordId").value) {
-    payload.created_by = currentUser.id;
-  }
-
-  if (knownItemKeys.has("historical_date")) {
-    payload.historical_date = $("contentDate").value.trim() || null;
-  }
-
-  if (knownItemKeys.has("featured")) payload.featured = $("featured").checked;
-
-  const coverField = getOptionalField(knownItemKeys,
-    ["cover_image_url", "image_url", "cover_url"]);
-  if (coverField) payload[coverField] = $("coverUrl").value.trim() || null;
-
-  const pdfField = getOptionalField(knownItemKeys, ["pdf_url", "book_pdf_url"]);
-  if (pdfField) payload[pdfField] = $("pdfUrl").value.trim() || null;
-
-  const optional = {
-    author: $("author").value.trim() || null,
-    source_url: $("sourceUrl").value.trim() || null,
-    source_notes: $("bibliography").value.trim() || null,
-    bibliography: $("bibliography").value.trim() || null,
-    rights: $("rights").value.trim() || null,
-    editorial_notes: $("editorNotes").value.trim() || null,
-    categories: csv($("categories").value),
-    tags: csv($("tags").value)
-  };
-
-  Object.entries(optional).forEach(([key, value]) => {
-    if (knownItemKeys.has(key)) payload[key] = value;
-  });
-
-  [
-    ["seoTitle", ["seo_title", "meta_title"]],
-    ["seoDescription", ["seo_description", "meta_description"]],
-    ["seoImage", ["og_image", "social_image_url"]],
-    ["canonicalUrl", ["canonical_url"]]
-  ].forEach(([inputId, candidates]) => {
-    const field = getOptionalField(knownItemKeys, candidates);
-    if (field) payload[field] = $(inputId).value.trim() || null;
-  });
-
-  return payload;
-}
-
-async function saveRecord(forceDraft = false) {
-  if (!currentUser) return toast("Please sign in first.");
-
-  const id = $("recordId").value;
-  const status = forceDraft ? "draft" : $("status").value;
-  const slug = $("slug").value.trim().toLowerCase();
-
-  if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
-    return notice("editorNotice",
-      "Slug must use lowercase letters, numbers and single hyphens.", "bad");
-  }
-
-  const hasText = LANGS.some(lang =>
-    $("title_" + lang).value.trim() || $("body_" + lang).value.trim()
-  );
-
-  if (!hasText) {
-    return notice("editorNotice",
-      "Add a title or body text in at least one language.", "bad");
-  }
-
-  const payload = makeItemPayload(status, slug);
-  let result;
-
-  if (id) {
-    result = await supabase.from("content_items")
-      .update(payload).eq("id", id).select("id").single();
-  } else {
-    result = await supabase.from("content_items")
-      .insert(payload).select("id").single();
-  }
-
-  if (result.error) {
-    return notice("editorNotice",
-      "Could not save the record: " + result.error.message +
-      ". Check actual column names and RLS policies.", "bad");
-  }
-
-  const recordId = result.data.id;
-  const rows = makeTranslationRows(recordId);
-
-  /* Upsert translations one language at a time.
-     This requires a unique constraint on content_id + language_code
-     (or content_id + language, if that is your schema). */
-  let translationError = null;
-
-  for (const row of rows) {
-    const { error } = await supabase
+    const { error: deleteError } = await state.supabase
       .from("content_translations")
-      .upsert(row, {
-        onConflict: knownTranslationKeys.has("language")
-          ? "content_id,language"
-          : "content_id,language_code"
-      });
+      .delete()
+      .eq("content_id", recordId);
 
-    if (error) {
-      translationError = error;
-      break;
+    if (deleteError) {
+      throw new Error(
+        "Record was saved, but existing translations could not be replaced: " +
+        deleteError.message
+      );
     }
+
+    const rows = languages.map(language => ({
+      content_id: recordId,
+      language,
+      title: $(`title_${language}`).value.trim() || null,
+      summary: $(`summary_${language}`).value.trim() || null,
+      body: $(`body_${language}`).value.trim() || null
+    }));
+
+    const { error: translationError } = await state.supabase
+      .from("content_translations")
+      .insert(rows);
+
+    if (translationError) {
+      throw new Error(
+        "Record was saved, but language editions could not be saved: " +
+        translationError.message
+      );
+    }
+
+    $("recordId").value = recordId;
+    $("editorHeading").textContent = "Edit content";
+    $("deleteBtn").classList.remove("hidden");
+
+    showNotice(
+      "editorNotice",
+      status === "published" ? "Record published successfully." : "Record saved successfully.",
+      "good"
+    );
+
+    notify("Record saved.");
+    await refreshRecords();
+  } catch (error) {
+    showNotice("editorNotice", error.message || "Save failed.", "bad");
+  } finally {
+    saveButton.disabled = false;
+    draftButton.disabled = false;
+  }
+}
+
+async function changeStatus(id, status) {
+  const { error } = await state.supabase
+    .from("content_items")
+    .update({ status, updated_by: state.user.id })
+    .eq("id", id);
+
+  if (error) {
+    notify("Status update failed: " + error.message);
+    return;
   }
 
-  if (translationError) {
-    return notice("editorNotice",
-      "Record saved, but translation save failed: " +
-      translationError.message +
-      ". Verify translation column names and the unique constraint.", "bad");
-  }
-
-  $("recordId").value = recordId;
-  $("editorHeading").textContent = "Edit content";
-  $("deleteBtn").classList.remove("hidden");
-
-  await refreshData();
-
-  notice("editorNotice",
-    "Record saved. Verify optional image, PDF and SEO fields against your database schema.",
-    "good");
-
-  toast("Record saved");
+  notify("Publication status updated.");
+  await refreshRecords();
 }
 
 async function deleteRecord() {
   const id = $("recordId").value;
-  if (!id || !confirm("Delete this record? This cannot be undone.")) return;
+  if (!id) return;
 
-  const { error } = await supabase.from("content_items").delete().eq("id", id);
+  const confirmed = confirm(
+    "Delete this archive record? This action cannot be undone."
+  );
 
-  if (error) {
-    return notice("editorNotice", "Delete failed: " + error.message, "bad");
-  }
+  if (!confirmed) return;
 
-  blankEditor();
-  await refreshData();
-  showView("content");
-  toast("Record deleted");
-}
-
-async function changeStatus(id, status) {
-  const { error } = await supabase
+  const { error } = await state.supabase
     .from("content_items")
-    .update({ status }).eq("id", id);
+    .delete()
+    .eq("id", id);
 
   if (error) {
-    return toast("Status update failed: " + error.message);
+    showNotice("editorNotice", "Delete failed: " + error.message, "bad");
+    return;
   }
 
-  await refreshData();
-  toast("Status updated");
+  resetEditor();
+  await refreshRecords();
+  showView("content");
+  notify("Record deleted.");
 }
 
-async function uploadImage() {
-  const file = $("imageFile").files[0];
-  const bucket = $("storageBucket").value.trim();
+function bindEvents() {
+  $("loginForm").addEventListener("submit", signIn);
 
-  if (!file) return toast("Choose an image first.");
-  if (!bucket) return toast("Enter an existing bucket name.");
-  if (file.size > 8 * 1024 * 1024) return toast("Image must be 8 MB or smaller.");
+  $("logoutBtn").addEventListener("click", async () => {
+    const { error } = await state.supabase.auth.signOut();
 
-  if (!["image/png", "image/jpeg", "image/webp", "image/gif"].includes(file.type)) {
-    return toast("Use PNG, JPG, WEBP or GIF.");
-  }
+    if (error) {
+      notify("Sign out failed: " + error.message);
+      return;
+    }
 
-  $("uploadImageBtn").disabled = true;
-  $("uploadMessage").textContent = "Uploading…";
+    setSignedIn(null);
+    showView("dashboard");
+    notify("Signed out.");
+  });
+
+  document.querySelectorAll("[data-view]").forEach(button => {
+    button.addEventListener("click", () => showView(button.dataset.view));
+  });
+
+  document.querySelectorAll("[data-goto]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (button.dataset.goto === "editor") resetEditor();
+      showView(button.dataset.goto);
+    });
+  });
+
+  document.querySelectorAll("[data-type]").forEach(button => {
+    button.addEventListener("click", () => {
+      $("typeFilter").value = button.dataset.type;
+      showView("content");
+      renderContentTable();
+    });
+  });
+
+  $("newContentBtn").addEventListener("click", () => {
+    resetEditor();
+    showView("editor");
+  });
+
+  $("contentNewBtn").addEventListener("click", () => {
+    resetEditor();
+    showView("editor");
+  });
+
+  $("contentSearch").addEventListener("input", renderContentTable);
+  $("typeFilter").addEventListener("change", renderContentTable);
+  $("statusFilter").addEventListener("change", renderContentTable);
+
+  document.addEventListener("click", event => {
+    const editButton = event.target.closest("[data-edit]");
+    if (editButton) loadRecord(editButton.dataset.edit);
+
+    const statusButton = event.target.closest("[data-status]");
+    if (statusButton) {
+      changeStatus(statusButton.dataset.status, statusButton.dataset.next);
+    }
+  });
+
+  document.querySelectorAll(".langtab").forEach(button => {
+    button.addEventListener("click", () => switchLanguage(button.dataset.lang));
+  });
+
+  $("contentForm").addEventListener("submit", event => {
+    event.preventDefault();
+    saveRecord(false);
+  });
+
+  $("saveDraftBtn").addEventListener("click", () => saveRecord(true));
+  $("deleteBtn").addEventListener("click", deleteRecord);
+
+  $("previewBtn").addEventListener("click", () => {
+    const language = $("previewLang").value;
+    const title = $(`title_${language}`).value;
+    const summary = $(`summary_${language}`).value;
+    const body = $(`body_${language}`).value;
+
+    $("previewArea").textContent =
+      title + "\n\n" + summary + "\n\n" + body;
+
+    $("previewArea").classList.remove("hidden");
+  });
+}
+
+async function initialise() {
+  bindEvents();
 
   try {
-    const filename = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, "-");
-    const path = "archive/" + Date.now() + "-" + filename;
-
-    const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
-      cacheControl: "3600",
-      upsert: false,
-      contentType: file.type
+    state.supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
     });
+
+    const { data, error } = await state.supabase.auth.getSession();
 
     if (error) throw error;
 
-    const { data: publicData } = supabase.storage.from(bucket).getPublicUrl(data.path);
-    const url = publicData?.publicUrl;
-
-    if (!url) throw new Error("Could not create a public URL. Check bucket settings.");
-
-    $("coverUrl").value = url;
-    $("coverPreview").src = url;
-    $("coverPreview").classList.remove("hidden");
-    $("uploadMessage").textContent = "Uploaded. Save the record to store the URL.";
-    toast("Image uploaded");
-  } catch (error) {
-    $("uploadMessage").textContent = "";
-    notice("editorNotice",
-      "Image upload failed: " + (error?.message || String(error)) +
-      ". Check bucket existence and Storage policies.", "bad");
-  } finally {
-    $("uploadImageBtn").disabled = false;
-  }
-}
-
-function populateSeoSelect() {
-  const select = $("seoRecordSelect");
-  if (!select) return;
-
-  const previous = select.value;
-  select.innerHTML = '<option value="">Choose a record…</option>' +
-    allRecords.map(r =>
-      `<option value="${esc(r.id)}">${esc(titleOf(r))} — ${esc(r.slug)}</option>`
-    ).join("");
-
-  if (allRecords.some(r => String(r.id) === previous)) select.value = previous;
-}
-
-function previewText() {
-  const lang = document.querySelector(".langtab.active")?.dataset.lang || "ur";
-  const text = [
-    $("title_" + lang).value,
-    $("subtitle_" + lang).value,
-    $("excerpt_" + lang).value,
-    $("body_" + lang).value
-  ].filter(Boolean).join("\n\n");
-
-  $("previewArea").textContent = text || "No text entered in this language.";
-  $("previewArea").classList.remove("hidden");
-}
-
-$("loginForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  hideNotice("loginNotice");
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: $("email").value.trim(),
-    password: $("password").value
-  });
-
-  if (error) {
-    return notice("loginNotice", "Sign-in failed: " + error.message, "bad");
-  }
-
-  const { data: admin, error: adminError } = await supabase
-    .from("admin_users")
-    .select("user_id,role,is_active")
-    .eq("user_id", data.user.id)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  if (adminError || !admin) {
-    await supabase.auth.signOut();
-    return notice("loginNotice",
-      adminError
-        ? "Admin verification failed: " + adminError.message
-        : "This account is not authorised in admin_users.",
-      "bad");
-  }
-
-  hideNotice("loginNotice");
-  setSignedIn(data.user);
-});
-
-$("logoutBtn").addEventListener("click", async () => {
-  await supabase.auth.signOut();
-  setSignedIn(null);
-});
-
-document.querySelectorAll("[data-view]").forEach(btn => {
-  btn.addEventListener("click", () => showView(btn.dataset.view));
-});
-
-document.querySelectorAll("[data-goto]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    if (btn.dataset.goto === "editor") blankEditor();
-    showView(btn.dataset.goto);
-  });
-});
-
-document.querySelectorAll("[data-type]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    $("typeFilter").value = btn.dataset.type;
-    showView("content");
-    renderTable();
-  });
-});
-
-$("newContentBtn").addEventListener("click", () => {
-  blankEditor();
-  showView("editor");
-});
-
-$("contentNewBtn").addEventListener("click", () => {
-  blankEditor();
-  showView("editor");
-});
-
-["contentSearch", "typeFilter", "statusFilter"].forEach(id => {
-  $(id).addEventListener(id === "contentSearch" ? "input" : "change", renderTable);
-});
-
-document.addEventListener("click", event => {
-  const edit = event.target.closest("[data-edit]");
-  if (edit) loadRecord(edit.dataset.edit);
-
-  const status = event.target.closest("[data-status]");
-  if (status) changeStatus(status.dataset.status, status.dataset.next);
-});
-
-document.querySelectorAll(".langtab").forEach(btn => {
-  btn.addEventListener("click", () => setLang(btn.dataset.lang));
-});
-
-$("contentForm").addEventListener("submit", event => {
-  event.preventDefault();
-  saveRecord(false);
-});
-
-$("saveDraftBtn").addEventListener("click", () => saveRecord(true));
-$("deleteBtn").addEventListener("click", deleteRecord);
-$("previewBtn").addEventListener("click", previewText);
-$("uploadImageBtn").addEventListener("click", uploadImage);
-
-$("coverUrl").addEventListener("input", () => {
-  const url = $("coverUrl").value.trim();
-  if (!url) {
-    $("coverPreview").classList.add("hidden");
-    return;
-  }
-
-  $("coverPreview").src = url;
-  $("coverPreview").classList.remove("hidden");
-});
-
-$("previewMediaBtn").addEventListener("click", () => {
-  const url = $("mediaUrl").value.trim();
-  if (!url) return toast("Enter an image URL first.");
-
-  $("mediaPreview").src = url;
-  $("mediaPreview").classList.remove("hidden");
-  $("mediaPreview").onerror = () => toast("Image could not be loaded. Check the URL.");
-});
-
-$("copyMediaBtn").addEventListener("click", async () => {
-  const url = $("mediaUrl").value.trim();
-  if (!url) return toast("Enter a URL first.");
-
-  try {
-    await navigator.clipboard.writeText(url);
-    toast("URL copied");
-  } catch {
-    toast("Copy unavailable. Select and copy the URL manually.");
-  }
-});
-
-$("openSeoRecordBtn").addEventListener("click", () => {
-  const id = $("seoRecordSelect").value;
-  if (!id) return notice("seoNotice", "Select a record first.", "bad");
-
-  const record = allRecords.find(r => String(r.id) === id);
-  if (!record) return notice("seoNotice", "Record not found.", "bad");
-
-  fillEditor(record);
-  showView("editor");
-  setLang("ur");
-
-  notice("editorNotice",
-    "SEO fields are available below. They persist only if matching database fields exist.",
-    "");
-});
-
-let authCheckInProgress = false;
-
-supabase.auth.onAuthStateChange(async (_event, session) => {
-  if (!session) {
-    setSignedIn(null);
-    return;
-  }
-
-  if (currentUser?.id === session.user.id || authCheckInProgress) return;
-  authCheckInProgress = true;
-
-  try {
-    const { data: admin, error } = await supabase
-      .from("admin_users")
-      .select("user_id,is_active")
-      .eq("user_id", session.user.id)
-      .eq("is_active", true)
-      .maybeSingle();
-
-    if (admin && !error) {
-      setSignedIn(session.user);
-    } else {
-      await supabase.auth.signOut();
-      notice("loginNotice",
-        "Admin access could not be verified. Check admin_users and its policies.",
-        "bad");
+    if (data.session) {
+      await handleSession(data.session);
     }
-  } finally {
-    authCheckInProgress = false;
+
+    state.supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        setSignedIn(null);
+      }
+    });
+  } catch (error) {
+    showNotice(
+      "loginNotice",
+      "Could not initialise Supabase: " + (error.message || error),
+      "bad"
+    );
   }
-});
+}
 
-(async function init() {
-  const { data, error } = await supabase.auth.getSession();
-
-  if (error) {
-    return notice("loginNotice",
-      "Could not restore session: " + error.message, "bad");
-  }
-
-  if (!data.session) return;
-
-  const user = data.session.user;
-  const { data: admin, error: adminError } = await supabase
-    .from("admin_users")
-    .select("user_id,is_active")
-    .eq("user_id", user.id)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  if (admin && !adminError) {
-    setSignedIn(user);
-  } else {
-    await supabase.auth.signOut();
-    notice("loginNotice",
-      "Session exists, but admin access could not be verified. Check admin_users and its policies.",
-      "bad");
-  }
-})();
+initialise();
 </script>
 </body>
 </html>
-
-  
