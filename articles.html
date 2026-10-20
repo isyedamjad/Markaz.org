@@ -30,6 +30,9 @@ a{color:inherit;text-decoration:none}button,input{font:inherit}
 .heading{display:flex;justify-content:space-between;align-items:end;margin:38px 0 20px;gap:15px}
 .heading h2{font:600 clamp(1.7rem,3vw,2.4rem) var(--s);color:var(--d);margin:0}
 .heading p{color:var(--m);font-size:.84rem}
+.category-filter{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.cat-btn{background:#fffdf9;border:1px solid var(--l);padding:6px 14px;border-radius:20px;font-size:.82rem;color:var(--m);cursor:pointer;transition:.2s}
+.cat-btn:hover,.cat-btn.active{background:var(--w);color:white;border-color:var(--w)}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .card{background:#fffdf9;border:1px solid var(--l);padding:23px;min-height:190px;display:flex;flex-direction:column;transition:.2s}
 .card:hover{transform:translateY(-3px);border-color:#c6a978;box-shadow:0 18px 48px #43222012}
@@ -102,6 +105,12 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
     <input id="q" type="search" placeholder="Search by title, name or keyword…" aria-label="Search">
     <button id="clear">Clear search</button>
   </div>
+  
+  <!-- Category Filter Buttons Bar -->
+  <div class="category-filter" id="categoryFilter">
+    <button class="cat-btn active" data-cat="all">All Categories</button>
+  </div>
+
   <div class="heading">
     <h2 id="sectionTitle">Explore Articles & Research</h2>
     <p id="count">Loading entries…</p>
@@ -118,14 +127,13 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const db = window.supabase.createClient('https://pooatzegjnegutflkcbm.supabase.co','sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN');
-let lang = 'en', rows = [];
-const $ = x => document.getElementById(x);
-$('year').textContent = new Date().getFullYear();
+let lang = 'en', rows = [], selectedCategory = 'all';
+const $= x => document.getElementById(x);$('year').textContent = new Date().getFullYear();
 
 const T = {
-  en: { top: 'A living archive of Sufi poetry, wisdom and heritage', search: 'Search by title, name or keyword…', clear: 'Clear search', none: 'No published entries found.', open: 'Explore entry →', loading: 'Loading archive entries…', nav: ['Home','Poetry','Saints & Poets','Library','Articles','Heritage','Terminology'], brand: 'Sufi Adab Archive', home: 'Home', heroTitle: "Articles & Research", heroDesc: "Read essays, historical notes, letters and literary research on Sufism, mysticism and shared cultural heritage.", sectionTitle: "Explore Articles & Research", eyebrow: "ESSAYS · STORIES · LETTERS" },
-  hi: { top: 'सूफ़ी साहित्य, ज्ञान और विरासत का जीवंत संग्रह', search: 'शीर्षक, नाम या शब्द खोजें…', clear: 'खोज हटाएँ', none: 'कोई प्रकाशित सामग्री नहीं मिली।', open: 'विवरण देखें →', loading: 'संग्रह की सामग्री लोड हो रही है…', nav: ['होम','कविता','सूफ़ी, संत और कवि','डिजिटल लाइब्रेरी','लेख','विरासत','शब्दावली'], brand: 'सूफ़ी अदब आर्काइव', heroTitle: "مقالات اور शोध", heroDesc: "सूफ़ीवाद, रहस्यवाद और साझा सांस्कृतिक विरासत पर निबंध, ऐतिहासिक टिप्पणियाँ, पत्र और साहित्यिक शोध पढ़ें।", sectionTitle: "लेख और शोध पढ़ें", eyebrow: "सूफ़ी साहित्य · जीवन · विरासत" },
-  ur: { top: 'صوفی ادب، حکمت اور ورثے کا زندہ ذخیرہ', search: 'عنوان، نام یا لفظ تلاش کریں…', clear: 'تلاش صاف کریں', none: 'کوئی شائع شدہ مواد نہیں ملا۔', open: 'تفصیل دیکھیں ←', loading: 'ذخیرے کا مواد لوڈ ہو رہا ہے…', nav: ['صفحۂ اول','شاعری','صوفیا، اولیا اور شعرا','ڈیجیٹل کتب خانہ','مقالات','ورثہ','اصطلاحات'], brand: 'صوفی ادب آرکائیو', heroTitle: "مقالات و تحقیق", heroDesc: "تصوف، عرفان اور مشترکہ ثقافتی ورثے پر مضامین، تاریخی نوٹس، خطوط اور ادبی تحقیق پڑھیے۔", sectionTitle: "مقالات و تحقیق ملاحظہ کریں", eyebrow: "صوفی ادب · سوانح · ورثہ" }
+  en: { top: 'A living archive of Sufi poetry, wisdom and heritage', search: 'Search by title, name or keyword…', clear: 'Clear search', none: 'No published entries found.', open: 'Explore entry →', loading: 'Loading archive entries…', nav: ['Home','Poetry','Saints & Poets','Library','Articles','Heritage','Terminology'], brand: 'Sufi Adab Archive', home: 'Home', heroTitle: "Articles & Research", heroDesc: "Read essays, historical notes, letters and literary research on Sufism, mysticism and shared cultural heritage.", sectionTitle: "Explore Articles & Research", eyebrow: "ESSAYS · STORIES · LETTERS", allCat: "All Categories" },
+  hi: { top: 'सूफ़ी साहित्य, ज्ञान और विरासत का जीवंत संग्रह', search: 'शीर्षक, नाम या शब्द खोजें…', clear: 'खोज हटाएँ', none: 'कोई प्रकाशित सामग्री नहीं मिली।', open: 'विवरण देखें →', loading: 'संग्रह की सामग्री लोड हो रही है…', nav: ['होम','कविता','सूफ़ी, संत और कवि','डिजिटल लाइब्रेरी','लेख','विरासत','शब्दावली'], brand: 'सूफ़ी अदब आर्काइव', heroTitle: "مقالات اور शोध", heroDesc: "सूफ़ीवाद, रहस्यवाद और साझा सांस्कृतिक विरासत पर निबंध, ऐतिहासिक टिप्पणियाँ, पत्र और साहित्यिक शोध पढ़ें।", sectionTitle: "लेख और शोध पढ़ें", eyebrow: "सूफ़ी साहित्य · जीवन · विरासत", allCat: "सभी श्रेणियां" },
+  ur: { top: 'صوفی ادب، حکمت اور ورثے کا زندہ ذخیرہ', search: 'عنوان، نام یا لفظ تلاش کریں…', clear: 'تلاش صاف کریں', none: 'کوئی شائع شدہ مواد نہیں ملا۔', open: 'تفصیل دیکھیں ←', loading: 'ذخیرے کا مواد لوڈ ہو رہا ہے…', nav: ['صفحۂ اول','شاعری','صوفیا، اولیا اور شعرا','ڈیجیٹل کتب خانہ','مقالات','ورثہ','اصطلاحات'], brand: 'صوفی ادب آرکائیو', heroTitle: "مقالات و تحقیق", heroDesc: "تصوف، عرفان اور مشترکہ ثقافتی ورثے پر مضامین، تاریخی نوٹس، خطوط اور ادبی تحقیق پڑھیے۔", sectionTitle: "مقالات و تحقیق ملاحظہ کریں", eyebrow: "صوفی ادب · سوانح · ورثہ", allCat: "تمام زمرے" }
 };
 
 function esc(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
@@ -137,14 +145,39 @@ function tr(a){
   return a.find(x => x.title) || {};
 }
 
+function renderCategories() {
+  // Extract unique categories from rows
+  const categories = ['all', ...new Set(rows.map(x => x.category || x.work_type || 'General').filter(Boolean))];
+  const filterContainer = $('categoryFilter');
+  filterContainer.innerHTML = categories.map(cat => {
+    const activeClass = selectedCategory === cat ? 'active' : '';
+    const label = cat === 'all' ? T[lang].allCat : cat;
+    return `<button class="cat-btn ${activeClass}" data-cat="${esc(cat)}">${esc(label)}</button>`;
+  }).join('');
+
+  filterContainer.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedCategory = btn.dataset.cat;
+      filterContainer.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+  });
+}
+
 function render(){
   let q = $('q').value.trim().toLowerCase();
-  let list = rows.filter(x => [x.slug, ...(x.author_work_translations||[]).flatMap(y => [y.title, y.subtitle, y.excerpt, y.body, y.transliteration])].filter(Boolean).join(' ').toLowerCase().includes(q));
   
-  $('count').textContent = list.length + ' entries';
-  $('grid').innerHTML = list.length ? list.map(x => {
+  let list = rows.filter(x => {
+    let catMatch = selectedCategory === 'all' || (x.category || x.work_type || 'General') === selectedCategory;
+    let textMatch = [x.slug, ...(x.author_work_translations||[]).flatMap(y => [y.title, y.subtitle, y.excerpt, y.body, y.transliteration])].filter(Boolean).join(' ').toLowerCase().includes(q);
+    return catMatch && textMatch;
+  });
+  
+  $('count').textContent = list.length + ' entries';$('grid').innerHTML = list.length ? list.map(x => {
     let t = tr(x.author_work_translations);
-    return '<article class="card"><span class="type">Article</span><h3>'+esc(t.title||x.slug)+'</h3><p>'+esc(t.excerpt||t.subtitle||'')+'</p><a class="open" href="article.html?slug='+encodeURIComponent(x.slug)+'">'+esc(T[lang].open)+'</a></article>';
+    let displayCat = x.category || x.work_type || 'Article';
+    return '<article class="card"><span class="type">'+esc(displayCat)+'</span><h3>'+esc(t.title||x.slug)+'</h3><p>'+esc(t.excerpt||t.subtitle||'')+'</p><a class="open" href="article.html?slug='+encodeURIComponent(x.slug)+'">'+esc(T[lang].open)+'</a></article>';
   }).join('') : '<div class="empty">'+esc(T[lang].none)+'</div>';
 }
 
@@ -156,8 +189,7 @@ function language(l){
   document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
   $('top').textContent = d.top;
   $('q').placeholder = d.search;
-  $('q').setAttribute('aria-label', d.search);
-  $('clear').textContent = d.clear;
+  $('q').setAttribute('aria-label', d.search);$('clear').textContent = d.clear;
   $('heroTitle').textContent = d.heroTitle;
   $('heroDesc').textContent = d.heroDesc;
   $('sectionTitle').textContent = d.sectionTitle;
@@ -174,17 +206,18 @@ function language(l){
     const labels = lang === 'ur' ? ['صفحۂ اول','ڈیجیٹل کتب خانہ','تعارف'] : lang === 'hi' ? ['होम','डिजिटल लाइब्रेरी','परिचय'] : ['Home','Digital Library','About'];
     links.forEach((a,i) => { if (labels[i]) a.textContent = labels[i]; });
   }
+  renderCategories();
   render();
 }
 
 document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => language(b.dataset.lang)));
 $('q').addEventListener('input', render);
-$('clear').addEventListener('click', () => { $('q').value = ''; render(); });
+$('clear').addEventListener('click', () => {$('q').value = ''; render(); });
 
 async function load(){
   try {
     let r = await db.from('author_works')
-      .select('id, slug, status, work_type, author_work_translations(language_code, title, subtitle, excerpt, body, transliteration)')
+      .select('id, slug, status, work_type, category, author_work_translations(language_code, title, subtitle, excerpt, body, transliteration)')
       .eq('status', 'published')
       .eq('work_type', 'article')
       .order('created_at', { ascending: false })
@@ -192,11 +225,11 @@ async function load(){
 
     if(r.error) throw r.error;
     rows = (r.data || []).filter(x => x.slug);
+    renderCategories();
     render();
   } catch(e) {
     console.error(e);
-    $('count').textContent = '';
-    $('grid').innerHTML = '<div class="empty">Could not load entries. Check Supabase permissions.<br><small>'+esc(e.message||'')+'</small></div>';
+    $('count').textContent = '';$('grid').innerHTML = '<div class="empty">Could not load entries. Check Supabase permissions.<br><small>'+esc(e.message||'')+'</small></div>';
   }
 }
 
