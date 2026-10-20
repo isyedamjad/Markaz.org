@@ -104,7 +104,7 @@ main {
 @keyframes spin { to { transform: rotate(360deg); } }
 .primary-btn {
   background: var(--deep);
-  color: white;
+  color: #ffffff !important;
   border: 0;
   border-radius: 9px;
   padding: 10px 18px;
@@ -126,17 +126,31 @@ main {
 }
 .portrait-wrap {
   width: 100%;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
-  border-radius: 14px;
-  background: #eee1d0;
-  border: 1px solid var(--line);
+  text-align: center;
 }
 .portrait {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 180px;
+  height: 180px;
   object-fit: cover;
+  border-radius: 50%; /* Circle shape */
+  margin: 0 auto 12px;
+  background: #eee1d0;
+  border: 3px solid var(--gold);
+}
+.upload-btn-label {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--wine);
+  background: var(--cream);
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.upload-btn-label:hover {
+  background: var(--gold-light);
 }
 .eyebrow {
   color: var(--gold);
@@ -151,7 +165,7 @@ main {
   margin: 7px 0 12px;
   overflow-wrap: anywhere;
 }
-.name-detail { color: var(--muted); margin-bottom: 12px; }
+.name-detail { color: var(--muted); margin-bottom: 12px; font-size: 15px; }
 .short-bio { font-size: 17px; color: #514741; }
 .facts {
   display: flex;
@@ -189,23 +203,30 @@ main {
   margin: 0 0 18px;
 }
 .panel p { margin-top: 0; }
-.profile-nav {
+.profile-tabs {
   display: flex;
-  gap: 9px;
+  gap: 8px;
   flex-wrap: wrap;
   margin: 25px 0;
+  border-bottom: 2px solid var(--line);
+  padding-bottom: 15px;
 }
-.profile-nav a {
-  display: inline-block;
-  padding: 8px 15px;
+.tab-btn {
+  padding: 9px 18px;
   text-decoration: none;
   border: 1px solid var(--line);
   background: var(--paper);
+  color: var(--deep);
   border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.2s;
 }
-.profile-nav a:hover {
+.tab-btn:hover, .tab-btn.active {
   background: var(--deep);
   color: white;
+  border-color: var(--deep);
 }
 .work-grid {
   display: grid;
@@ -228,13 +249,11 @@ main {
 }
 .work-title {
   font: 700 21px/1.4 "Playfair Display",serif;
-  color: #ffffff !important; /* Author name color white rakha gaya hai taaki readable ho */
+  color: #292321 !important;
   margin: 5px 0 10px;
   overflow-wrap: anywhere;
 }
-.work-title a {
-  color: #ffffff !important;
-}
+.work-title a { color: #292321 !important; text-decoration: none; }
 .work-excerpt { color: var(--muted); }
 .empty {
   padding: 24px 10px;
@@ -255,51 +274,17 @@ main {
   font: 600 19px "Playfair Display",serif;
 }
 [hidden] { display: none !important; }
-html[dir="rtl"] .profile-name,
-html[dir="rtl"] .panel h2,
-html[dir="rtl"] .work-title { font-family: "Noto Nastaliq Urdu",serif; }
 @media(max-width:650px) {
   .topbar { padding: 15px 17px; }
   .brand { font-size: 27px; }
   .languages { width: 100%; }
   .lang-btn { flex: 1; padding: 8px 10px; }
   main { padding: 22px 13px 40px; }
-  .hero { grid-template-columns: 105px minmax(0,1fr); gap: 15px; padding: 16px; }
+  .hero { grid-template-columns: 1fr; text-align: center; gap: 20px; padding: 20px; }
+  .portrait { margin: 0 auto; }
+  .facts { justify-content: center; }
   .profile-name { font-size: 26px; }
-  .short-bio { font-size: 15px; }
-  .facts { gap: 8px; margin-top: 13px; }
-  .fact { min-width: 0; padding: 8px; flex: 1; }
-  .panel { padding: 19px; }
-  .panel h2 { font-size: 23px; }
 }
-@media(max-width:380px) {
-  .hero { grid-template-columns: 1fr; }
-  .portrait-wrap { max-width: 180px; }
-}
-</style>
-<style>
-/* MARKAZ.ORG — high-contrast editorial design system */
-:root{color-scheme:light;--mz-ink:#17252b;--mz-ink-soft:#35464b;--mz-muted:#59696d;--mz-paper:#fbfaf7;--mz-white:#fff;--mz-panel:#f1f4f1;--mz-line:#dce3df;--mz-teal:#075e59;--mz-teal-deep:#064743;--mz-gold:#a7782d;--mz-gold-pale:#f3e8d2;--mz-shadow:0 16px 42px rgba(23,37,43,.08);--mz-radius:18px;--mz-serif:Georgia,'Times New Roman',serif;--mz-sans:Inter,'Segoe UI',Arial,sans-serif}
-html{scroll-behavior:smooth;background:var(--mz-paper)}body{background:var(--mz-paper)!important;color:var(--mz-ink)!important;font-family:var(--mz-sans)!important;line-height:1.7!important;font-size:16px!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body *{box-sizing:border-box}p,li,dd,dt,label,small,.muted,.eyebrow,.tag,.brand-sub,.brand-subtitle,.subtitle,.description,.meta,.date,.status-detail{color:var(--mz-ink-soft)}p{line-height:1.8}a{color:var(--mz-teal)!important;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:var(--mz-gold)!important}button,input,select,textarea{font:inherit}button,.btn,[type=submit],[role=button]{transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}button:hover,.btn:hover,[type=submit]:hover{transform:translateY(-1px)}:focus-visible{outline:3px solid #d4a54d!important;outline-offset:3px!important}img{max-width:100%}
-/* Shared mastheads and navigation */
-.topline,.top,.topbar,.topline *{border-color:var(--mz-line)}.topline,.top{background:#f0f3ef!important;color:var(--mz-ink)!important}.topline a,.top a{color:var(--mz-ink)!important}.site-header,.head,.header,.topbar,.headrow{background:rgba(255,255,255,.97)!important;color:var(--mz-ink)!important;border-bottom:1px solid var(--mz-line)!important;box-shadow:0 5px 24px rgba(23,37,43,.035)!important}.header-inner,.head .in,.headrow,.topbar{max-width:1240px}.brand,.brand-name,.brandname,.brandmark{color:var(--mz-ink)!important}.brand-name,.brandname{font-family:var(--mz-serif)!important;font-weight:700!important;letter-spacing:-.035em}.brand-sub,.brand-subtitle,.brand .small,.tag{color:var(--mz-muted)!important}.brand-mark,.brandmark,.mark{background:var(--mz-teal)!important;color:white!important;border-color:var(--mz-teal)!important}.nav a,.nav button,.navright a,.header-actions a,.lang,.lang-btn,.languages button,.lang-switch button{color:var(--mz-ink-soft)!important;font-weight:600!important}.nav a:hover,.nav a.active,.lang.active,.lang-btn.active,.lang-switch .active{color:var(--mz-teal)!important}.nav a.active:after,.nav a:hover:after{background:var(--mz-gold)!important}.menu-toggle{color:var(--mz-ink)!important;border-color:var(--mz-line)!important}
-/* Hero panels */
-.hero{color:var(--mz-ink)!important;background:linear-gradient(130deg,#eef4f0 0%,#fbfaf7 58%,#f5eddf 100%)!important;border-color:var(--mz-line)!important}.hero h1,.hero h2,.hero .heading,.heroTitle,.hero-title{color:var(--mz-ink)!important}.hero p,.hero .tagline,.hero .sub,.hero .hero-desc{color:var(--mz-ink-soft)!important}.eyebrow,.kicker,.hero .eyebrow{color:var(--mz-teal)!important;font-weight:750!important;letter-spacing:.13em!important;text-transform:uppercase!important;font-size:.75rem!important}.hero h1,.heroTitle,.hero-title,h1{font-family:var(--mz-serif)!important;letter-spacing:-.035em;line-height:1.13!important}h1,h2,h3,h4,h5{color:var(--mz-ink)!important;line-height:1.25!important}h2,h3{font-family:var(--mz-serif)!important;letter-spacing:-.02em} .rule,.ornament,.divider{border-color:var(--mz-gold)!important;color:var(--mz-gold)!important}
-/* Main content, grids and cards */
-main,.wrap,.container,.article-container,.content,.library-wrap{color:var(--mz-ink)!important}.panel,.card,.lead-card,.book-card,.poem-card,.article-card,.author-card,.saint-card,.term-card,.feature-card,.result-card,.item-card,.entry-card,.grid article,.grid>*,.articleGrid>*{background:var(--mz-white)!important;color:var(--mz-ink)!important;border:1px solid var(--mz-line)!important;border-radius:var(--mz-radius)!important;box-shadow:0 5px 22px rgba(23,37,43,.045)!important}.panel:hover,.card:hover,.article-card:hover,.book-card:hover,.feature-card:hover,.grid article:hover{box-shadow:var(--mz-shadow)!important;border-color:#c3d4ce!important}.panel p,.card p,.lead-card p,.article-card p,.book-card p,.grid article p{color:var(--mz-ink-soft)!important}.section-title,.sectionTitle,.heading{color:var(--mz-ink)!important}.section-title:after,.sectionTitle:after{background:var(--mz-gold)!important}.empty,.loading,.status,.status-detail,.muted,.small{color:var(--mz-muted)!important}.badge,.pill,.tag-pill{background:#e6f0ec!important;color:var(--mz-teal-deep)!important;border:1px solid #c8ded6!important;border-radius:999px!important}
-/* Buttons and search */
-.btn,.button,button.primary,.btn-primary,.primary,[type=submit]{background:var(--mz-teal)!important;color:#fff!important;border:1px solid var(--mz-teal)!important;border-radius:999px!important;font-weight:700!important;box-shadow:0 5px 14px rgba(7,94,89,.12)}.btn:hover,.button:hover,button.primary:hover,.btn-primary:hover,.primary:hover,[type=submit]:hover{background:var(--mz-teal-deep)!important;color:#fff!important;box-shadow:0 8px 20px rgba(7,94,89,.2)}.btn.secondary,.secondary,.btn-outline,.button.secondary{background:#fff!important;color:var(--mz-teal)!important;border:1px solid #b8cec7!important;box-shadow:none!important}.btn.danger,.danger{background:#9d3030!important;color:#fff!important;border-color:#9d3030!important}.search,input,select,textarea,.field input,.field select,.field textarea{background:#fff!important;color:var(--mz-ink)!important;border:1px solid #cbd6d2!important;border-radius:12px!important;box-shadow:none!important}input::placeholder,textarea::placeholder{color:#788589!important;opacity:1}input:focus,select:focus,textarea:focus{border-color:var(--mz-teal)!important;box-shadow:0 0 0 3px rgba(7,94,89,.12)!important;outline:none!important}label{color:var(--mz-ink)!important;font-weight:650}
-/* Poetry, Urdu and reading surfaces */
-.poem,.poetry,.verse,.sher,.couplet,.ghazal,.poem-text,.urdu,.arabic,[lang=ur],[dir=rtl]{color:var(--mz-ink)!important}.poem,.poetry,.verse,.sher,.couplet,.ghazal,.poem-text{background:#f7f4ec!important;border-color:#e5dac5!important}.urdu,.arabic,[lang=ur],[dir=rtl]{font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif!important;line-height:2.15!important}.reader,.reading,.article-body,.prose,.book-content,.entry-body{color:#24343a!important;font-size:1.04rem!important;line-height:1.95!important}.reader p,.reading p,.article-body p,.prose p,.book-content p,.entry-body p{color:#24343a!important;line-height:1.95!important}.reader blockquote,blockquote{border-left:3px solid var(--mz-gold)!important;background:#f5f1e8!important;color:var(--mz-ink)!important;padding:1.1rem 1.3rem!important;border-radius:0 12px 12px 0}
-/* Footer */
-footer,.footer{background:#14282d!important;color:#eaf0ed!important;border-top:3px solid var(--mz-gold)!important}footer p,footer li,footer small,.footer p,.footer li,.footer small{color:#d6e1dd!important}footer a,.footer a{color:#f2d9a7!important}footer a:hover,.footer a:hover{color:#fff!important}
-/* Tables and status */
-table{width:100%;border-collapse:collapse;color:var(--mz-ink)!important;background:#fff!important}th{background:#eaf1ed!important;color:var(--mz-ink)!important;font-weight:750}td,th{border-bottom:1px solid var(--mz-line)!important;padding:.8rem!important}tr:nth-child(even) td{background:#fafbf9!important}.spinner{border-color:#dce5e1!important;border-top-color:var(--mz-teal)!important}.status-title{color:var(--mz-ink)!important}
-/* Admin studio: clear, professional control surface */
-body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important}#loginScreen,.loginwrap,.loginbox,#app,.admin-card,.section-card{color:var(--mz-ink)!important}#loginScreen .card,.loginbox,.loginwrap .card{background:#fff!important;border:1px solid var(--mz-line)!important;box-shadow:var(--mz-shadow)!important}#app .sidebar,#app aside{background:#14282d!important;color:#edf4f0!important}#app .sidebar a,#app aside a{color:#e1ebe6!important}#app .sidebar a.active,#app aside a.active{background:#24534f!important;color:#fff!important}#app .muted,#loginScreen .muted{color:var(--mz-muted)!important}.hidden{display:none!important}
-/* Responsive and reduced-motion refinements */
-@media(max-width:760px){body{font-size:15px!important}.hero{padding:clamp(1.5rem,6vw,2.6rem)!important}.hero h1,.heroTitle,h1{font-size:clamp(2rem,9vw,3.3rem)!important}.nav{gap:.55rem!important}.panel,.card,.lead-card,.book-card,.poem-card,.article-card{border-radius:14px!important}.header-inner,.head .in,.headrow{padding-left:1rem!important;padding-right:1rem!important}table{display:block;overflow-x:auto}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 </style>
 </head>
 
@@ -343,6 +328,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
   let translations = [];
   let works = [];
   let currentLang = "en";
+  let currentTab = "profile"; // Default tab
   let loading = false;
 
   const LABELS = {
@@ -352,13 +338,15 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       category: "Author & Poet Profile",
       born: "Born",
       died: "Died",
-      biography: "Biography",
+      birthPlace: "Birth Place",
+      deathPlace: "Death Place",
+      realName: "Real Name",
+      penName: "Pen Name",
+      bio: "Biography",
       legacy: "Life & Legacy",
-      works: "Poetry, Books & Related Works",
       read: "Read text",
       noBio: "Biography has not been added yet.",
-      noWorks: "No published works are available yet.",
-      noTranslation: "A translation is not available in this language yet.",
+      noWorks: "No published works found in this section.",
       notFound: "This profile was not found or has not been published.",
       missingSlug: "The profile slug is missing from the URL.",
       retry: "Try again",
@@ -366,21 +354,32 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       check: "Check the profile status, Supabase permissions and internet connection.",
       unknown: "An unexpected error occurred.",
       authorsListTitle: "All Authors & Poets",
-      authorsListSubtitle: "Explore profiles of all published authors and scholars."
+      authorsListSubtitle: "Explore profiles of all published authors and scholars.",
+      uploadPhoto: "Change Picture",
+      tabs: {
+        profile: "Profile",
+        naat: "Naat",
+        manqabat: "Manqabat",
+        ghazal: "Ghazal",
+        article: "Articles",
+        sher: "Sher"
+      }
     },
     hi: {
       loading: "प्रोफ़ाइल लोड हो रही है…",
       connecting: "Markaz.org डिजिटल लाइब्रेरी से जुड़ रहे हैं।",
       category: "लेखक और शायर का परिचय",
-      born: "जन्म",
-      died: "वफ़ात",
-      biography: "जीवनी",
+      born: "जन्म तिथि",
+      died: "वफ़ात तिथि",
+      birthPlace: "जन्म स्थान",
+      deathPlace: "वफ़ात स्थान",
+      realName: "वास्तविक नाम",
+      penName: "तखल्लुस / पेन नेम",
+      bio: "जीवनी",
       legacy: "जीवन और विरासत",
-      works: "कलाम, पुस्तकें और संबंधित रचनाएँ",
       read: "पाठ पढ़ें",
       noBio: "जीवनी अभी जोड़ी नहीं गई है।",
-      noWorks: "अभी कोई प्रकाशित रचना उपलब्ध नहीं है।",
-      noTranslation: "इस भाषा में अनुवाद अभी उपलब्ध नहीं है।",
+      noWorks: "इस सेक्शन में कोई रचना उपलब्ध नहीं है।",
       notFound: "प्रोफ़ाइल नहीं मिली या अभी प्रकाशित नहीं है।",
       missingSlug: "URL में प्रोफ़ाइल का slug नहीं मिला।",
       retry: "दोबारा कोशिश करें",
@@ -388,21 +387,32 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       check: "प्रोफ़ाइल का status, Supabase permissions और इंटरनेट कनेक्शन जाँचें।",
       unknown: "एक अनजान त्रुटि हुई।",
       authorsListTitle: "सभी लेखक और शायर",
-      authorsListSubtitle: "सभी प्रकाशित लेखकों और विद्वानों की प्रोफ़ाइल देखें।"
+      authorsListSubtitle: "सभी प्रकाशित लेखकों और विद्वानों की प्रोफ़ाइल देखें।",
+      uploadPhoto: "तस्वीर बदलें",
+      tabs: {
+        profile: "प्रोफ़ाइल",
+        naat: "नात",
+        manqabat: "منقبت",
+        ghazal: "ग़ज़ल",
+        article: "लेख",
+        sher: "शेर"
+      }
     },
     ur: {
       loading: "پروفائل لوڈ ہو رہی ہے…",
       connecting: "مرکز ڈاٹ آرگ کی ڈیجیٹل لائبریری سے رابطہ ہو رہا ہے۔",
       category: "مصنف اور شاعر کا تعارف",
-      born: "پیدائش",
-      died: "وفات",
-      biography: "سوانح",
+      born: "تاریخ پیدائش",
+      died: "تاریخ وفات",
+      birthPlace: "جائے پیدائش",
+      deathPlace: "جائے وفات",
+      realName: "اصل نام",
+      penName: "تخلص",
+      bio: "سوانح",
       legacy: "زندگی اور علمی وراثت",
-      works: "کلام، کتابیں اور متعلقہ تصانیف",
       read: "متن پڑھیے",
       noBio: "سوانح ابھی شامل نہیں کی گئی ہے۔",
-      noWorks: "ابھی کوئی شائع شدہ تصنیف دستیاب نہیں ہے۔",
-      noTranslation: "اس زبان میں ترجمہ ابھی دستیاب نہیں ہے۔",
+      noWorks: "اس زمرے میں کوئی تصنیف دستیاب نہیں ہے۔",
       notFound: "پروفائل نہیں ملی یا ابھی شائع نہیں ہوئی ہے۔",
       missingSlug: "URL میں پروفائل کا slug موجود نہیں ہے۔",
       retry: "دوبارہ کوشش کریں",
@@ -410,7 +420,16 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       check: "प्रोफ़ाइल का status، Supabase permissions और انٹرنیٹ کنکشن چیک کریں۔",
       unknown: "ایک غیر متوقع خرابی پیش آئی۔",
       authorsListTitle: "تمام مصنفین اور شعرا",
-      authorsListSubtitle: "تمام شائع شدہ مصنفین اور محققین کے پروفائلز دیکھیں۔"
+      authorsListSubtitle: "تمام شائع شدہ مصنفین اور محققین کے پروفائلز دیکھیں۔",
+      uploadPhoto: "تصویر تبدیل کریں",
+      tabs: {
+        profile: "پروفائل",
+        naat: "نعت",
+        manqabat: "منقبت",
+        ghazal: "غزل",
+        article: "مقالات",
+        sher: "اشعار"
+      }
     }
   };
 
@@ -474,8 +493,8 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       return '<article class="work-card" style="display:flex;gap:15px;align-items:center;">' +
         '<img src="' + escapeHTML(img) + '" alt="' + escapeHTML(name) + '" style="width:70px;height:70px;object-fit:cover;border-radius:50%;" onerror="this.src=\'' + PLACEHOLDER + '\'">' +
         '<div>' +
-          '<h3 class="work-title" style="margin:0 0 5px;"><a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" style="color:#ffffff !important;text-decoration:none;">' + escapeHTML(name) + '</a></h3>' +
-          '<a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:12px;padding:4px 10px;margin-top:5px;">View Profile</a>' +
+          '<h3 class="work-title" style="margin:0 0 5px;"><a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" style="color:#292321 !important;text-decoration:none;">' + escapeHTML(name) + '</a></h3>' +
+          '<a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:12px;padding:6px 12px;margin-top:5px;color:#ffffff !important;">View Profile</a>' +
         '</div>' +
       '</article>';
     }).join("");
@@ -495,12 +514,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
     const L = labels();
     const t = pickTranslation(translations);
 
-    const displayName =
-      t.display_name ||
-      profile.real_name ||
-      profile.pen_name ||
-      profile.slug ||
-      "Markaz.org";
+    const displayName = t.display_name || profile.real_name || profile.pen_name || profile.slug || "Markaz.org";
 
     document.documentElement.lang = currentLang;
     document.documentElement.dir = currentLang === "ur" ? "rtl" : "ltr";
@@ -508,84 +522,113 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
     document.querySelectorAll("[data-lang]").forEach(function (button) {
       button.classList.toggle("active", button.dataset.lang === currentLang);
-      button.setAttribute(
-        "aria-pressed",
-        button.dataset.lang === currentLang ? "true" : "false"
-      );
     });
 
     const realName = t.real_name || profile.real_name || "";
     const penName = t.pen_name || profile.pen_name || "";
-    const subtitle = [realName, penName && penName !== realName ? `(${penName})` : ""]
-      .filter(Boolean)
-      .join(" ");
-
-    const bio = t.biography
-      ? withLineBreaks(t.biography)
-      : '<p class="status-detail">' + escapeHTML(L.noBio) + '</p>';
-
-    const legacy = t.life_and_legacy
-      ? '<section class="panel" id="legacy"><h2>' + escapeHTML(L.legacy) +
-        '</h2><div>' + withLineBreaks(t.life_and_legacy) + '</div></section>'
-      : "";
+    
+    // Details conditional building
+    let detailsArr = [];
+    if (realName) detailsArr.push(`${L.realName}: ${realName}`);
+    if (penName) detailsArr.push(`${L.penName}: ${penName}`);
+    const subtitle = detailsArr.join(" · ");
 
     const imageURL = profile.profile_image_url || PLACEHOLDER;
 
-    const workCards = works.map(function (work) {
-      const tr = pickTranslation(work.author_work_translations || []);
-      const title = tr.title || work.slug || L.works;
-      const excerpt = tr.excerpt
-        ? '<p class="work-excerpt">' + escapeHTML(tr.excerpt) + '</p>'
-        : "";
+    // Conditional Facts (Birth/Death Date & Place - hide if empty)[span_5](start_span)[span_5](end_span)
+    let factsHTML = "";
+    if (profile.birth_date) factsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.born)}</span>${escapeHTML(profile.birth_date)}</div>`;
+    if (profile.birth_place) factsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.birthPlace)}</span>${escapeHTML(profile.birth_place)}</div>`;
+    if (profile.death_date) factsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.died)}</span>${escapeHTML(profile.death_date)}</div>`;
+    if (profile.death_place) factsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.deathPlace)}</span>${escapeHTML(profile.death_place)}</div>`;
 
-      const targetPage = work.work_type === 'article' ? 'article.html' : 'work.html';
-      const workUrl = `${targetPage}?slug=${encodeURIComponent(work.slug)}`;
+    // Tabs Navigation HTML
+    const tabsList = ['profile', 'naat', 'manqabat', 'ghazal', 'article', 'sher'];
+    let tabsHTML = '<nav class="profile-tabs" aria-label="Author sections">';
+    tabsList.forEach(tabKey => {
+      const activeCls = currentTab === tabKey ? 'active' : '';
+      const tabName = L.tabs[tabKey] || tabKey;
+      tabsHTML += `<button class="tab-btn ${activeCls}" data-tab="${tabKey}">${escapeHTML(tabName)}</button>`;
+    });
+    tabsHTML += '</nav>';
 
-      return '<article class="work-card">' +
-        '<div class="work-type">' + escapeHTML(work.work_type || "Work") + '</div>' +
-        '<h3 class="work-title"><a href="' + workUrl + '" style="color:#ffffff !important;text-decoration:none;">' + escapeHTML(title) + '</a></h3>' +
-        excerpt +
-        '<a href="' + workUrl + '" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:13px;padding:6px 14px;margin-top:10px;">' + escapeHTML(L.read) + '</a>' +
-        '</article>';
-    }).join("");
+    let mainContentHTML = "";
+
+    if (currentTab === 'profile') {
+      // Short Bio (< 100 words) & Long Bio (< 1000 words) rendering conditionally[span_6](start_span)[span_6](end_span)
+      const shortBioHTML = t.short_bio ? `<p class="short-bio">${escapeHTML(t.short_bio)}</p>` : '';
+      const longBioHTML = t.biography ? `<section class="panel"><h2>${escapeHTML(L.bio)}</h2><div>${withLineBreaks(t.biography)}</div></section>` : '';
+      const legacyHTML = t.life_and_legacy ? `<section class="panel"><h2>${escapeHTML(L.legacy)}</h2><div>${withLineBreaks(t.life_and_legacy)}</div></section>` : '';
+
+      mainContentHTML = shortBioHTML + longBioHTML + legacyHTML;
+      if (!t.short_bio && !t.biography && !t.life_and_legacy) {
+        mainContentHTML = `<div class="empty">${escapeHTML(L.noBio)}</div>`;
+      }
+    } else {
+      // Filter works based on selected tab category/work_type
+      const filteredWorks = works.filter(w => {
+        const type = (w.work_type || "").toLowerCase();
+        const cat = (w.category || "").toLowerCase();
+        return type === currentTab || cat === currentTab;
+      });
+
+      const workCards = filteredWorks.map(work => {
+        const tr = pickTranslation(work.author_work_translations || []);
+        const title = tr.title || work.slug || "Work";
+        const excerpt = tr.excerpt ? `<p class="work-excerpt">${escapeHTML(tr.excerpt)}</p>` : "";
+        const targetPage = work.work_type === 'article' ? 'article.html' : 'work.html';
+        const workUrl = `${targetPage}?slug=${encodeURIComponent(work.slug)}`;
+
+        return `<article class="work-card">
+          <div class="work-type">${escapeHTML(work.work_type || currentTab)}</div>
+          <h3 class="work-title"><a href="${workUrl}">${escapeHTML(title)}</a></h3>
+          ${excerpt}
+          <a href="${workUrl}" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:13px;padding:6px 14px;margin-top:10px;">${escapeHTML(L.read)}</a>
+        </article>`;
+      }).join("");
+
+      mainContentHTML = workCards ? `<div class="work-grid">${workCards}</div>` : `<div class="empty">${escapeHTML(L.noWorks)}</div>`;
+    }
 
     contentEl.innerHTML =
       '<section class="hero">' +
-        '<div class="portrait-wrap"><img class="portrait" src="' +
-          escapeHTML(imageURL) + '" alt="' + escapeHTML(displayName) +
-          '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'"></div>' +
+        '<div class="portrait-wrap">' +
+          '<img class="portrait" id="authorImage" src="' + escapeHTML(imageURL) + '" alt="' + escapeHTML(displayName) + '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'">' +
+          '<br>' +
+          '<label class="upload-btn-label">' + escapeHTML(L.uploadPhoto) + '<input type="file" id="imageUploadInput" accept="image/*" style="display:none;"></label>' +
+        '</div>' +
         '<div>' +
           '<div class="eyebrow">' + escapeHTML(L.category) + '</div>' +
           '<h1 class="profile-name">' + escapeHTML(displayName) + '</h1>' +
           (subtitle ? '<div class="name-detail">' + escapeHTML(subtitle) + '</div>' : '') +
-          (t.short_bio ? '<p class="short-bio">' + escapeHTML(t.short_bio) + '</p>' : '') +
-          '<div class="facts">' +
-            '<div class="fact"><span class="fact-label">' + escapeHTML(L.born) +
-            '</span>' + escapeHTML(profile.birth_date || "—") + '</div>' +
-            '<div class="fact"><span class="fact-label">' + escapeHTML(L.died) +
-            '</span>' + escapeHTML(profile.death_date || "—") + '</div>' +
-          '</div>' +
+          (factsHTML ? '<div class="facts">' + factsHTML + '</div>' : '') +
         '</div>' +
       '</section>' +
+      tabsHTML +
+      mainContentHTML;
 
-      '<nav class="profile-nav" aria-label="Profile sections">' +
-        '<a href="#biography">' + escapeHTML(L.biography) + '</a>' +
-        (t.life_and_legacy ? '<a href="#legacy">' + escapeHTML(L.legacy) + '</a>' : '') +
-        '<a href="#works">' + escapeHTML(L.works) + '</a>' +
-      '</nav>' +
+    // Attach event listener for custom image upload[span_7](start_span)[span_7](end_span)
+    const uploadInput = document.getElementById("imageUploadInput");
+    if (uploadInput) {
+      uploadInput.addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            document.getElementById("authorImage").src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
 
-      '<section class="panel" id="biography">' +
-        '<h2>' + escapeHTML(L.biography) + '</h2>' + bio +
-      '</section>' +
-
-      legacy +
-
-      '<section class="panel" id="works">' +
-        '<h2>' + escapeHTML(L.works) + '</h2>' +
-        (workCards
-          ? '<div class="work-grid">' + workCards + '</div>'
-          : '<div class="empty">' + escapeHTML(L.noWorks) + '</div>') +
-      '</section>';
+    // Attach tab button click listeners
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentTab = btn.dataset.tab;
+        renderProfile();
+      });
+    });
 
     statusEl.hidden = true;
     contentEl.hidden = false;
@@ -629,15 +672,8 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       profile = profileResult.data;
 
       const results = await Promise.all([
-        db.from("author_profile_translations")
-          .select("*")
-          .eq("profile_id", profile.id),
-
-        db.from("author_works")
-          .select("*, author_work_translations(*)")
-          .eq("profile_id", profile.id)
-          .eq("status", "published")
-          .order("created_at", { ascending: false })
+        db.from("author_profile_translations").select("*").eq("profile_id", profile.id),
+        db.from("author_works").select("*, author_work_translations(*)").eq("profile_id", profile.id).eq("status", "published").order("created_at", { ascending: false })
       ]);
 
       if (results[0].error) throw results[0].error;
@@ -659,18 +695,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
   document.querySelectorAll("[data-lang]").forEach(function (button) {
     button.addEventListener("click", function () {
       currentLang = button.dataset.lang || "en";
-
-      try {
-        localStorage.setItem("markaz-lang", currentLang);
-      } catch (_) {}
-
-      document.documentElement.lang = currentLang;
-      document.documentElement.dir = currentLang === "ur" ? "rtl" : "ltr";
-
-      document.querySelectorAll("[data-lang]").forEach(function (item) {
-        item.classList.toggle("active", item.dataset.lang === currentLang);
-      });
-
+      try { localStorage.setItem("markaz-lang", currentLang); } catch (_) {}
       loadProfile();
     });
   });
@@ -681,9 +706,6 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       currentLang = savedLanguage;
     }
   } catch (_) {}
-
-  document.documentElement.lang = currentLang;
-  document.documentElement.dir = currentLang === "ur" ? "rtl" : "ltr";
 
   loadProfile();
 })();
