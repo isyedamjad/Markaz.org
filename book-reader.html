@@ -95,7 +95,6 @@
             font-size: .9rem;
             margin-top: 4px;
         }
-        /* Reader Container for Canvas Pages */
         .frame {
             height: calc(100vh - 210px);
             min-height: 540px;
@@ -177,12 +176,8 @@
                     <h1 id="title">Book</h1>
                     <div id="by" class="by"></div>
                 </div>
-                <div class="tools">
-                    <a id="download" class="primary" href="#" target="_blank" rel="noopener">Download PDF</a>
-                </div>
             </div>
             
-            <!-- PDF will be rendered page-by-page here -->
             <div class="frame" id="viewer-container"></div>
             
             <p class="note">Scroll down to read pages seamlessly.</p>
@@ -209,7 +204,7 @@
 
         async function renderPDF(url) {
             const container = $('viewer-container');
-            container.innerHTML = ''; // Clear previous content
+            container.innerHTML = '';
 
             try {
                 const loadingTask = pdfjsLib.getDocument(url);
@@ -218,8 +213,6 @@
 
                 for (let pageNum = 1; pageNum <= numPages; pageNum++) {
                     const page = await pdfDoc.getPage(pageNum);
-                    
-                    // Set scale for quality viewing
                     const viewport = page.getViewport({ scale: 1.5 });
                     
                     const canvas = document.createElement('canvas');
@@ -237,7 +230,7 @@
                 }
             } catch (err) {
                 console.error('PDF Render Error:', err);
-                container.innerHTML = '<p style="color:white; padding:20px; text-align:center;">Failed to render PDF pages. Use "Download PDF" button above.</p>';
+                container.innerHTML = '<p style="color:white; padding:20px; text-align:center;">Failed to render PDF pages.</p>';
             }
         }
 
@@ -279,13 +272,11 @@
 
                 $('title').textContent = title;
                 $('by').textContent = details?.publisher ? `Publisher: ${details.publisher}` : '';
-                $('download').href = url;
 
                 $('state').hidden = true;
                 $('book').hidden = false;
                 document.title = `${title} | Markaz.org`;
 
-                // Render PDF using PDF.js
                 await renderPDF(url);
 
             } catch (err) {
