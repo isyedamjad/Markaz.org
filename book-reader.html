@@ -8,6 +8,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- PDF.js Library for Rekhta-style smooth rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
     
     <style>
         :root {
@@ -68,7 +73,7 @@
             border-color: var(--teal);
         }
         main {
-            max-width: 1200px;
+            max-width: 900px;
             margin: auto;
             padding: 24px 20px 70px;
         }
@@ -90,20 +95,26 @@
             font-size: .9rem;
             margin-top: 4px;
         }
+        /* Reader Container for Canvas Pages */
         .frame {
             height: calc(100vh - 210px);
             min-height: 540px;
-            background: #e9eeea;
+            background: #222;
             border: 1px solid var(--line);
             border-radius: 14px;
-            overflow: hidden;
-            position: relative;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
         }
-        .frame iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
+        .frame canvas {
+            max-width: 100%;
+            height: auto !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             background: #fff;
+            border-radius: 4px;
         }
         .state {
             padding: 24px;
@@ -127,6 +138,7 @@
             font-size: .82rem;
             color: var(--muted);
             margin-top: 12px;
+            text-align: center;
         }
         @media(max-width: 600px) {
             .barin {
@@ -136,6 +148,7 @@
             .frame {
                 height: calc(100vh - 240px);
                 min-height: 450px;
+                padding: 10px;
             }
             main {
                 padding: 18px 12px 40px;
@@ -165,15 +178,14 @@
                     <div id="by" class="by"></div>
                 </div>
                 <div class="tools">
-                    <a id="download" class="primary" href="#" target="_blank" rel="noopener">Open original file</a>
+                    <a id="download" class="primary" href="#" target="_blank" rel="noopener">Download PDF</a>
                 </div>
             </div>
             
-            <div class="frame">
-                <iframe id="viewer" title="Book reading viewer" allow="fullscreen"></iframe>
-            </div>
+            <!-- PDF will be rendered page-by-page here -->
+            <div class="frame" id="viewer-container"></div>
             
-            <p class="note">The digital edition opens in your browser's document viewer. If your device cannot display it, use “Open original file”.</p>
+            <p class="note">Scroll down to read pages seamlessly.</p>
         </section>
     </main>
 
@@ -188,12 +200,45 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const $ = id => document.getElementById(id);
 
-        // Explicitly pointing to your 'book' bucket
         function fileUrl(path, bucket = 'book') {
             if (!path) return '';
             if (/^https?:\/\//i.test(path)) return path;
             const cleanPath = path.startsWith('/') ? path.slice(1) : path;
             return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${cleanPath}`;
+        }
+
+        async function renderPDF(url) {
+            const container = $('viewer-container');
+            container.innerHTML = ''; // Clear previous content
+
+            try {
+                const loadingTask = pdfjsLib.getDocument(url);
+                const pdfDoc = await loadingTask.promise;
+                const numPages = pdfDoc.numPages;
+
+                for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                    const page = await pdfDoc.getPage(pageNum);
+                    
+                    // Set scale for quality viewing
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    container.appendChild(canvas);
+
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    await page.render(renderContext).promise;
+                }
+            } catch (err) {
+                console.error('PDF Render Error:', err);
+                container.innerHTML = '<p style="color:white; padding:20px; text-align:center;">Failed to render PDF pages. Use "Download PDF" button above.</p>';
+            }
         }
 
         async function load() {
@@ -236,17 +281,12 @@
                 $('by').textContent = details?.publisher ? `Publisher: ${details.publisher}` : '';
                 $('download').href = url;
 
-                const isPdf = path.toLowerCase().endsWith('.pdf') || details?.pdf_storage_path;
-                
-                if (isPdf) {
-                    $('viewer').src = `${url}#toolbar=1&navpanes=0&view=FitH`;
-                } else {
-                    $('viewer').src = url;
-                }
-
                 $('state').hidden = true;
                 $('book').hidden = false;
                 document.title = `${title} | Markaz.org`;
+
+                // Render PDF using PDF.js
+                await renderPDF(url);
 
             } catch (err) {
                 console.error('Error loading book:', err);
