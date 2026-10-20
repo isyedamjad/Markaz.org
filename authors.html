@@ -233,10 +233,6 @@ main {
   overflow-wrap: anywhere;
 }
 .work-excerpt { color: var(--muted); }
-.work-card details { margin-top: 12px; }
-.work-card summary { cursor: pointer; color: var(--wine); font-weight: 600; }
-.work-body { padding-top: 12px; overflow-wrap: anywhere; }
-.work-body.rtl { direction: rtl; text-align: right; }
 .empty {
   padding: 24px 10px;
   text-align: center;
@@ -380,7 +376,7 @@ html[dir="rtl"] .work-title { font-family: "Noto Nastaliq Urdu",serif; }
       missingSlug: "URL میں پروفائل کا slug موجود نہیں ہے۔",
       retry: "دوبارہ کوشش کریں",
       error: "پروفائل لوڈ نہیں ہو سکی",
-      check: "پروفائل کا status، Supabase permissions اور انٹرنیٹ کنکشن چیک کریں۔",
+      check: "प्रोफ़ाइल का status، Supabase permissions और انٹرنیٹ کنکشن چیک کریں۔",
       unknown: "ایک غیر متوقع خرابی پیش آئی۔"
     }
   };
@@ -507,26 +503,16 @@ html[dir="rtl"] .work-title { font-family: "Noto Nastaliq Urdu",serif; }
       const excerpt = tr.excerpt
         ? '<p class="work-excerpt">' + escapeHTML(tr.excerpt) + '</p>'
         : "";
-      const body = tr.body || "";
-      const transliteration = tr.transliteration || "";
 
-      const textContent = body || transliteration
-        ? '<details><summary>' + escapeHTML(L.read) + '</summary>' +
-          (body
-            ? '<div class="work-body ' +
-              (tr.script_direction === "rtl" ? "rtl" : "") + '">' +
-              withLineBreaks(body) + '</div>'
-            : "") +
-          (transliteration
-            ? '<div class="work-body">' + withLineBreaks(transliteration) + '</div>'
-            : "") +
-          '</details>'
-        : "";
+      // Route articles to article.html and other works to work.html
+      const targetPage = work.work_type === 'article' ? 'article.html' : 'work.html';
+      const workUrl = `${targetPage}?slug=${encodeURIComponent(work.slug)}`;
 
       return '<article class="work-card">' +
         '<div class="work-type">' + escapeHTML(work.work_type || "Work") + '</div>' +
-        '<h3 class="work-title">' + escapeHTML(title) + '</h3>' +
-        excerpt + textContent +
+        '<h3 class="work-title"><a href="' + workUrl + '" style="color:var(--wine);text-decoration:none;">' + escapeHTML(title) + '</a></h3>' +
+        excerpt +
+        '<a href="' + workUrl + '" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:13px;padding:6px 14px;margin-top:10px;">' + escapeHTML(L.read) + '</a>' +
         '</article>';
     }).join("");
 
