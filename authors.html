@@ -490,7 +490,7 @@ main {
 
     contentEl.innerHTML =
       '<section class="panel">' +
-        '<h2>' + escapeHTML(L.authorsListTitle) + '</h2>' +
+        '<h2>' + escapeHTML((new URLSearchParams(window.location.search).get("type") || "") ? ({poet:"Poets & Shayars",author:"Authors & Writers",scholar:"Scholars & Researchers",mufti:"Muftis",naatkhwan:"Naatkhwans",book_contributor:"Book Contributors",sufi:"Sufi Personalities",saint:"Saints & Mashaikh"}[new URLSearchParams(window.location.search).get("type")] || "People & Contributors") : L.authorsListTitle) + '</h2>' +
         '<p class="status-detail" style="margin-bottom:20px;">' + escapeHTML(L.authorsListSubtitle) + '</p>' +
         (cards ? '<div class="work-grid">' + cards + '</div>' : '<div class="empty">No authors found.</div>') +
       '</section>';
@@ -613,6 +613,7 @@ main {
 
     try {
       const slug = getSlug();
+      const requestedType = new URLSearchParams(window.location.search).get("type") || "";
 
       if (!db) {
         db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -626,7 +627,9 @@ main {
           .order("created_at", { ascending: false });
 
         if (listResult.error) throw listResult.error;
-        renderAuthorsList(listResult.data || []);
+        const allProfiles = listResult.data || [];
+        const filteredProfiles = requestedType ? allProfiles.filter(p => (p.profile_type || "author") === requestedType || (p.role_tags || []).includes(requestedType)) : allProfiles;
+        renderAuthorsList(filteredProfiles);
         loading = false;
         return;
       }
