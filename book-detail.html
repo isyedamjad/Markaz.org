@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#075e59">
+    <title>Book Detail | Markaz.org</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --ink: #17272b;
+            --muted: #657275;
+            --paper: #f7f8f5;
+            --teal: #075e59;
+            --deep: #064743;
+            --gold: #b58a48;
+            --line: #dce4df;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font: 16px/1.7 'DM Sans', sans-serif;
+        }
+        .bar {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            background: #fff;
+            border-bottom: 1px solid var(--line);
+        }
+        .barin {
+            max-width: 1200px;
+            margin: auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .brand {
+            font: 700 1.25rem 'Playfair Display', serif;
+            color: var(--deep);
+            text-decoration: none;
+        }
+        .tools {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tools a {
+            border: 1px solid var(--line);
+            border-radius: 99px;
+            padding: 8px 16px;
+            background: #fff;
+            color: var(--ink);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        main {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .detail-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+        .cover-box {
+            flex: 0 0 260px;
+            background: #e9eeea;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            aspect-ratio: 3/4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cover-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .info-box {
+            flex: 1;
+        }
+        h1 {
+            font: 600 clamp(1.8rem, 3vw, 2.5rem)/1.2 'Playfair Display', serif;
+            margin: 0 0 10px 0;
+            color: var(--deep);
+        }
+        .publisher {
+            color: var(--muted);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .btn-read {
+            background: var(--teal);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 99px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: background 0.2s;
+            display: inline-block;
+        }
+        .btn-read:hover {
+            background: var(--deep);
+        }
+        .state {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+        }
+        @media(max-width: 768px) {
+            .detail-card {
+                flex-direction: column;
+                padding: 20px;
+                gap: 20px;
+            }
+            .cover-box {
+                width: 100%;
+                max-width: 220px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="bar">
+        <div class="barin">
+            <a class="brand" href="/library.html">Markaz.org · Digital Library</a>
+            <div class="tools">
+                <a href="/library.html">Library</a>
+                <a href="/home.html">Home</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="state" class="state">Loading book details...</div>
+        
+        <div id="book-content" class="detail-card" hidden>
+            <div class="cover-box">
+                <img id="cover" src="" alt="Book Cover">
+            </div>
+            <div class="info-box">
+                <h1 id="title">Book Title</h1>
+                <div id="publisher" class="publisher">Publisher name</div>
+                
+                <div class="actions">
+                    <a id="read-btn" class="btn-read" href="#">Read Now</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://pooatzegjnegutflkcbm.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN';
+        
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const $ = id => document.getElementById(id);
+
+        function fileUrl(path, bucket = 'book') {
+            if (!path) return '';
+            if (/^https?:\/\//i.test(path)) return path;
+            const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+            return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${cleanPath}`;
+        }
+
+        async function loadDetail() {
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('slug');
+
+            if (!slug) {
+                $('state').textContent = 'No book selected.';
+                return;
+            }
+
+            const { data, error } = await db
+                .from('content_items')
+                .select('id, slug, cover_image_url, content_translations(language_code, title), book_details(*)')
+                .eq('slug', slug)
+                .eq('status', 'published')
+                .maybeSingle();
+
+            if (error || !data) {
+                $('state').textContent = 'Book not found or unavailable.';
+                return;
+            }
+
+            const details = Array.isArray(data.book_details) ? data.book_details[0] : data.book_details;
+            const translations = data.content_translations || [];
+            const matched = translations.find(x => x.language_code === 'en') || translations.find(x => x.title) || {};
+            const title = matched.title || data.slug;
+
+            $('title').textContent = title;
+            $('publisher').textContent = details?.publisher ? `Publisher: ${details.publisher}` : '';
+            
+            // Cover Image setup
+            if (data.cover_image_url) {
+                $('cover').src = fileUrl(data.cover_image_url, 'book');
+            } else {
+                $('cover').src = 'https://via.placeholder.com/300x400?text=No+Cover';
+            }
+
+            // Read Now button link pointing to your reader page with slug
+            $('read-btn').href = `book-reader.html?slug=${slug}`;
+
+            $('state').hidden = true;
+            $('book-content').hidden = false;
+            document.title = `${title} | Markaz.org`;
+        }
+
+        loadDetail();
+    </script>
+</body>
+</html>
