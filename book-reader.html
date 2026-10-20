@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#075e59">
-    <!-- FIXED: Proper closing bracket for title tag -->
     <title>Book Reader | Markaz.org</title>
     
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -182,7 +181,6 @@
         const SUPABASE_URL = 'https://pooatzegjnegutflkcbm.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN';
         
-        // Safety check for library loading
         if (!window.supabase) {
             document.getElementById('state').textContent = 'Failed to load Supabase library. Please check your internet connection.';
         }
@@ -190,9 +188,8 @@
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const $ = id => document.getElementById(id);
 
-        // Helper to construct Storage URLs
-        // Default bucket name set to 'books' (Change to 'book' if your bucket name is singular)
-        function fileUrl(path, bucket = 'books') {
+        // Explicitly pointing to your 'book' bucket
+        function fileUrl(path, bucket = 'book') {
             if (!path) return '';
             if (/^https?:\/\//i.test(path)) return path;
             const cleanPath = path.startsWith('/') ? path.slice(1) : path;
@@ -209,7 +206,6 @@
                     return;
                 }
 
-                // Fetch content item with translations and details
                 const { data, error } = await db
                     .from('content_items')
                     .select('id, slug, cover_image_url, content_translations(language_code, title), book_details(*)')
@@ -225,15 +221,13 @@
                 const details = Array.isArray(data.book_details) ? data.book_details[0] : data.book_details;
                 const path = details?.pdf_storage_path || details?.epub_storage_path;
 
-                // NOTE: Change 'books' to 'book' if your Supabase Storage bucket name is 'book'
-                const url = fileUrl(path, 'books');
+                const url = fileUrl(path, 'book');
 
                 if (!url) {
                     $('state').textContent = 'No PDF or EPUB edition has been attached to this book yet.';
                     return;
                 }
 
-                // Extract title
                 const translations = data.content_translations || [];
                 const matchedTranslation = translations.find(x => x.language_code === 'en') || translations.find(x => x.title) || {};
                 const title = matchedTranslation.title || data.slug;
@@ -242,14 +236,11 @@
                 $('by').textContent = details?.publisher ? `Publisher: ${details.publisher}` : '';
                 $('download').href = url;
 
-                // Handle iframe viewer source
                 const isPdf = path.toLowerCase().endsWith('.pdf') || details?.pdf_storage_path;
                 
                 if (isPdf) {
-                    // Embed PDF viewer
                     $('viewer').src = `${url}#toolbar=1&navpanes=0&view=FitH`;
                 } else {
-                    // EPUB or other formats won't display directly in iframe without aJS library
                     $('viewer').src = url;
                 }
 
@@ -263,13 +254,11 @@
             }
         }
 
-        // Toggle Focus Mode
         $('focus').onclick = () => {
             document.body.classList.toggle('focus');
             $('focus').textContent = document.body.classList.contains('focus') ? 'Exit focus' : 'Focus reading';
         };
 
-        // Initialize
         load();
     </script>
 </body>
