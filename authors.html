@@ -361,7 +361,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       retry: "Try again",
       error: "Unable to load this profile",
       check: "Check the profile status, Supabase permissions and internet connection.",
-      unknown: "An unexpected error occurred."
+      unknown: "An unexpected error occurred.",
+      authorsListTitle: "All Authors & Poets",
+      authorsListSubtitle: "Explore profiles of all published authors and scholars."
     },
     hi: {
       loading: "प्रोफ़ाइल लोड हो रही है…",
@@ -381,7 +383,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       retry: "दोबारा कोशिश करें",
       error: "प्रोफ़ाइल लोड नहीं हो सकी",
       check: "प्रोफ़ाइल का status, Supabase permissions और इंटरनेट कनेक्शन जाँचें।",
-      unknown: "एक अनजान त्रुटि हुई।"
+      unknown: "एक अनजान त्रुटि हुई।",
+      authorsListTitle: "सभी लेखक और शायर",
+      authorsListSubtitle: "सभी प्रकाशित लेखकों और विद्वानों की प्रोफ़ाइल देखें।"
     },
     ur: {
       loading: "پروفائل لوڈ ہو رہی ہے…",
@@ -401,7 +405,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       retry: "دوبارہ کوشش کریں",
       error: "پروفائل لوڈ نہیں ہو سکی",
       check: "प्रोफ़ाइल का status، Supabase permissions और انٹرنیٹ کنکشن چیک کریں۔",
-      unknown: "ایک غیر متوقع خرابی پیش آئی۔"
+      unknown: "ایک غیر متوقع خرابی پیش آئی۔",
+      authorsListTitle: "تمام مصنفین اور شعرا",
+      authorsListSubtitle: "تمام شائع شدہ مصنفین اور محققین کے پروفائلز دیکھیں۔"
     }
   };
 
@@ -453,32 +459,33 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       '<p class="status-detail">' + escapeHTML(labels().connecting) + '</p>';
   }
 
-  function showError(message) {
+  function renderAuthorsList(authorsList) {
     const L = labels();
-    statusEl.hidden = false;
-    contentEl.hidden = true;
-    statusEl.className = "status";
-    statusEl.replaceChildren();
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = currentLang === "ur" ? "rtl" : "ltr";
+    document.title = L.authorsListTitle + " | Markaz.org";
 
-    const title = document.createElement("h1");
-    title.className = "status-title";
-    title.textContent = L.error;
+    const cards = authorsList.map(author => {
+      const img = author.profile_image_url || PLACEHOLDER;
+      const name = author.pen_name || author.real_name || author.slug || "Author";
+      return '<article class="work-card" style="display:flex;gap:15px;align-items:center;">' +
+        '<img src="' + escapeHTML(img) + '" alt="' + escapeHTML(name) + '" style="width:70px;height:70px;object-fit:cover;border-radius:50%;" onerror="this.src=\'' + PLACEHOLDER + '\'">' +
+        '<div>' +
+          '<h3 class="work-title" style="margin:0 0 5px;"><a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" style="color:var(--wine);text-decoration:none;">' + escapeHTML(name) + '</a></h3>' +
+          '<a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:12px;padding:4px 10px;margin-top:5px;">View Profile</a>' +
+        '</div>' +
+      '</article>';
+    }).join("");
 
-    const detail = document.createElement("p");
-    detail.className = "status-detail";
-    detail.textContent = message || L.unknown;
+    contentEl.innerHTML =
+      '<section class="panel">' +
+        '<h2>' + escapeHTML(L.authorsListTitle) + '</h2>' +
+        '<p class="status-detail" style="margin-bottom:20px;">' + escapeHTML(L.authorsListSubtitle) + '</p>' +
+        (cards ? '<div class="work-grid">' + cards + '</div>' : '<div class="empty">No authors found.</div>') +
+      '</section>';
 
-    const help = document.createElement("p");
-    help.className = "status-detail";
-    help.textContent = L.check;
-
-    const retry = document.createElement("button");
-    retry.className = "primary-btn";
-    retry.type = "button";
-    retry.textContent = L.retry;
-    retry.addEventListener("click", loadProfile);
-
-    statusEl.append(title, detail, help, retry);
+    statusEl.hidden = true;
+    contentEl.hidden = false;
   }
 
   function renderProfile() {
@@ -528,7 +535,6 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
         ? '<p class="work-excerpt">' + escapeHTML(tr.excerpt) + '</p>'
         : "";
 
-      // Route articles to article.html and other works to work.html
       const targetPage = work.work_type === 'article' ? 'article.html' : 'work.html';
       const workUrl = `${targetPage}?slug=${encodeURIComponent(work.slug)}`;
 
@@ -590,12 +596,22 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
     try {
       const slug = getSlug();
 
-      if (!slug) {
-        throw new Error(labels().missingSlug);
-      }
-
       if (!db) {
         db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      }
+
+      // Agar slug nahi hai, toh saare authors ki list fetch karke display karein
+      if (!slug) {
+        const listResult = await db
+          .from("author_profiles")
+          .select("*")
+          .eq("status", "published")
+          .order("created_at", { ascending: false });
+
+        if (listResult.error) throw listResult.error;
+        renderAuthorsList(listResult.data || []);
+        loading = false;
+        return;
       }
 
       const profileResult = await db
@@ -653,14 +669,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
         item.classList.toggle("active", item.dataset.lang === currentLang);
       });
 
-      if (profile) {
-        renderProfile();
-      } else if (!loading) {
-        loadProfile();
-      } else {
-        const title = statusEl.querySelector(".status-title");
-        if (title) title.textContent = labels().loading;
-      }
+      loadProfile();
     });
   });
 
