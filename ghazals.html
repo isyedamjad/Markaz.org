@@ -27,6 +27,9 @@ a{color:inherit;text-decoration:none}button,input{font:inherit}
 .search{display:flex;gap:10px;padding:16px;background:#fffdf9;border:1px solid var(--l);margin-top:-26px;box-shadow:0 18px 48px #43222012}
 .search input{flex:1;min-width:0;padding:13px;border:1px solid var(--l)}
 .search button{background:var(--w);color:white;border:0;padding:12px 18px;cursor:pointer}
+.category-filter{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.cat-btn{background:#fffdf9;border:1px solid var(--l);padding:6px 14px;border-radius:20px;font-size:.82rem;color:var(--m);cursor:pointer;transition:.2s}
+.cat-btn:hover,.cat-btn.active{background:var(--w);color:white;border-color:var(--w)}
 .heading{display:flex;justify-content:space-between;align-items:end;margin:38px 0 20px;gap:15px}
 .heading h2{font:600 clamp(1.7rem,3vw,2.4rem) var(--s);color:var(--d);margin:0}
 .heading p{color:var(--m);font-size:.84rem}
@@ -101,6 +104,12 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
     <input id="q" type="search" placeholder="Search ghazal title or keyword…" aria-label="Search">
     <button id="clear">Clear</button>
   </div>
+  
+  <!-- Category Filter Buttons Bar -->
+  <div class="category-filter" id="categoryFilter">
+    <button class="cat-btn active" data-cat="all">All Categories</button>
+  </div>
+
   <div class="heading">
     <h2 id="sectionTitle">Explore Ghazals</h2>
     <p id="count">Loading entries…</p>
@@ -116,14 +125,13 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const db = window.supabase.createClient('https://pooatzegjnegutflkcbm.supabase.co','sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN');
-let lang = 'en', rows = [];
-const $ = x => document.getElementById(x);
-$('year').textContent = new Date().getFullYear();
+let lang = 'en', rows = [], selectedCategory = 'all';
+const $= x => document.getElementById(x);$('year').textContent = new Date().getFullYear();
 
 const T = {
-  en: { top: 'A living archive of Sufi poetry, wisdom and heritage', search: 'Search ghazal title or keyword…', clear: 'Clear', none: 'No published ghazals found.', open: 'Read ghazal →', loading: 'Loading ghazals…', heroTitle: "Ghazals Collection", heroDesc: "Immerse yourself in timeless mystical ghazals expressing divine love, longing, and spiritual awakening.", sectionTitle: "Explore Ghazals", eyebrow: "CLASSICAL · SUFI · POETRY" },
-  hi: { top: 'सूफ़ी साहित्य, ज्ञान और विरासत का जीवंत संग्रह', search: 'ग़ज़ल का शीर्षक या शब्द खोजें…', clear: 'हटाएँ', none: 'कोई प्रकाशित ग़ज़ल नहीं मिली।', open: 'ग़ज़ल पढ़ें →', loading: 'ग़ज़लें लोड हो रही हैं…', heroTitle: "ग़ज़ल संग्रह", heroDesc: "दिव्य प्रेम, तड़प और आध्यात्मिक चेतना को व्यक्त करने वाली कालातीत रहस्यवादी ग़ज़लों का आनंद लें।", sectionTitle: "ग़ज़लें देखें", eyebrow: "शास्त्रीय · सूफ़ी · काव्य" },
-  ur: { top: 'صوفی ادب، حکمت اور ورثے کا زندہ ذخیرہ', search: 'غزل کا عنوان یا لفظ تلاش کریں…', clear: 'صاف کریں', none: 'کوئی شائع شدہ غزل نہیں ملی۔', open: 'غزل پڑھیے ←', loading: 'غزلیں لوڈ ہو رہی ہیں…', heroTitle: "غزل کا مجموعہ", heroDesc: "عشقِ حقیقی، سوز و گداز اور روحانی بیداری پر مبنی لازوال صوفیانہ غزلیں ملاحظہ کیجیے۔", sectionTitle: "غزلیں تلاش کریں", eyebrow: "کلاسیکی · صوفیانہ · شاعری" }
+  en: { top: 'A living archive of Sufi poetry, wisdom and heritage', search: 'Search ghazal title or keyword…', clear: 'Clear', none: 'No published ghazals found.', open: 'Read ghazal →', loading: 'Loading ghazals…', heroTitle: "Ghazals Collection", heroDesc: "Immerse yourself in timeless mystical ghazals expressing divine love, longing, and spiritual awakening.", sectionTitle: "Explore Ghazals", eyebrow: "CLASSICAL · SUFI · POETRY", allCat: "All Categories" },
+  hi: { top: 'सूफ़ी साहित्य, ज्ञान और विरासत का जीवंत संग्रह', search: 'ग़ज़ल का शीर्षक या शब्द खोजें…', clear: 'हटाएँ', none: 'कोई प्रकाशित ग़ज़ल नहीं मिली।', open: 'ग़ज़ल पढ़ें →', loading: 'ग़ज़लें लोड हो रही हैं…', heroTitle: "ग़ज़ल संग्रह", heroDesc: "दिव्य प्रेम, तड़प और आध्यात्मिक चेतना को व्यक्त करने वाली कालातीत रहस्यवादी ग़ज़लों का आनंद लें।", sectionTitle: "ग़ज़लें देखें", eyebrow: "शास्त्रीय · सूफ़ी · काव्य", allCat: "सभी श्रेणियां" },
+  ur: { top: 'صوفی ادب، حکمت اور ورثے کا زندہ ذخیرہ', search: 'غزل کا عنوان یا لفظ تلاش کریں…', clear: 'صاف کریں', none: 'کوئی شائع شدہ غزل نہیں ملی۔', open: 'غزل پڑھیے ←', loading: 'غزلیں لوڈ ہو رہی ہیں…', heroTitle: "غزل کا مجموعہ", heroDesc: "عشقِ حقیقی، سوز و گداز اور روحانی بیداری پر مبنی لازوال صوفیانہ غزلیں ملاحظہ کیجیے۔", sectionTitle: "غزلیں تلاش کریں", eyebrow: "کلاسیکی · صوفیانہ · شاعری", allCat: "تمام زمرے" }
 };
 
 function esc(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
@@ -133,15 +141,41 @@ function tr(a){
   for(let l of order){ let t = a.find(x => x.language_code === l && (x.title || x.excerpt || x.body)); if(t) return t; }
   return a.find(x => x.title) || {};
 }
+
+function renderCategories() {
+  const categories = ['all', ...new Set(rows.map(x => x.category || x.work_type || 'Ghazal').filter(Boolean))];
+  const filterContainer = $('categoryFilter');
+  filterContainer.innerHTML = categories.map(cat => {
+    const activeClass = selectedCategory === cat ? 'active' : '';
+    const label = cat === 'all' ? T[lang].allCat : cat;
+    return `<button class="cat-btn ${activeClass}" data-cat="${esc(cat)}">${esc(label)}</button>`;
+  }).join('');
+
+  filterContainer.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedCategory = btn.dataset.cat;
+      filterContainer.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+  });
+}
+
 function render(){
   let q = $('q').value.trim().toLowerCase();
-  let list = rows.filter(x => [x.slug, ...(x.author_work_translations||[]).flatMap(y => [y.title, y.excerpt, y.body])].filter(Boolean).join(' ').toLowerCase().includes(q));
-  $('count').textContent = list.length + ' entries';
-  $('grid').innerHTML = list.length ? list.map(x => {
+  let list = rows.filter(x => {
+    let catMatch = selectedCategory === 'all' || (x.category || x.work_type || 'Ghazal') === selectedCategory;
+    let textMatch = [x.slug, ...(x.author_work_translations||[]).flatMap(y => [y.title, y.excerpt, y.body])].filter(Boolean).join(' ').toLowerCase().includes(q);
+    return catMatch && textMatch;
+  });
+
+  $('count').textContent = list.length + ' entries';$('grid').innerHTML = list.length ? list.map(x => {
     let t = tr(x.author_work_translations);
-    return '<article class="card"><span class="type">Ghazal</span><h3>'+esc(t.title||x.slug)+'</h3><p>'+esc(t.excerpt||'')+'</p><a class="open" href="work.html?slug='+encodeURIComponent(x.slug)+'">'+esc(T[lang].open)+'</a></article>';
+    let displayCat = x.category || x.work_type || 'Ghazal';
+    return '<article class="card"><span class="type">'+esc(displayCat)+'</span><h3>'+esc(t.title||x.slug)+'</h3><p>'+esc(t.excerpt||'')+'</p><a class="open" href="work.html?slug='+encodeURIComponent(x.slug)+'">'+esc(T[lang].open)+'</a></article>';
   }).join('') : '<div class="empty">'+esc(T[lang].none)+'</div>';
 }
+
 function language(l){
   lang = ['en','hi','ur'].includes(l) ? l : 'en';
   let d = T[lang];
@@ -151,26 +185,26 @@ function language(l){
   $('top').textContent = d.top; $('q').placeholder = d.search; $('clear').textContent = d.clear;
   $('heroTitle').textContent = d.heroTitle; $('heroDesc').textContent = d.heroDesc;
   $('sectionTitle').textContent = d.sectionTitle; $('eyebrow').textContent = d.eyebrow;
+  renderCategories();
   render();
 }
 document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => language(b.dataset.lang)));
 $('q').addEventListener('input', render);
-$('clear').addEventListener('click', () => { $('q').value = ''; render(); });
+$('clear').addEventListener('click', () => {$('q').value = ''; render(); });
 
 async function load(){
   try {
-    let r = await db.from('author_works').select('id,slug,status,work_type,author_work_translations(language_code,title,subtitle,excerpt,body,transliteration)').eq('status','published').eq('work_type','ghazal').order('created_at',{ascending:false});
+    let r = await db.from('author_works').select('id,slug,status,work_type,category,author_work_translations(language_code,title,subtitle,excerpt,body,transliteration)').eq('status','published').eq('work_type','ghazal').order('created_at',{ascending:false});
     if(r.error) throw r.error;
     rows = (r.data || []).filter(x => x.slug);
+    renderCategories();
     render();
   } catch(e) {
     console.error(e);
-    $('count').textContent = '';
-    $('grid').innerHTML = '<div class="empty">Could not load ghazals. Check permissions.</div>';
+    $('count').textContent = '';$('grid').innerHTML = '<div class="empty">Could not load ghazals. Check permissions.</div>';
   }
 }
 language('en'); load();
 </script>
 </body>
 </html>
-
