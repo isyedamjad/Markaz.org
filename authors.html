@@ -228,9 +228,12 @@ main {
 }
 .work-title {
   font: 700 21px/1.4 "Playfair Display",serif;
-  color: var(--wine);
+  color: #ffffff !important; /* Author name color white rakha gaya hai taaki readable ho */
   margin: 5px 0 10px;
   overflow-wrap: anywhere;
+}
+.work-title a {
+  color: #ffffff !important;
 }
 .work-excerpt { color: var(--muted); }
 .empty {
@@ -467,11 +470,11 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
     const cards = authorsList.map(author => {
       const img = author.profile_image_url || PLACEHOLDER;
-      const name = author.pen_name || author.real_name || author.slug || "Author";
+      const name = author.real_name || author.pen_name || author.slug || "Author";
       return '<article class="work-card" style="display:flex;gap:15px;align-items:center;">' +
         '<img src="' + escapeHTML(img) + '" alt="' + escapeHTML(name) + '" style="width:70px;height:70px;object-fit:cover;border-radius:50%;" onerror="this.src=\'' + PLACEHOLDER + '\'">' +
         '<div>' +
-          '<h3 class="work-title" style="margin:0 0 5px;"><a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" style="color:var(--wine);text-decoration:none;">' + escapeHTML(name) + '</a></h3>' +
+          '<h3 class="work-title" style="margin:0 0 5px;"><a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" style="color:#ffffff !important;text-decoration:none;">' + escapeHTML(name) + '</a></h3>' +
           '<a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:12px;padding:4px 10px;margin-top:5px;">View Profile</a>' +
         '</div>' +
       '</article>';
@@ -494,8 +497,8 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
     const displayName =
       t.display_name ||
-      profile.pen_name ||
       profile.real_name ||
+      profile.pen_name ||
       profile.slug ||
       "Markaz.org";
 
@@ -513,9 +516,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
     const realName = t.real_name || profile.real_name || "";
     const penName = t.pen_name || profile.pen_name || "";
-    const subtitle = [realName, penName && penName !== realName ? penName : ""]
+    const subtitle = [realName, penName && penName !== realName ? `(${penName})` : ""]
       .filter(Boolean)
-      .join(" · ");
+      .join(" ");
 
     const bio = t.biography
       ? withLineBreaks(t.biography)
@@ -540,7 +543,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
       return '<article class="work-card">' +
         '<div class="work-type">' + escapeHTML(work.work_type || "Work") + '</div>' +
-        '<h3 class="work-title"><a href="' + workUrl + '" style="color:var(--wine);text-decoration:none;">' + escapeHTML(title) + '</a></h3>' +
+        '<h3 class="work-title"><a href="' + workUrl + '" style="color:#ffffff !important;text-decoration:none;">' + escapeHTML(title) + '</a></h3>' +
         excerpt +
         '<a href="' + workUrl + '" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:13px;padding:6px 14px;margin-top:10px;">' + escapeHTML(L.read) + '</a>' +
         '</article>';
@@ -600,7 +603,6 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
         db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       }
 
-      // Agar slug nahi hai, toh saare authors ki list fetch karke display karein
       if (!slug) {
         const listResult = await db
           .from("author_profiles")
