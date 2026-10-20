@@ -97,18 +97,28 @@
         }
         h1 {
             font: 600 clamp(1.8rem, 3vw, 2.5rem)/1.2 'Playfair Display', serif;
-            margin: 0 0 10px 0;
+            margin: 0 0 15px 0;
             color: var(--deep);
         }
-        .publisher {
+        .meta-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .meta-list li {
+            font-size: 0.95rem;
             color: var(--muted);
-            font-size: 1rem;
-            margin-bottom: 20px;
+        }
+        .meta-list li strong {
+            color: var(--ink);
         }
         .actions {
             display: flex;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 20px;
             flex-wrap: wrap;
         }
         .btn-read {
@@ -167,7 +177,10 @@
             </div>
             <div class="info-box">
                 <h1 id="title">Book Title</h1>
-                <div id="publisher" class="publisher">Publisher name</div>
+                
+                <ul id="meta-list" class="meta-list">
+                    <!-- Dynamic details will inject here, empty ones stay hidden -->
+                </ul>
                 
                 <div class="actions">
                     <a id="read-btn" class="btn-read" href="#">Read Now</a>
@@ -211,13 +224,12 @@
                 return;
             }
 
-            const details = Array.isArray(data.book_details) ? data.book_details[0] : data.book_details;
+            const details = Array.isArray(data.book_details) ? data.book_details[0] : (data.book_details || {});
             const translations = data.content_translations || [];
             const matched = translations.find(x => x.language_code === 'en') || translations.find(x => x.title) || {};
             const title = matched.title || data.slug;
 
             $('title').textContent = title;
-            $('publisher').textContent = details?.publisher ? `Publisher: ${details.publisher}` : '';
             
             // Cover Image setup
             if (data.cover_image_url) {
@@ -226,7 +238,31 @@
                 $('cover').src = 'https://via.placeholder.com/300x400?text=No+Cover';
             }
 
-            // Read Now button link pointing to your reader page with slug
+            // Dynamic fields generation (Only show fields if they have values)
+            const fieldsList = [
+                { label: 'Author', value: details.author || details.writer },
+                { label: 'Translator', value: details.translator },
+                { label: 'Editor', value: details.editor },
+                { label: 'Publisher', value: details.publisher },
+                { label: 'Page counts', value: details.page_count || details.pages },
+                { label: 'Publication year', value: details.publication_year || details.year },
+                { label: 'Edition', value: details.edition },
+                { label: 'Language', value: details.language_original || details.language },
+                { label: 'Notes', value: details.notes || details.description }
+            ];
+
+            const metaContainer = $('meta-list');
+            metaContainer.innerHTML = '';
+
+            fieldsList.forEach(item => {
+                if (item.value && String(item.value).trim() !== '') {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${item.label}:</strong> ${item.value}`;
+                    metaContainer.appendChild(li);
+                }
+            });
+
+            // Read Now button link pointing to reader page with slug
             $('read-btn').href = `book-reader.html?slug=${slug}`;
 
             $('state').hidden = true;
