@@ -115,6 +115,15 @@
         .meta-list li strong {
             color: var(--ink);
         }
+        .meta-list a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .meta-list a:hover {
+            text-decoration: underline;
+            color: var(--deep);
+        }
         .actions {
             display: flex;
             gap: 15px;
@@ -179,7 +188,7 @@
                 <h1 id="title">Book Title</h1>
                 
                 <ul id="meta-list" class="meta-list">
-                    <!-- Dynamic details will inject here, empty ones stay hidden -->
+                    <!-- Dynamic details will inject here -->
                 </ul>
                 
                 <div class="actions">
@@ -238,26 +247,38 @@
                 $('cover').src = 'https://via.placeholder.com/300x400?text=No+Cover';
             }
 
-            // Dynamic fields generation (Only show fields if they have values)
-            const fieldsList = [
-                { label: 'Author', value: details.author || details.writer },
-                { label: 'Translator', value: details.translator },
-                { label: 'Editor', value: details.editor },
-                { label: 'Publisher', value: details.publisher },
-                { label: 'Page counts', value: details.page_count || details.pages },
-                { label: 'Publication year', value: details.publication_year || details.year },
-                { label: 'Edition', value: details.edition },
-                { label: 'Language', value: details.language_original || details.language },
-                { label: 'Notes', value: details.notes || details.description }
-            ];
-
+            // Dynamic fields generation
             const metaContainer = $('meta-list');
             metaContainer.innerHTML = '';
+
+            const fieldsList = [
+                { key: 'author', label: 'Author', value: details.author || details.writer, isAuthorLink: true },
+                { key: 'translator', label: 'Translator', value: details.translator },
+                { key: 'editor', label: 'Editor', value: details.editor },
+                { key: 'publisher', label: 'Publisher', value: details.publisher, isPublisherLink: true },
+                { key: 'page_count', label: 'Page counts', value: details.page_count || details.pages },
+                { key: 'publication_year', label: 'Publication year', value: details.publication_year || details.year },
+                { key: 'edition', label: 'Edition', value: details.edition },
+                { key: 'language', label: 'Language', value: details.language_original || details.language },
+                { key: 'notes', label: 'Notes', value: details.notes || details.description }
+            ];
 
             fieldsList.forEach(item => {
                 if (item.value && String(item.value).trim() !== '') {
                     const li = document.createElement('li');
-                    li.innerHTML = `<strong>${item.label}:</strong> ${item.value}`;
+                    
+                    if (item.isPublisherLink) {
+                        // Publisher name as clickable link
+                        const pubUrl = `publisher.html?name=${encodeURIComponent(item.value)}`;
+                        li.innerHTML = `<strong>${item.label}:</strong> <a href="${pubUrl}">${item.value}</a>`;
+                    } else if (item.isAuthorLink && details.author_id) {
+                        // Author name as clickable link (if author_id exists)
+                        const authorUrl = `authors.html?id=${encodeURIComponent(details.author_id)}`;
+                        li.innerHTML = `<strong>${item.label}:</strong> <a href="${authorUrl}">${item.value}</a>`;
+                    } else {
+                        li.innerHTML = `<strong>${item.label}:</strong> ${item.value}`;
+                    }
+                    
                     metaContainer.appendChild(li);
                 }
             });
