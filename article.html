@@ -140,6 +140,11 @@ main {
   border-bottom: 1px solid var(--line);
   padding-bottom: 20px;
   margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 .article-body {
   font-size: 18px;
@@ -205,13 +210,14 @@ main {
   let db = null;
   let work = null;
   let translations = [];
+  let authorProfile = null;
   let currentLang = "en";
   let loading = false;
 
   const LABELS = {
-    en: { loading: "Loading article…", error: "Article not found", notFound: "The requested article or work does not exist.", retry: "Try again" },
-    hi: { loading: "लेख लोड हो रहा है…", error: "लेख नहीं मिला", notFound: "अनुरोधित लेख या रचना मौजूद नहीं है।", retry: "दोबारा कोशिश करें" },
-    ur: { loading: "مضمون لوڈ ہو رہا ہے…", error: "مضمون نہیں ملا", notFound: "مطلوبہ مضمون یا تصنیف موجود نہیں ہے۔", retry: "دوبارہ کوشش کریں" }
+    en: { loading: "Loading article…", error: "Article not found", notFound: "The requested article or work does not exist.", retry: "Try again", by: "By" },
+    hi: { loading: "लेख लोड हो रहा है…", error: "लेख नहीं मिला", notFound: "अनुरोधित लेख या रचना मौजूद नहीं है।", retry: "दोबारा कोशिश करें", by: "लेखक:" },
+    ur: { loading: "مضمون لوڈ ہو رہا ہے…", error: "مضمون نہیں मिला", notFound: "مطلوبہ مضمون یا تصنیف موجود نہیں ہے۔", retry: "دوبارہ کوشش کریں", by: "از:" }
   };
 
   function labels() { return LABELS[currentLang] || LABELS.en; }
@@ -256,6 +262,14 @@ main {
     const body = t.body || t.transliteration || "No content available.";
     const isRtl = currentLang === "ur" || t.script_direction === "rtl";
 
+    // Author name extraction based on language selection
+    let authorName = "";
+    let authorSlug = authorProfile ? authorProfile.slug : "";
+    if (authorProfile && authorProfile.author_profile_translations) {
+      const at = pickTranslation(authorProfile.author_profile_translations);
+      authorName = at.display_name || authorProfile.pen_name || authorProfile.real_name || "";
+    }
+
     document.documentElement.lang = currentLang;
     document.documentElement.dir = isRtl ? "rtl" : "ltr";
     document.title = title + " | Markaz.org";
@@ -264,12 +278,17 @@ main {
       btn.classList.toggle("active", btn.dataset.lang === currentLang);
     });
 
+    const authorHtml = authorName && authorSlug 
+      ? `<span>${labels().by} <a href="authors.html?slug=${encodeURIComponent(authorSlug)}"><b>${escapeHTML(authorName)}</b></a></span>` 
+      : (authorName ? `<span>${labels().by} <b>${escapeHTML(authorName)}</b></span>` : '');
+
     contentEl.innerHTML = `
       <div class="article-type">${escapeHTML(work.work_type || "Article")}</div>
       <h1 class="article-title">${escapeHTML(title)}</h1>
       ${t.subtitle ? `<div class="article-subtitle">${escapeHTML(t.subtitle)}</div>` : ''}
       <div class="meta-info">
-        Published: ${work.publication_year || work.created_at ? new Date(work.created_at).toLocaleDateString() : '—'}
+        <span>Published: ${work.publication_year || work.created_at ? new Date(work.created_at).toLocaleDateString() : '—'}</span>
+        ${authorHtml}
       </div>
       <div class="article-body ${isRtl ? 'rtl' : ''}">
         ${withLineBreaks(body)}
@@ -295,12 +314,13 @@ main {
 
       const { data: workData, error: workErr } = await db
         .from("author_works")
-        .select("*, author_profiles(slug, author_profile_translations(language_code, display_name))")
+        .select("*, author_profiles(slug, pen_name, real_name, author_profile_translations(language_code, display_name))")
         .eq("slug", slug)
         .maybeSingle();
 
       if (workErr || !workData) throw new Error(labels().notFound);
       work = workData;
+      authorProfile = workData.author_profiles || null;
 
       const { data: transData, error: transErr } = await db
         .from("author_work_translations")
@@ -336,5 +356,4 @@ main {
 })();
 </script>
 </body>
-  </html>
-  
+</html>
