@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#472127">
+<title>Article | Markaz.org</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --wine: #651c2c;
+  --deep: #472127;
+  --gold: #b58a48;
+  --gold-light: #d7b77d;
+  --paper: #fffdf8;
+  --cream: #f7f1e8;
+  --ink: #292321;
+  --muted: #746b65;
+  --line: #e8ddd0;
+  --shadow: 0 8px 30px rgba(71,33,39,.06);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font: 18px/1.9 system-ui,-apple-system,sans-serif;
+}
+body[dir="rtl"], html[dir="rtl"] body {
+  font-family: "Noto Nastaliq Urdu",serif;
+}
+a { color: var(--wine); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.topbar {
+  background: var(--deep);
+  color: white;
+  padding: 17px clamp(16px,5vw,64px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  border-bottom: 3px solid var(--gold);
+}
+.brand {
+  font: 700 clamp(24px,3vw,34px) "Playfair Display",serif;
+  color: white;
+  letter-spacing: -.5px;
+}
+.brand span { color: var(--gold-light); }
+.languages { display: flex; gap: 8px; flex-wrap: wrap; }
+.lang-btn {
+  cursor: pointer;
+  padding: 9px 17px;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 10px;
+  background: #fffdf8;
+  color: var(--deep);
+  transition: .2s ease;
+}
+.lang-btn:hover, .lang-btn.active {
+  background: var(--gold);
+  color: white;
+  border-color: var(--gold-light);
+}
+main {
+  max-width: 800px;
+  min-height: 65vh;
+  margin: 40px auto;
+  padding: 0 20px 60px;
+}
+.status {
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.status-title {
+  font: 600 23px "Playfair Display",serif;
+  color: var(--deep);
+  margin: 0 0 8px;
+}
+.status-detail { color: var(--muted); font-size: 14px; }
+.spinner {
+  width: 25px;
+  height: 25px;
+  border: 3px solid var(--line);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.primary-btn {
+  background: var(--deep);
+  color: white;
+  border: 0;
+  border-radius: 9px;
+  padding: 10px 18px;
+  margin-top: 12px;
+  cursor: pointer;
+}
+.primary-btn:hover { background: var(--wine); }
+.article-container {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: var(--shadow);
+}
+.article-type {
+  color: var(--gold);
+  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.article-title {
+  font: 700 clamp(28px,4vw,42px)/1.25 "Playfair Display",serif;
+  color: var(--deep);
+  margin: 0 0 15px;
+  overflow-wrap: anywhere;
+}
+.article-subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  margin-bottom: 25px;
+}
+.meta-info {
+  font-size: 14px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+.article-body {
+  font-size: 18px;
+  line-height: 2.1;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.article-body.rtl {
+  direction: rtl;
+  text-align: right;
+  font-family: "Noto Nastaliq Urdu", serif;
+}
+.footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 27px 18px;
+  border-top: 1px solid var(--line);
+  margin-top: 60px;
+}
+.footer strong {
+  display: block;
+  color: var(--deep);
+  font: 600 19px "Playfair Display",serif;
+}
+[hidden] { display: none !important; }
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">Markaz<span>.org</span></a>
+  <nav class="languages" aria-label="Choose language">
+    <button class="lang-btn active" data-lang="en" type="button">English</button>
+    <button class="lang-btn" data-lang="hi" type="button">हिन्दी</button>
+    <button class="lang-btn" data-lang="ur" type="button">اردو</button>
+  </nav>
+</header>
+
+<main>
+  <div id="status" class="status" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <h1 class="status-title">Loading article…</h1>
+    <p class="status-detail">Fetching text from Markaz.org digital archive.</p>
+  </div>
+  <article id="content" class="article-container" hidden></article>
+</main>
+
+<footer class="footer">
+  <strong>Markaz.org</strong>
+  A Sanctuary of Sufi Literature, Scholarship and Spiritual Heritage.
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  const SUPABASE_URL = "https://pooatzegjnegutflkcbm.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN";
+
+  const statusEl = document.getElementById("status");
+  const contentEl = document.getElementById("content");
+
+  let db = null;
+  let work = null;
+  let translations = [];
+  let currentLang = "en";
+  let loading = false;
+
+  const LABELS = {
+    en: { loading: "Loading article…", error: "Article not found", notFound: "The requested article or work does not exist.", retry: "Try again" },
+    hi: { loading: "लेख लोड हो रहा है…", error: "लेख नहीं मिला", notFound: "अनुरोधित लेख या रचना मौजूद नहीं है।", retry: "दोबारा कोशिश करें" },
+    ur: { loading: "مضمون لوڈ ہو رہا ہے…", error: "مضمون نہیں ملا", notFound: "مطلوبہ مضمون یا تصنیف موجود نہیں ہے۔", retry: "دوبارہ کوشش کریں" }
+  };
+
+  function labels() { return LABELS[currentLang] || LABELS.en; }
+
+  function escapeHTML(val) {
+    return String(val == null ? "" : val).replace(/[&<>"']/g, function(ch) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+    });
+  }
+
+  function withLineBreaks(val) {
+    return escapeHTML(val).replace(/\r?\n/g, "<br>");
+  }
+
+  function pickTranslation(rows) {
+    if (!Array.isArray(rows) || !rows.length) return {};
+    return rows.find(x => x.language_code === currentLang)
+      || rows.find(x => x.language_code === "en")
+      || rows[0] || {};
+  }
+
+  function getSlug() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("slug") ? params.get("slug").trim() : "";
+  }
+
+  function showLoading() {
+    statusEl.hidden = false;
+    contentEl.hidden = true;
+  }
+
+  function showError(msg) {
+    statusEl.hidden = false;
+    contentEl.hidden = true;
+    statusEl.innerHTML = '<h1 class="status-title">' + labels().error + '</h1>' +
+      '<p class="status-detail">' + escapeHTML(msg || labels().notFound) + '</p>';
+  }
+
+  function renderArticle() {
+    const t = pickTranslation(translations);
+    const title = t.title || work.slug || "Untitled Work";
+    const body = t.body || t.transliteration || "No content available.";
+    const isRtl = currentLang === "ur" || t.script_direction === "rtl";
+
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = isRtl ? "rtl" : "ltr";
+    document.title = title + " | Markaz.org";
+
+    document.querySelectorAll("[data-lang]").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.lang === currentLang);
+    });
+
+    contentEl.innerHTML = `
+      <div class="article-type">${escapeHTML(work.work_type || "Article")}</div>
+      <h1 class="article-title">${escapeHTML(title)}</h1>
+      ${t.subtitle ? `<div class="article-subtitle">${escapeHTML(t.subtitle)}</div>` : ''}
+      <div class="meta-info">
+        Published: ${work.publication_year || work.created_at ? new Date(work.created_at).toLocaleDateString() : '—'}
+      </div>
+      <div class="article-body ${isRtl ? 'rtl' : ''}">
+        ${withLineBreaks(body)}
+      </div>
+    `;
+
+    statusEl.hidden = true;
+    contentEl.hidden = false;
+  }
+
+  async function loadArticle() {
+    if (loading) return;
+    loading = true;
+    showLoading();
+
+    try {
+      const slug = getSlug();
+      if (!slug) throw new Error(labels().notFound);
+
+      if (!db) {
+        db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      }
+
+      const { data: workData, error: workErr } = await db
+        .from("author_works")
+        .select("*, author_profiles(slug, author_profile_translations(language_code, display_name))")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (workErr || !workData) throw new Error(labels().notFound);
+      work = workData;
+
+      const { data: transData, error: transErr } = await db
+        .from("author_work_translations")
+        .select("*")
+        .eq("work_id", work.id);
+
+      if (transErr) throw transErr;
+      translations = transData || [];
+
+      renderArticle();
+    } catch (err) {
+      console.error(err);
+      showError(err.message);
+    } finally {
+      loading = false;
+    }
+  }
+
+  document.querySelectorAll("[data-lang]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      currentLang = btn.dataset.lang || "en";
+      try { localStorage.setItem("markaz-lang", currentLang); } catch (_) {}
+      if (work) renderArticle();
+    });
+  });
+
+  try {
+    const saved = localStorage.getItem("markaz-lang");
+    if (saved && LABELS[saved]) currentLang = saved;
+  } catch (_) {}
+
+  loadArticle();
+})();
+</script>
+</body>
+  </html>
+  
