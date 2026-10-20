@@ -116,7 +116,7 @@ main {
   display: grid;
   grid-template-columns: 220px minmax(0,1fr);
   gap: 30px;
-  align-items: start;
+  align-items: center;
   padding: 30px;
   background: var(--paper);
   border: 1px solid var(--line);
@@ -133,49 +133,27 @@ main {
   width: 180px;
   height: 180px;
   object-fit: cover;
-  border-radius: 50%; /* Circle shape */
-  margin: 0 auto 12px;
+  border-radius: 50%;
+  margin: 0 auto;
   background: #eee1d0;
   border: 3px solid var(--gold);
-}
-.upload-btn-label {
-  display: inline-block;
-  font-size: 12px;
-  color: var(--wine);
-  background: var(--cream);
-  padding: 5px 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 5px;
-}
-.upload-btn-label:hover {
-  background: var(--gold-light);
-}
-.eyebrow {
-  color: var(--gold);
-  letter-spacing: 2px;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
 }
 .profile-name {
   font: 700 clamp(30px,5vw,48px)/1.25 "Playfair Display",serif;
   color: var(--deep);
-  margin: 7px 0 12px;
+  margin: 0 0 8px;
   overflow-wrap: anywhere;
 }
-.name-detail { color: var(--muted); margin-bottom: 12px; font-size: 15px; }
 .short-bio { font-size: 17px; color: #514741; }
 .facts {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 .fact {
   min-width: 120px;
-  padding: 10px 13px;
+  padding: 8px 12px;
   background: var(--cream);
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -203,6 +181,18 @@ main {
   margin: 0 0 18px;
 }
 .panel p { margin-top: 0; }
+.profile-info-list {
+  margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 2;
+}
+.profile-info-item {
+  margin-bottom: 8px;
+}
+.profile-info-label {
+  font-weight: 700;
+  color: var(--deep);
+}
 .profile-tabs {
   display: flex;
   gap: 8px;
@@ -239,6 +229,11 @@ main {
   padding: 18px;
   background: #fffefa;
   min-width: 0;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.work-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 .work-type {
   font-size: 11px;
@@ -254,7 +249,7 @@ main {
   overflow-wrap: anywhere;
 }
 .work-title a { color: #292321 !important; text-decoration: none; }
-.work-excerpt { color: var(--muted); }
+.work-excerpt { color: var(--muted); margin: 0; }
 .empty {
   padding: 24px 10px;
   text-align: center;
@@ -328,15 +323,15 @@ main {
   let translations = [];
   let works = [];
   let currentLang = "en";
-  let currentTab = "profile"; // Default tab
+  let currentTab = "profile";
   let loading = false;
 
   const LABELS = {
     en: {
       loading: "Loading profile…",
       connecting: "Connecting to the Markaz.org digital library.",
-      category: "Author & Poet Profile",
       born: "Born",
+      domicile: "Domicile / Residence",
       died: "Died",
       birthPlace: "Birth Place",
       deathPlace: "Death Place",
@@ -344,9 +339,8 @@ main {
       penName: "Pen Name",
       bio: "Biography",
       legacy: "Life & Legacy",
-      read: "Read text",
       noBio: "Biography has not been added yet.",
-      noWorks: "No published works found in this section.",
+      noWorks: "No published entries found in this section.",
       notFound: "This profile was not found or has not been published.",
       missingSlug: "The profile slug is missing from the URL.",
       retry: "Try again",
@@ -355,7 +349,6 @@ main {
       unknown: "An unexpected error occurred.",
       authorsListTitle: "All Authors & Poets",
       authorsListSubtitle: "Explore profiles of all published authors and scholars.",
-      uploadPhoto: "Change Picture",
       tabs: {
         profile: "Profile",
         naat: "Naat",
@@ -368,8 +361,8 @@ main {
     hi: {
       loading: "प्रोफ़ाइल लोड हो रही है…",
       connecting: "Markaz.org डिजिटल लाइब्रेरी से जुड़ रहे हैं।",
-      category: "लेखक और शायर का परिचय",
       born: "जन्म तिथि",
+      domicile: "मूल निवास / Domicile",
       died: "वफ़ात तिथि",
       birthPlace: "जन्म स्थान",
       deathPlace: "वफ़ात स्थान",
@@ -377,7 +370,6 @@ main {
       penName: "तखल्लुस / पेन नेम",
       bio: "जीवनी",
       legacy: "जीवन और विरासत",
-      read: "पाठ पढ़ें",
       noBio: "जीवनी अभी जोड़ी नहीं गई है।",
       noWorks: "इस सेक्शन में कोई रचना उपलब्ध नहीं है।",
       notFound: "प्रोफ़ाइल नहीं मिली या अभी प्रकाशित नहीं है।",
@@ -388,11 +380,10 @@ main {
       unknown: "एक अनजान त्रुटि हुई।",
       authorsListTitle: "सभी लेखक और शायर",
       authorsListSubtitle: "सभी प्रकाशित लेखकों और विद्वानों की प्रोफ़ाइल देखें।",
-      uploadPhoto: "तस्वीर बदलें",
       tabs: {
         profile: "प्रोफ़ाइल",
         naat: "नात",
-        manqabat: "منقبت",
+        manqabat: "मनक़बत",
         ghazal: "ग़ज़ल",
         article: "लेख",
         sher: "शेर"
@@ -401,8 +392,8 @@ main {
     ur: {
       loading: "پروفائل لوڈ ہو رہی ہے…",
       connecting: "مرکز ڈاٹ آرگ کی ڈیجیٹل لائبریری سے رابطہ ہو رہا ہے۔",
-      category: "مصنف اور شاعر کا تعارف",
       born: "تاریخ پیدائش",
+      domicile: "سکونت / Domicile",
       died: "تاریخ وفات",
       birthPlace: "جائے پیدائش",
       deathPlace: "جائے وفات",
@@ -410,18 +401,16 @@ main {
       penName: "تخلص",
       bio: "سوانح",
       legacy: "زندگی اور علمی وراثت",
-      read: "متن پڑھیے",
       noBio: "سوانح ابھی شامل نہیں کی گئی ہے۔",
       noWorks: "اس زمرے میں کوئی تصنیف دستیاب نہیں ہے۔",
       notFound: "پروفائل نہیں ملی یا ابھی شائع نہیں ہوئی ہے۔",
       missingSlug: "URL میں پروفائل کا slug موجود نہیں ہے۔",
       retry: "دوبارہ کوشش کریں",
       error: "پروفائل لوڈ نہیں ہو سکی",
-      check: "प्रोफ़ाइल का status، Supabase permissions और انٹرنیٹ کنکشن چیک کریں۔",
+      check: "प्रोफ़ाइल का status، Supabase permissions اور انٹرنیٹ کنکشن چیک کریں۔",
       unknown: "ایک غیر متوقع خرابی پیش آئی۔",
       authorsListTitle: "تمام مصنفین اور شعرا",
       authorsListSubtitle: "تمام شائع شدہ مصنفین اور محققین کے پروفائلز دیکھیں۔",
-      uploadPhoto: "تصویر تبدیل کریں",
       tabs: {
         profile: "پروفائل",
         naat: "نعت",
@@ -514,7 +503,8 @@ main {
     const L = labels();
     const t = pickTranslation(translations);
 
-    const displayName = t.display_name || profile.real_name || profile.pen_name || profile.slug || "Markaz.org";
+    // Main display name (e.g. Husam Ahmad Raza Khan)
+    const displayName = profile.real_name || t.display_name || profile.pen_name || profile.slug || "Markaz.org";
 
     document.documentElement.lang = currentLang;
     document.documentElement.dir = currentLang === "ur" ? "rtl" : "ltr";
@@ -526,23 +516,16 @@ main {
 
     const realName = t.real_name || profile.real_name || "";
     const penName = t.pen_name || profile.pen_name || "";
-    
-    // Details conditional building
-    let detailsArr = [];
-    if (realName) detailsArr.push(`${L.realName}: ${realName}`);
-    if (penName) detailsArr.push(`${L.penName}: ${penName}`);
-    const subtitle = detailsArr.join(" · ");
+    const domicile = profile.domicile || profile.residence || t.domicile || "";
 
     const imageURL = profile.profile_image_url || PLACEHOLDER;
 
-    // Conditional Facts (Birth/Death Date & Place - hide if empty)[span_5](start_span)[span_5](end_span)
-    let factsHTML = "";
-    if (profile.birth_date) factsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.born)}</span>${escapeHTML(profile.birth_date)}</div>`;
-    if (profile.birth_place) factsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.birthPlace)}</span>${escapeHTML(profile.birth_place)}</div>`;
-    if (profile.death_date) factsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.died)}</span>${escapeHTML(profile.death_date)}</div>`;
-    if (profile.death_place) factsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.deathPlace)}</span>${escapeHTML(profile.death_place)}</div>`;
+    // Subtitle facts under name (Only Birthdate and Domicile if available)
+    let heroFactsHTML = "";
+    if (profile.birth_date) heroFactsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.born)}</span>${escapeHTML(profile.birth_date)}</div>`;
+    if (domicile) heroFactsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.domicile)}</span>${escapeHTML(domicile)}</div>`;
 
-    // Tabs Navigation HTML
+    // Tabs Navigation
     const tabsList = ['profile', 'naat', 'manqabat', 'ghazal', 'article', 'sher'];
     let tabsHTML = '<nav class="profile-tabs" aria-label="Author sections">';
     tabsList.forEach(tabKey => {
@@ -555,17 +538,25 @@ main {
     let mainContentHTML = "";
 
     if (currentTab === 'profile') {
-      // Short Bio (< 100 words) & Long Bio (< 1000 words) rendering conditionally[span_6](start_span)[span_6](end_span)
-      const shortBioHTML = t.short_bio ? `<p class="short-bio">${escapeHTML(t.short_bio)}</p>` : '';
+      // Profile Tab Info Block (Real Name, Pen Name, Places, Dates)
+      let infoItems = [];
+      if (realName) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.realName)}:</span> ${escapeHTML(realName)}</div>`);
+      if (penName) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.penName)}:</span> ${escapeHTML(penName)}</div>`);
+      if (profile.birth_place) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.birthPlace)}:</span> ${escapeHTML(profile.birth_place)}</div>`);
+      if (profile.death_date) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.died)}:</span> ${escapeHTML(profile.death_date)}</div>`);
+      if (profile.death_place) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.deathPlace)}:</span> ${escapeHTML(profile.death_place)}</div>`);
+
+      const infoSectionHTML = infoItems.length ? `<div class="profile-info-list">${infoItems.join('')}</div>` : '';
+      const shortBioHTML = t.short_bio ? `<p class="short-bio" style="margin-bottom:20px;">${escapeHTML(t.short_bio)}</p>` : '';
       const longBioHTML = t.biography ? `<section class="panel"><h2>${escapeHTML(L.bio)}</h2><div>${withLineBreaks(t.biography)}</div></section>` : '';
       const legacyHTML = t.life_and_legacy ? `<section class="panel"><h2>${escapeHTML(L.legacy)}</h2><div>${withLineBreaks(t.life_and_legacy)}</div></section>` : '';
 
-      mainContentHTML = shortBioHTML + longBioHTML + legacyHTML;
-      if (!t.short_bio && !t.biography && !t.life_and_legacy) {
+      mainContentHTML = infoSectionHTML + shortBioHTML + longBioHTML + legacyHTML;
+      if (!infoItems.length && !t.short_bio && !t.biography && !t.life_and_legacy) {
         mainContentHTML = `<div class="empty">${escapeHTML(L.noBio)}</div>`;
       }
     } else {
-      // Filter works based on selected tab category/work_type
+      // Works Tab Filtering
       const filteredWorks = works.filter(w => {
         const type = (w.work_type || "").toLowerCase();
         const cat = (w.category || "").toLowerCase();
@@ -579,11 +570,11 @@ main {
         const targetPage = work.work_type === 'article' ? 'article.html' : 'work.html';
         const workUrl = `${targetPage}?slug=${encodeURIComponent(work.slug)}`;
 
+        // Direct Link on Card Title & Excerpt - No "Read text" button
         return `<article class="work-card">
           <div class="work-type">${escapeHTML(work.work_type || currentTab)}</div>
           <h3 class="work-title"><a href="${workUrl}">${escapeHTML(title)}</a></h3>
-          ${excerpt}
-          <a href="${workUrl}" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:13px;padding:6px 14px;margin-top:10px;">${escapeHTML(L.read)}</a>
+          ${excerpt ? `<a href="${workUrl}" style="text-decoration:none;color:inherit;">${excerpt}</a>` : ''}
         </article>`;
       }).join("");
 
@@ -593,36 +584,17 @@ main {
     contentEl.innerHTML =
       '<section class="hero">' +
         '<div class="portrait-wrap">' +
-          '<img class="portrait" id="authorImage" src="' + escapeHTML(imageURL) + '" alt="' + escapeHTML(displayName) + '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'">' +
-          '<br>' +
-          '<label class="upload-btn-label">' + escapeHTML(L.uploadPhoto) + '<input type="file" id="imageUploadInput" accept="image/*" style="display:none;"></label>' +
+          '<img class="portrait" src="' + escapeHTML(imageURL) + '" alt="' + escapeHTML(displayName) + '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'">' +
         '</div>' +
         '<div>' +
-          '<div class="eyebrow">' + escapeHTML(L.category) + '</div>' +
           '<h1 class="profile-name">' + escapeHTML(displayName) + '</h1>' +
-          (subtitle ? '<div class="name-detail">' + escapeHTML(subtitle) + '</div>' : '') +
-          (factsHTML ? '<div class="facts">' + factsHTML + '</div>' : '') +
+          (heroFactsHTML ? '<div class="facts">' + heroFactsHTML + '</div>' : '') +
         '</div>' +
       '</section>' +
       tabsHTML +
       mainContentHTML;
 
-    // Attach event listener for custom image upload[span_7](start_span)[span_7](end_span)
-    const uploadInput = document.getElementById("imageUploadInput");
-    if (uploadInput) {
-      uploadInput.addEventListener("change", function(e) {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(event) {
-            document.getElementById("authorImage").src = event.target.result;
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-
-    // Attach tab button click listeners
+    // Attach Tab click event
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         currentTab = btn.dataset.tab;
