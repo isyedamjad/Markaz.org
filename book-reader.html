@@ -33,16 +33,23 @@
             overflow: hidden;
         }
         
+        /* Top Header Bar */
         .top-bar {
             background: var(--bar-bg);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--line);
-            padding: 10px 16px;
+            padding: 8px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 10;
-            height: 50px;
+            min-height: 56px;
+        }
+        .header-meta {
+            display: flex;
+            flex-direction: column;
+            max-width: 75%;
+            overflow: hidden;
         }
         .brand {
             font: 600 0.95rem 'Playfair Display', serif;
@@ -51,7 +58,14 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 75%;
+        }
+        .author-name {
+            font-size: 0.75rem;
+            color: #aaa;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 1px;
         }
         .close-btn {
             background: #2a2a2a;
@@ -63,6 +77,7 @@
             text-decoration: none;
         }
 
+        /* Main Viewer Area */
         main {
             flex: 1;
             display: flex;
@@ -94,6 +109,7 @@
             transition: transform 0.1s ease-out;
         }
 
+        /* Loading State Overlay */
         .state {
             position: absolute;
             inset: 0;
@@ -119,6 +135,7 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Bottom Control Toolbar */
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -130,7 +147,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 20px;
+            padding: 10px 16px;
             z-index: 100;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
             height: 64px;
@@ -138,7 +155,7 @@
         .tool-group {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .circle-btn {
             width: 42px;
@@ -167,16 +184,40 @@
             opacity: 0.3;
             cursor: not-allowed;
         }
-        .page-indicator {
+        
+        /* Direct Page Jump Input Field */
+        .page-input-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 0.95rem;
+            gap: 2px;
+        }
+        .page-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.9rem;
             color: #eee;
             font-weight: 600;
         }
-        .page-indicator span.sub {
-            font-size: 0.7rem;
+        .page-input-wrapper input {
+            width: 48px;
+            height: 30px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            outline: none;
+        }
+        .page-input-wrapper input:focus {
+            border-color: var(--accent);
+            background: #333;
+        }
+        .page-input-container span.sub {
+            font-size: 0.65rem;
             color: #888;
             font-weight: 400;
             text-transform: uppercase;
@@ -186,29 +227,38 @@
 </head>
 <body>
 
+    <!-- Header Section -->
     <header class="top-bar">
-        <a class="brand" href="library.html" id="book-title">Loading...</a>
+        <div class="header-meta">
+            <a class="brand" href="library.html" id="book-title">Loading...</a>
+            <div class="author-name" id="book-author">By: Loading...</div>
+        </div>
         <a class="close-btn" href="library.html">Close</a>
     </header>
 
+    <!-- Main Workspace -->
     <main id="main-viewer">
         <div id="state" class="state">
             <div class="spinner"></div>
-            <span id="state-text">Kitab ka pehla page load ho raha hai...</span>
+            <span id="state-text">Book loading...</span>
         </div>
         <div id="canvas-container">
             <canvas id="pdf-render"></canvas>
         </div>
     </main>
 
+    <!-- Bottom Controls -->
     <footer class="bottom-bar" id="bottom-controls">
         <div class="tool-group">
             <button id="zoom-out" class="circle-btn" title="Zoom Out">−</button>
             <button id="zoom-in" class="circle-btn" title="Zoom In">+</button>
         </div>
 
-        <div class="page-indicator">
-            <div><span id="page-num">1</span> / <span id="page-count">--</span></div>
+        <div class="page-input-container">
+            <div class="page-input-wrapper">
+                <input type="number" id="page-input" min="1" value="1" aria-label="Page Number">
+                <span>/ <span id="page-count">--</span></span>
+            </div>
             <span class="sub">PAGE</span>
         </div>
 
@@ -276,7 +326,7 @@
                 });
             });
 
-            $('page-num').textContent = num;
+            $('page-input').value = num;
             $('prev-btn').disabled = (num <= 1);$('next-btn').disabled = (num >= pdfDoc.numPages);
         }
 
@@ -300,9 +350,26 @@
             queueRenderPage(pageNum);
         }
 
+        function goToInputPage() {
+            if (!pdfDoc) return;
+            let targetPage = parseInt($('page-input').value);
+            if (isNaN(targetPage) || targetPage < 1) targetPage = 1;
+            if (targetPage > pdfDoc.numPages) targetPage = pdfDoc.numPages;
+            pageNum = targetPage;
+            queueRenderPage(pageNum);
+        }
+
         $('prev-btn').addEventListener('click', onPrevPage);$('next-btn').addEventListener('click', onNextPage);
 
-        // Zoom In & Zoom Out Buttons
+        // Page Number Input Jump Listeners
+        $('page-input').addEventListener('change', goToInputPage);$('page-input').addEventListener('keyup', e => {
+            if (e.key === 'Enter') {
+                goToInputPage();
+                $('page-input').blur();
+            }
+        });
+
+        // Zoom In & Zoom Out Listeners
         $('zoom-in').addEventListener('click', () => {
             scale = parseFloat((scale + 0.25).toFixed(2));
             if (scale > 3.0) scale = 3.0;
@@ -315,7 +382,7 @@
             queueRenderPage(pageNum);
         });
 
-        // Touch Swipe Navigation for Mobile
+        // Touch Swipe Gesture for Mobile
         let touchstartX = 0, touchendX = 0;
         const mainViewer = $('main-viewer');
         
@@ -342,9 +409,10 @@
                     return;
                 }
 
+                // Fetch content details along with author information
                 const { data, error } = await db
                     .from('content_items')
-                    .select('id, slug, content_translations(language_code, title), book_details(*)')
+                    .select('id, slug, content_translations(language_code, title), book_details(*, author:authors(id, name))')
                     .eq('slug', slug)
                     .eq('status', 'published')
                     .maybeSingle();
@@ -364,11 +432,26 @@
 
                 const translations = data.content_translations || [];
                 const matchedTranslation = translations.find(x => x.language_code === 'en') || translations.find(x => x.title) || {};
+                
+                // Set Header Book Title
                 $('book-title').textContent = matchedTranslation.title || data.slug;
+
+                // Set Header Author Name
+                let authorName = 'Unknown Author';
+                if (details?.author) {
+                    if (Array.isArray(details.author) && details.author.length > 0) {
+                        authorName = details.author.map(a => a.name).join(', ');
+                    } else if (details.author.name) {
+                        authorName = details.author.name;
+                    }
+                } else if (details?.publisher) {
+                    authorName = details.publisher;
+                }
+                $('book-author').textContent = `By: ${authorName}`;
 
                 const targetUrl = getFileUrl(path);
 
-                // Lazy Loading / Incremental Loading via PDF.js loadingTask
+                // Initialize PDF.js loading task
                 const loadingTask = pdfjsLib.getDocument({
                     url: targetUrl,
                     disableAutoFetch: false,
@@ -378,10 +461,11 @@
                 loadingTask.promise.then(pdfDoc_ => {
                     pdfDoc = pdfDoc_;
                     $('page-count').textContent = pdfDoc.numPages;
+                    $('page-input').max = pdfDoc.numPages;
                     renderPage(pageNum);
                 }).catch(err => {
                     console.error(err);
-                    $('state-text').textContent = 'PDF load hone mein error aaya.';
+                    $('state-text').textContent = 'Error loading PDF file.';
                 });
 
             } catch (err) {
