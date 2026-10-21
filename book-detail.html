@@ -221,9 +221,22 @@
                 return;
             }
 
+            // Updated query including people relation for author name
             const { data, error } = await db
                 .from('content_items')
-                .select('id, slug, cover_image_url, content_translations(language_code, title), book_details(*)')
+                .select(`
+                    id, 
+                    slug, 
+                    cover_image_url, 
+                    content_translations(language_code, title), 
+                    book_details(
+                        *,
+                        people:author_id(
+                            verified_name,
+                            person_kind
+                        )
+                    )
+                `)
                 .eq('slug', slug)
                 .eq('status', 'published')
                 .maybeSingle();
@@ -247,12 +260,15 @@
                 $('cover').src = 'https://via.placeholder.com/300x400?text=No+Cover';
             }
 
+            // Extract author name from the joined people table
+            const authorName = details.people?.verified_name || details.author || details.writer || '';
+
             // Dynamic fields generation
             const metaContainer = $('meta-list');
             metaContainer.innerHTML = '';
 
             const fieldsList = [
-                { key: 'author', label: 'Author', value: details.author || details.writer, isAuthorLink: true },
+                { key: 'author', label: 'Author', value: authorName, isAuthorLink: true },
                 { key: 'translator', label: 'Translator', value: details.translator },
                 { key: 'editor', label: 'Editor', value: details.editor },
                 { key: 'publisher', label: 'Publisher', value: details.publisher, isPublisherLink: true },
@@ -271,14 +287,12 @@
                         const pubUrl = `publisher.html?name=${encodeURIComponent(item.value)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${pubUrl}">${item.value}</a>`;
                     } else if (item.isAuthorLink && details.author_id) {
-                        const authorUrl = `authors.html?id=${encodeURIComponent(details.author_id)}`;
+                        const authorUrl = `authors.html?slug=${encodeURIComponent(details.author_id)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${authorUrl}">${item.value}</a>`;
                     } else if (item.isYearLink) {
-                        // Publication year link pointing to library page with year filter
                         const yearUrl = `library.html?year=${encodeURIComponent(item.value)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${yearUrl}">${item.value}</a>`;
                     } else if (item.isLangLink) {
-                        // Language/Roman link pointing to library page with language filter
                         const langUrl = `library.html?lang=${encodeURIComponent(item.value)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${langUrl}">${item.value}</a>`;
                     } else {
