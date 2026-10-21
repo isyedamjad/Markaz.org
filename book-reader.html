@@ -398,9 +398,9 @@
                     return;
                 }
 
-                // Updated link to point to book-detail.html instead of book.html
-                $('close-link').href = `book-detail.html?slug=${slug}`;
-                $('book-title').href = `book-detail.html?slug=${slug}`;
+                // Updated link to point to book.html instead of book-detail.html
+                $('close-link').href = `book.html?slug=${slug}`;
+                $('book-title').href = `book.html?slug=${slug}`;
 
                 const { data, error } = await db
                     .from('content_items')
