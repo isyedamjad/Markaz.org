@@ -33,7 +33,6 @@
             overflow: hidden;
         }
         
-        /* Top Header Bar */
         .top-bar {
             background: var(--bar-bg);
             backdrop-filter: blur(10px);
@@ -77,7 +76,6 @@
             text-decoration: none;
         }
 
-        /* Main Viewer Area */
         main {
             flex: 1;
             display: flex;
@@ -109,7 +107,6 @@
             transition: transform 0.1s ease-out;
         }
 
-        /* Loading State Overlay */
         .state {
             position: absolute;
             inset: 0;
@@ -135,7 +132,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Bottom Control Toolbar */
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -185,7 +181,6 @@
             cursor: not-allowed;
         }
         
-        /* Direct Page Jump Input Field */
         .page-input-container {
             display: flex;
             flex-direction: column;
@@ -227,16 +222,14 @@
 </head>
 <body>
 
-    <!-- Header Section -->
     <header class="top-bar">
         <div class="header-meta">
             <a class="brand" href="library.html" id="book-title">Loading...</a>
-            <div class="author-name" id="book-author">By: Loading...</div>
+            <div class="author-name" id="book-author">By: Markaz Library</div>
         </div>
         <a class="close-btn" href="library.html">Close</a>
     </header>
 
-    <!-- Main Workspace -->
     <main id="main-viewer">
         <div id="state" class="state">
             <div class="spinner"></div>
@@ -247,7 +240,6 @@
         </div>
     </main>
 
-    <!-- Bottom Controls -->
     <footer class="bottom-bar" id="bottom-controls">
         <div class="tool-group">
             <button id="zoom-out" class="circle-btn" title="Zoom Out">−</button>
@@ -361,7 +353,6 @@
 
         $('prev-btn').addEventListener('click', onPrevPage);$('next-btn').addEventListener('click', onNextPage);
 
-        // Page Number Input Jump Listeners
         $('page-input').addEventListener('change', goToInputPage);$('page-input').addEventListener('keyup', e => {
             if (e.key === 'Enter') {
                 goToInputPage();
@@ -369,7 +360,6 @@
             }
         });
 
-        // Zoom In & Zoom Out Listeners
         $('zoom-in').addEventListener('click', () => {
             scale = parseFloat((scale + 0.25).toFixed(2));
             if (scale > 3.0) scale = 3.0;
@@ -382,7 +372,6 @@
             queueRenderPage(pageNum);
         });
 
-        // Touch Swipe Gesture for Mobile
         let touchstartX = 0, touchendX = 0;
         const mainViewer = $('main-viewer');
         
@@ -409,10 +398,10 @@
                     return;
                 }
 
-                // Fetch content details along with author information
+                // Safe query without strict relational joins that could fail
                 const { data, error } = await db
                     .from('content_items')
-                    .select('id, slug, content_translations(language_code, title), book_details(*, author:authors(id, name))')
+                    .select('id, slug, content_translations(language_code, title), book_details(*)')
                     .eq('slug', slug)
                     .eq('status', 'published')
                     .maybeSingle();
@@ -433,25 +422,14 @@
                 const translations = data.content_translations || [];
                 const matchedTranslation = translations.find(x => x.language_code === 'en') || translations.find(x => x.title) || {};
                 
-                // Set Header Book Title
                 $('book-title').textContent = matchedTranslation.title || data.slug;
 
-                // Set Header Author Name
-                let authorName = 'Unknown Author';
-                if (details?.author) {
-                    if (Array.isArray(details.author) && details.author.length > 0) {
-                        authorName = details.author.map(a => a.name).join(', ');
-                    } else if (details.author.name) {
-                        authorName = details.author.name;
-                    }
-                } else if (details?.publisher) {
-                    authorName = details.publisher;
-                }
+                // Safe author/publisher fallback extractor
+                let authorName = details?.author_name || details?.publisher || 'Traditional Text';
                 $('book-author').textContent = `By: ${authorName}`;
 
                 const targetUrl = getFileUrl(path);
 
-                // Initialize PDF.js loading task
                 const loadingTask = pdfjsLib.getDocument({
                     url: targetUrl,
                     disableAutoFetch: false,
