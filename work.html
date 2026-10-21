@@ -173,7 +173,7 @@ h1{
   font:400 1.03rem/1.75 var(--serif);
   overflow-wrap:anywhere;
 }
-.hidden{display:none!important}
+.hidden{display:none!important}\n.author-profile-link{color:inherit;text-decoration:underline;text-decoration-color:#b7c9c5;text-underline-offset:4px}.author-profile-link:hover{color:var(--teal)}
 
 /* Language options: no layout switch; poetry always uses the same layout */
 .reader-controls{
@@ -352,6 +352,26 @@ h1{
   html{scroll-behavior:auto}
   *{transition:none!important}
 }
+
+/* Published works archive */
+.works-archive{max-width:1180px;margin:0 auto;padding:24px 22px 70px}
+.archive-heading{padding:10px 0 22px;border-bottom:1px solid var(--line)}
+.archive-heading h1{font-size:clamp(1.8rem,4vw,2.5rem)}
+.archive-heading p{margin:8px 0 0;color:var(--muted)}
+.category-tabs{display:flex;gap:8px;overflow-x:auto;padding:18px 0 15px;scrollbar-width:thin}
+.category-tabs button{flex:0 0 auto;border:1px solid #dce6e2;background:#fff;color:var(--deep);border-radius:999px;padding:9px 15px;font-size:.88rem}
+.category-tabs button.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.works-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.work-card{display:flex;flex-direction:column;min-width:0;padding:20px;border:1px solid var(--line);border-radius:17px;background:#fff;box-shadow:0 8px 24px rgba(21,59,59,.045)}
+.work-card .work-category{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--teal);font-weight:700}
+.work-card h2{margin:10px 0 8px;font:600 1.15rem/1.45 var(--serif);overflow-wrap:anywhere}
+.work-card .work-author{margin:0 0 18px;color:var(--muted);font-size:.9rem}
+.work-card .work-author a{color:var(--teal);text-decoration:underline;text-underline-offset:3px}
+.work-card .open-work{margin-top:auto;display:block;text-align:center;border-radius:999px;padding:10px 14px;background:var(--teal);color:#fff;font-weight:700}
+.archive-state{padding:25px 15px;color:var(--muted);text-align:center}
+@media(max-width:800px){.works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.works-archive{padding:18px 14px 45px}.works-grid{grid-template-columns:1fr;gap:11px}.work-card{padding:17px}.category-tabs{margin-right:-14px}}
+
 </style>
 </head>
 
@@ -371,6 +391,17 @@ h1{
     </nav>
   </div>
 </header>
+
+<main id="worksArchive" class="works-archive hidden">
+  <header class="archive-heading">
+    <h1>Kalaam &amp; Poetry</h1>
+    <p>Explore published ghazals, naats, manqabats, salaams and other literary works.</p>
+  </header>
+  <nav id="categoryTabs" class="category-tabs" aria-label="Filter works by category"></nav>
+  <div id="archiveLoading" class="archive-state">Loading published works…</div>
+  <div id="worksGrid" class="works-grid"></div>
+  <div id="archiveEmpty" class="archive-state hidden">No published works in this category yet.</div>
+</main>
 
 <main class="shell">
   <nav class="crumb" aria-label="Breadcrumb">
@@ -537,8 +568,26 @@ function render(){
     work.author_profiles?.real_name ||
     work.author_profiles?.pen_name || '';
   const year = work.publication_year ? String(work.publication_year) : '';
-  $('byline').textContent = [authorName, year].filter(Boolean).join(' · ');
-  $('byline').classList.toggle('hidden', !$('byline').textContent.trim());
+  const profileSlug = work.author_profiles?.slug || '';
+  const profileType = String(work.author_profiles?.profile_type || 'poet').toLowerCase();
+  const profilePaths = {poet:'poets',author:'authors',naatkhwan:'naatkhwan',sufi:'sufis',saint:'saints',scholar:'scholars',mufti:'muftis',book_contributor:'contributors',translator:'translators',historian:'historians',qawwal:'qawwals',editor:'editors',other:'people'};
+  const profileUrl = profileSlug ? '/' + (profilePaths[profileType] || 'people') + '/' + encodeURIComponent(profileSlug) : '';
+  const byline = $('byline');
+  byline.replaceChildren();
+  if(authorName && profileUrl){
+    const authorLink = document.createElement('a');
+    authorLink.href = profileUrl;
+    authorLink.textContent = authorName;
+    authorLink.className = 'author-profile-link';
+    byline.appendChild(authorLink);
+  } else if(authorName) {
+    byline.appendChild(document.createTextNode(authorName));
+  }
+  if(year){
+    if(authorName) byline.appendChild(document.createTextNode(' · '));
+    byline.appendChild(document.createTextNode(year));
+  }
+  byline.classList.toggle('hidden', !byline.textContent.trim());
   updateWorkLabel(authorName, work.work_type);
 
   poem.innerHTML = bodyHTML(t.body || t.excerpt || '');
@@ -573,13 +622,68 @@ function render(){
   document.title = title + ' | Markaz.org';
 }
 
+const CATEGORY_LABELS = {
+  all:'All works',ghazal:'Ghazal',sher:'Sher',bait:'Bait',nazm:'Nazm',rubai:'Rubai',
+  hamd:'Hamd',naat:'Naat',manqabat:'Manqabat',salaam:'Salaam',salam:'Salaam',
+  marsiya:'Marsiya',qaseeda:'Qaseeda',book:'Books',article:'Articles',letter:'Letters',
+  malfuzat:'Malfuzat',story:'Stories',audio:'Audio',video:'Video',poetry:'Poetry',other:'Other'
+};
+let archiveWorks = [];
+let activeCategory = 'all';
+function workTitle(item){
+  const ts=item.author_work_translations||[];
+  const t=ts.find(x=>x.language_code==='en'&&x.title)||ts.find(x=>x.language_code==='roman'&&x.title)||ts.find(x=>x.title)||{};
+  return t.title||item.slug||'Untitled work';
+}
+function workAuthor(item){
+  const profile=item.author_profiles||{};
+  const ts=profile.author_profile_translations||[];
+  const t=ts.find(x=>x.language_code==='en')||ts.find(x=>x.language_code==='roman')||ts[0]||{};
+  return t.display_name||profile.pen_name||profile.real_name||'';
+}
+function workProfileUrl(item){
+  const profile=item.author_profiles||{};
+  if(!profile.slug)return '';
+  const paths={poet:'poets',author:'authors',naatkhwan:'naatkhwan',sufi:'sufis',saint:'saints',scholar:'scholars',mufti:'muftis',book_contributor:'contributors',translator:'translators',historian:'historians',qawwal:'qawwals',editor:'editors',other:'people'};
+  return '/'+(paths[String(profile.profile_type||'poet').toLowerCase()]||'people')+'/'+encodeURIComponent(profile.slug);
+}
+function renderArchive(){
+  const types=[...new Set(archiveWorks.map(w=>String(w.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_')))];
+  const ordered=['all',...Object.keys(CATEGORY_LABELS).filter(k=>k!=='all'&&types.includes(k)),...types.filter(k=>!CATEGORY_LABELS[k])];
+  $('categoryTabs').innerHTML=ordered.map(type=>`<button type="button" data-category="${esc(type)}" class="${type===activeCategory?'active':''}">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase()))}</button>`).join('');
+  $('categoryTabs').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{activeCategory=btn.dataset.category;renderArchive();}));
+  const shown=activeCategory==='all'?archiveWorks:archiveWorks.filter(w=>String(w.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_')===activeCategory);
+  $('worksGrid').innerHTML=shown.map(item=>{
+    const title=workTitle(item), author=workAuthor(item), profileUrl=workProfileUrl(item);
+    const type=String(item.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_');
+    return `<article class="work-card"><span class="work-category">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' '))}</span><h2>${esc(title)}</h2><p class="work-author">${author?'By ':''}${author?(profileUrl?`<a href="${esc(profileUrl)}">${esc(author)}</a>`:esc(author)):'Author not listed'}</p><a class="open-work" href="/work.html?slug=${encodeURIComponent(item.slug||'')}">Read work →</a></article>`;
+  }).join('');
+  $('archiveEmpty').classList.toggle('hidden',shown.length>0);
+}
+async function loadWorksArchive(){
+  try{
+    const {data,error}=await db.from('author_works')
+      .select('id,slug,work_type,publication_year,author_work_translations(language_code,title),author_profiles(slug,real_name,pen_name,profile_type,author_profile_translations(language_code,display_name))')
+      .eq('status','published').order('created_at',{ascending:false}).limit(1000);
+    if(error)throw error;
+    archiveWorks=data||[];
+    $('archiveLoading').classList.add('hidden');
+    renderArchive();
+  }catch(error){
+    console.error('Could not load published works:',error);
+    $('archiveLoading').textContent='Published works could not be loaded. Check public read permissions for author_works and its translation/profile tables.';
+  }
+}
+
 async function load(){
   const params = new URLSearchParams(window.location.search);
   const slug = (params.get('slug') || '').trim();
 
   if(!slug){
     $('loading').classList.add('hidden');
-    $('error').classList.remove('hidden');
+    $('entry').classList.add('hidden');
+    $('worksArchive').classList.remove('hidden');
+    await loadWorksArchive();
     return;
   }
 
