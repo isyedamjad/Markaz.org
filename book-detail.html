@@ -257,9 +257,9 @@
                 { key: 'editor', label: 'Editor', value: details.editor },
                 { key: 'publisher', label: 'Publisher', value: details.publisher, isPublisherLink: true },
                 { key: 'page_count', label: 'Page counts', value: details.page_count || details.pages },
-                { key: 'publication_year', label: 'Publication year', value: details.publication_year || details.year },
+                { key: 'publication_year', label: 'Publication year', value: details.publication_year || details.year, isYearLink: true },
                 { key: 'edition', label: 'Edition', value: details.edition },
-                { key: 'language', label: 'Language', value: details.language_original || details.language },
+                { key: 'language', label: 'Language', value: details.language_original || details.language, isLangLink: true },
                 { key: 'notes', label: 'Notes', value: details.notes || details.description }
             ];
 
@@ -268,13 +268,19 @@
                     const li = document.createElement('li');
                     
                     if (item.isPublisherLink) {
-                        // Publisher name as clickable link
                         const pubUrl = `publisher.html?name=${encodeURIComponent(item.value)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${pubUrl}">${item.value}</a>`;
                     } else if (item.isAuthorLink && details.author_id) {
-                        // Author name as clickable link (if author_id exists)
                         const authorUrl = `authors.html?id=${encodeURIComponent(details.author_id)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${authorUrl}">${item.value}</a>`;
+                    } else if (item.isYearLink) {
+                        // Publication year link pointing to library page with year filter
+                        const yearUrl = `library.html?year=${encodeURIComponent(item.value)}`;
+                        li.innerHTML = `<strong>${item.label}:</strong> <a href="${yearUrl}">${item.value}</a>`;
+                    } else if (item.isLangLink) {
+                        // Language/Roman link pointing to library page with language filter
+                        const langUrl = `library.html?lang=${encodeURIComponent(item.value)}`;
+                        li.innerHTML = `<strong>${item.label}:</strong> <a href="${langUrl}">${item.value}</a>`;
                     } else {
                         li.innerHTML = `<strong>${item.label}:</strong> ${item.value}`;
                     }
