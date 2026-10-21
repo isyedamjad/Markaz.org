@@ -288,10 +288,12 @@
             }
         }, { passive: true });
 
-        // Direct Embed Fallback for heavy Internet Archive Links
-        function embedDirectViewer(url) {
+        // External Link Embed via Google Docs Viewer (Bypasses CORS & renders directly inside box)
+        function embedExternalViewer(url) {
             $('state').hidden = true;
-            $('bottom-controls').hidden = true; // Native viewer has its own controls$('main-viewer').innerHTML = `<iframe class="pdf-embed" src="${url}#toolbar=1&navpanes=0"></iframe>`;
+            $('bottom-controls').style.display = 'none'; // Hide custom bottom bar since Google viewer has native scrolling
+            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+            $('main-viewer').innerHTML = `<iframe class="pdf-embed" src="${viewerUrl}"></iframe>`;
         }
 
         async function loadReader() {
@@ -330,32 +332,11 @@
 
                 const targetUrl = rawUrl(path);
 
-                // Check if external link (Internet Archive)
+                // Agar external link (jaise Internet Archive) hai, toh seedha Google Viewer iframe me khol do taaki CORS error na aaye
                 if (/^https?:\/\//i.test(path)) {
-                    // Try PDF.js direct streaming with 4-second timeout limit
-                    let loaded = false;
-                    const timeout = setTimeout(() => {
-                        if (!loaded) {
-                            console.warn("Direct stream timeout, switching to native embed...");
-                            embedDirectViewer(targetUrl);
-                        }
-                    }, 3500);
-
-                    pdfjsLib.getDocument({ url: targetUrl, withCredentials: false }).promise.then(pdfDoc_ => {
-                        loaded = true;
-                        clearTimeout(timeout);
-                        pdfDoc = pdfDoc_;
-                        $('page-count').textContent = pdfDoc.numPages;
-                        $('state').hidden = true;
-                        $('canvas-container').hidden = false;
-                        renderPage(pageNum);
-                    }).catch(err => {
-                        clearTimeout(timeout);
-                        console.warn("PDF.js stream blocked, rendering direct embed:", err);
-                        embedDirectViewer(targetUrl);
-                    });
+                    embedExternalViewer(targetUrl);
                 } else {
-                    // Internal Supabase Path
+                    // Supabase internal storage files ke liye PDF.js canvas rendering
                     pdfjsLib.getDocument(targetUrl).promise.then(pdfDoc_ => {
                         pdfDoc = pdfDoc_;
                         $('page-count').textContent = pdfDoc.numPages;
