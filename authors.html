@@ -545,7 +545,9 @@ main { max-width:1180px; padding:34px 22px 70px; }
 
     const cards = authorsList.map(author => {
       const img = author.profile_image_url || PLACEHOLDER;
-      const name = author.real_name || author.pen_name || author.slug || "Author";
+      const authorTranslations = author.author_profile_translations || [];
+      const translated = pickTranslation(authorTranslations);
+      const name = translated.display_name || author.display_name || author.real_name || translated.real_name || author.pen_name || translated.pen_name || author.slug || "Author";
       return '<article class="work-card" style="display:flex;gap:15px;align-items:center;">' +
         '<img src="' + escapeHTML(img) + '" alt="' + escapeHTML(name) + '" style="width:70px;height:70px;object-fit:cover;border-radius:50%;" onerror="this.src=\'' + PLACEHOLDER + '\'">' +
         '<div>' +
@@ -570,7 +572,7 @@ main { max-width:1180px; padding:34px 22px 70px; }
     const L = labels();
     const t = pickTranslation(translations);
 
-    const displayName = profile.real_name || t.display_name || profile.pen_name || profile.slug || "Markaz.org";
+    const displayName = t.display_name || profile.display_name || profile.real_name || t.real_name || profile.pen_name || t.pen_name || profile.slug || "Markaz.org";
 
     document.documentElement.lang = currentLang;
     document.documentElement.dir = currentLang === "ur" ? "rtl" : "ltr";
@@ -744,6 +746,26 @@ main { max-width:1180px; padding:34px 22px 70px; }
         if (listResult.error) throw listResult.error;
         const allProfiles = listResult.data || [];
         const filteredProfiles = requestedType ? allProfiles.filter(p => (p.profile_type || "author") === requestedType || (p.role_tags || []).includes(requestedType)) : allProfiles;
+
+        // Load translations so the author list uses Display Name first in the selected language.
+        if (filteredProfiles.length) {
+          const profileIds = filteredProfiles.map(p => p.id).filter(Boolean);
+          if (profileIds.length) {
+            const translationResult = await db
+              .from("author_profile_translations")
+              .select("*")
+              .in("profile_id", profileIds);
+            if (translationResult.error) throw translationResult.error;
+            const translationsByProfile = {};
+            (translationResult.data || []).forEach(row => {
+              if (!translationsByProfile[row.profile_id]) translationsByProfile[row.profile_id] = [];
+              translationsByProfile[row.profile_id].push(row);
+            });
+            filteredProfiles.forEach(author => {
+              author.author_profile_translations = translationsByProfile[author.id] || [];
+            });
+          }
+        }
         renderAuthorsList(filteredProfiles);
         loading = false;
         return;
