@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="theme-color" content="#111111">
     <title>Book Reader | Markaz.org</title>
     
@@ -21,7 +21,7 @@
             --text-main: #f0f0f0;
             --line: #333;
         }
-        * { box-sizing: border-box; touch-action: manipulation; }
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             background: var(--paper);
@@ -33,7 +33,6 @@
             overflow: hidden;
         }
         
-        /* Top Header Bar */
         .top-bar {
             background: var(--bar-bg);
             backdrop-filter: blur(10px);
@@ -64,7 +63,6 @@
             text-decoration: none;
         }
 
-        /* Main Viewer Workspace */
         main {
             flex: 1;
             display: flex;
@@ -73,7 +71,8 @@
             position: relative;
             background: #111;
             overflow: auto;
-            padding-bottom: 70px; /* Floating Bottom Bar Space */
+            padding-bottom: 70px;
+            -webkit-overflow-scrolling: touch;
         }
         #canvas-container {
             display: flex;
@@ -92,9 +91,9 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.8);
             background: #fff;
             border-radius: 2px;
+            transition: transform 0.1s ease-out;
         }
 
-        /* Loading Overlay - Fixed Absolute Screen Centering */
         .state {
             position: absolute;
             inset: 0;
@@ -120,7 +119,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Rekhta Style Bottom Floating Control Bar */
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -188,24 +186,21 @@
 </head>
 <body>
 
-    <!-- Top Header Bar -->
     <header class="top-bar">
         <a class="brand" href="library.html" id="book-title">Loading...</a>
         <a class="close-btn" href="library.html">Close</a>
     </header>
 
-    <!-- Main Reader Space -->
     <main id="main-viewer">
         <div id="state" class="state">
             <div class="spinner"></div>
-            <span id="state-text">Kitab load ho rahi hai...</span>
+            <span id="state-text">Kitab ka pehla page load ho raha hai...</span>
         </div>
         <div id="canvas-container">
             <canvas id="pdf-render"></canvas>
         </div>
     </main>
 
-    <!-- Rekhta Bottom Floating Toolbar -->
     <footer class="bottom-bar" id="bottom-controls">
         <div class="tool-group">
             <button id="zoom-out" class="circle-btn" title="Zoom Out">−</button>
@@ -254,16 +249,13 @@
             pdfDoc.getPage(num).then(page => {
                 const viewport = page.getViewport({ scale: scale });
                 
-                // Device Pixel Ratio Smooth Quality Adjustment
                 const outputScale = window.devicePixelRatio || 1;
                 canvas.width = Math.floor(viewport.width * outputScale);
                 canvas.height = Math.floor(viewport.height * outputScale);
                 canvas.style.width = Math.floor(viewport.width) + "px";
                 canvas.style.height = "auto";
 
-                const transform = outputScale !== 1 
-                    ? [outputScale, 0, 0, outputScale, 0, 0] 
-                    : null;
+                const transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
 
                 const renderContext = {
                     canvasContext: ctx,
@@ -275,8 +267,6 @@
 
                 renderTask.promise.then(() => {
                     pageRendering = false;
-                    
-                    // Hide Loading Overlay completely once first page is drawn
                     $('state').style.display = 'none';
 
                     if (pageNumPending !== null) {
@@ -310,21 +300,18 @@
             queueRenderPage(pageNum);
         }
 
-        // Button Event Listeners
         $('prev-btn').addEventListener('click', onPrevPage);$('next-btn').addEventListener('click', onNextPage);
 
-        // Functional Zoom Controls
+        // Zoom In & Zoom Out Buttons
         $('zoom-in').addEventListener('click', () => {
-            if (!pdfDoc) return;
-            scale += 0.25;
+            scale = parseFloat((scale + 0.25).toFixed(2));
             if (scale > 3.0) scale = 3.0;
             queueRenderPage(pageNum);
         });
 
         $('zoom-out').addEventListener('click', () => {
-            if (!pdfDoc) return;
-            scale -= 0.25;
-            if (scale < 0.6) scale = 0.6;
+            scale = parseFloat((scale - 0.25).toFixed(2));
+            if (scale < 0.8) scale = 0.8;
             queueRenderPage(pageNum);
         });
 
@@ -340,8 +327,8 @@
             touchendX = e.changedTouches[0].screenX;
             const dist = touchendX - touchstartX;
             if (Math.abs(dist) > 50) {
-                if (dist < 0) onNextPage();  // Swipe Left -> Next
-                else onPrevPage();          // Swipe Right -> Prev
+                if (dist < 0) onNextPage();
+                else onPrevPage();
             }
         }, { passive: true });
 
@@ -371,7 +358,7 @@
                 const path = details?.pdf_storage_path || details?.epub_storage_path;
 
                 if (!path) {
-                    $('state-text').textContent = 'No digital PDF attached to this book.';
+                    $('state-text').textContent = 'No digital PDF attached.';
                     return;
                 }
 
@@ -381,25 +368,25 @@
 
                 const targetUrl = getFileUrl(path);
 
-                // Fetch PDF ArrayBuffer
-                const response = await fetch(targetUrl);
-                if (!response.ok) throw new Error('Failed to fetch file');
-                const arrayBuffer = await response.arrayBuffer();
+                // Lazy Loading / Incremental Loading via PDF.js loadingTask
+                const loadingTask = pdfjsLib.getDocument({
+                    url: targetUrl,
+                    disableAutoFetch: false,
+                    disableStream: false
+                });
 
-                pdfjsLib.getDocument({ data: arrayBuffer }).promise.then(pdfDoc_ => {
+                loadingTask.promise.then(pdfDoc_ => {
                     pdfDoc = pdfDoc_;
                     $('page-count').textContent = pdfDoc.numPages;
-
-                    // First page render triggering
                     renderPage(pageNum);
                 }).catch(err => {
                     console.error(err);
-                    $('state-text').textContent = 'PDF render karne mein samasya aayi.';
+                    $('state-text').textContent = 'PDF load hone mein error aaya.';
                 });
 
             } catch (err) {
                 console.error(err);
-                $('state-text').textContent = 'Network error ya file load nahi ho saki.';
+                $('state-text').textContent = 'Network error.';
             }
         }
 
