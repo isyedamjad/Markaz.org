@@ -298,15 +298,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
         <p class="small muted">Files upload to the existing Supabase Storage bucket named <b>book</b>.</p>
         <div class="grid">
           <div class="field uploadbox">
-            <label for="pdfFile">PDF upload</label>
+            <label for="pdfFile">PDF edition</label>
             <input id="pdfFile" type="file" accept=".pdf,application/pdf">
-            <p class="small muted">Option 1: Upload a PDF directly to Supabase Storage.</p>
             <div id="pdfCurrent" class="small muted" style="margin-top:8px">No PDF linked.</div>
-          </div>
-          <div class="field uploadbox">
-            <label for="pdfUrl">PDF direct link</label>
-            <input id="pdfUrl" type="url" placeholder="https://example.com/book.pdf">
-            <p class="small muted">Option 2: Paste a publicly accessible PDF URL. No upload needed. If you select a PDF file too, the uploaded file takes priority.</p>
           </div>
           <div class="field uploadbox">
             <label for="epubFile">EPUB edition</label>
@@ -509,7 +503,7 @@ async function loadBooks(){
   $('booksTable').textContent='Loading…';
   $('recentBooks').textContent='Loading…';
   const {data,error}=await db.from('content_items')
-    .select('id,type,slug,status,featured,cover_image_url,published_at,created_at,updated_at,source_notes,editorial_notes,seo_title,seo_description,content_translations(id,language_code,title,subtitle,excerpt,transliteration,translation_note,script_direction),book_details(content_id,author_id,publisher,publication_year,edition,isbn,page_count,language_original,pdf_storage_path,pdf_url,epub_storage_path,reading_mode)')
+    .select('id,type,slug,status,featured,cover_image_url,published_at,created_at,updated_at,source_notes,editorial_notes,seo_title,seo_description,content_translations(id,language_code,title,subtitle,excerpt,transliteration,translation_note,script_direction),book_details(content_id,author_id,publisher,publication_year,edition,isbn,page_count,language_original,pdf_storage_path,epub_storage_path,reading_mode)')
     .eq('type','book').order('updated_at',{ascending:false}).limit(500);
   if(error){
     $('booksTable').textContent='Could not load books: '+error.message;
@@ -612,7 +606,6 @@ function newBook(){
   $('contentId').value='';
   $('editorHeading').textContent='Add a book';
   $('pdfCurrent').textContent='No PDF linked.';
-  $('pdfUrl').value='';
   $('epubCurrent').textContent='No EPUB linked.';
   $('coverPreview').removeAttribute('src');
   switchLang('roman');showSection('editor');
@@ -642,8 +635,7 @@ async function editBook(id){
   $('seoDescription').value=b.seo_description||'';
   state.pdfPath=d.pdf_storage_path||null;
   state.epubPath=d.epub_storage_path||null;
-  $('pdfUrl').value=d.pdf_url||'';
-  $('pdfCurrent').textContent=state.pdfPath?'Uploaded PDF: '+state.pdfPath:(d.pdf_url?'External PDF link saved.':'No PDF linked.');
+  $('pdfCurrent').textContent=state.pdfPath?'Linked: '+state.pdfPath:'No PDF linked.';
   $('epubCurrent').textContent=state.epubPath?'Linked: '+state.epubPath:'No EPUB linked.';
   (b.content_translations||[]).forEach(t=>{
     if(state.translations[t.language_code])state.translations[t.language_code]={...t};
@@ -745,10 +737,7 @@ $('bookForm').addEventListener('submit',async e=>{
    }
 
     const pdfFile=$('pdfFile').files[0];
-    let pdfUrl=$('pdfUrl').value.trim()||null;
-    if(pdfUrl&&!/^https?:\/\//i.test(pdfUrl))throw new Error('PDF link must start with http:// or https://');
-    if(pdfFile){state.pdfPath=await uploadFile(pdfFile,'pdf',id);pdfUrl=null;}
-    else if(pdfUrl){state.pdfPath=null;}
+    if(pdfFile)state.pdfPath=await uploadFile(pdfFile,'pdf',id);
     const epubFile=$('epubFile').files[0];
     if(epubFile)state.epubPath=await uploadFile(epubFile,'epub',id);
 
@@ -763,7 +752,6 @@ $('bookForm').addEventListener('submit',async e=>{
       page_count:$('pageCount').value?Number($('pageCount').value):null,
       language_original:$('originalLanguage').value,
       pdf_storage_path:state.pdfPath,
-      pdf_url:pdfUrl,
       epub_storage_path:state.epubPath,
       reading_mode:$('readingMode').value
     };
