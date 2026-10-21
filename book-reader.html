@@ -106,6 +106,12 @@
             border-radius: 2px;
             transition: transform 0.1s ease-out;
         }
+        iframe.pdf-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
 
         .state {
             position: absolute;
@@ -278,7 +284,7 @@
         function getFileUrl(path) {
             if (!path) return '';
             if (/^https?:\/\//i.test(path)) {
-                return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(path);
+                return path;
             }
             const cleanPath = path.startsWith('/') ? path.slice(1) : path;
             return `${SUPABASE_URL}/storage/v1/object/public/book/${cleanPath}`;
@@ -398,7 +404,6 @@
                     return;
                 }
 
-                // Safe query without strict relational joins that could fail
                 const { data, error } = await db
                     .from('content_items')
                     .select('id, slug, content_translations(language_code, title), book_details(*)')
@@ -424,12 +429,22 @@
                 
                 $('book-title').textContent = matchedTranslation.title || data.slug;
 
-                // Safe author/publisher fallback extractor
                 let authorName = details?.author_name || details?.publisher || 'Traditional Text';
                 $('book-author').textContent = `By: ${authorName}`;
 
                 const targetUrl = getFileUrl(path);
 
+                // Agar link external (jaise Internet Archive) hai, toh CORS block se bachne ke liye Google Docs / iframe embed ka use karenge taaki bina loader atke turant khul jaye
+                if (/^https?:\/\//i.test(path)) {
+                    $('state').style.display = 'none';
+                    $('canvas-container').style.display = 'none';$('bottom-controls').style.display = 'none'; // Native viewer ke apne controls hote hain
+                    
+                    const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(targetUrl)}&embedded=true`;
+                    $('main-viewer').innerHTML = `<iframe class="pdf-embed" src="${viewerUrl}"></iframe>`;
+                    return;
+                }
+
+                // Supabase internal files ke liye standard PDF.js canvas lazy loading
                 const loadingTask = pdfjsLib.getDocument({
                     url: targetUrl,
                     disableAutoFetch: false,
