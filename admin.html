@@ -59,7 +59,7 @@ label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
 .section{display:none}
 .section.active{display:block}
 [dir="rtl"]{text-align:right}
-#authorsTable table,#worksTable table,#publishersTable table{min-width:650px}
+#authorsTable table,#worksTable table{min-width:650px}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .toolbar input{max-width:330px}
 .tablewrap{overflow:auto;margin-top:16px}
@@ -95,6 +95,30 @@ td{font-size:13px}
  h1{font-size:25px}
  .card{padding:15px}
 }
+</style>
+<style>
+/* MARKAZ.ORG — high-contrast editorial design system */
+:root{color-scheme:light;--mz-ink:#17252b;--mz-ink-soft:#35464b;--mz-muted:#59696d;--mz-paper:#fbfaf7;--mz-white:#fff;--mz-panel:#f1f4f1;--mz-line:#dce3df;--mz-teal:#075e59;--mz-teal-deep:#064743;--mz-gold:#a7782d;--mz-gold-pale:#f3e8d2;--mz-shadow:0 16px 42px rgba(23,37,43,.08);--mz-radius:18px;--mz-serif:Georgia,'Times New Roman',serif;--mz-sans:Inter,'Segoe UI',Arial,sans-serif}
+html{scroll-behavior:smooth;background:var(--mz-paper)}body{background:var(--mz-paper)!important;color:var(--mz-ink)!important;font-family:var(--mz-sans)!important;line-height:1.7!important;font-size:16px!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body *{box-sizing:border-box}p,li,dd,dt,label,small,.muted,.eyebrow,.tag,.brand-sub,.brand-subtitle,.subtitle,.description,.meta,.date,.status-detail{color:var(--mz-ink-soft)}p{line-height:1.8}a{color:var(--mz-teal)!important;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:var(--mz-gold)!important}button,input,select,textarea{font:inherit}button,.btn,[type=submit],[role=button]{transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}button:hover,.btn:hover,[type=submit]:hover{transform:translateY(-1px)}:focus-visible{outline:3px solid #d4a54d!important;outline-offset:3px!important}img{max-width:100%}
+/* Shared mastheads and navigation */
+.topline,.top,.topbar,.topline *{border-color:var(--mz-line)}.topline,.top{background:#f0f3ef!important;color:var(--mz-ink)!important}.topline a,.top a{color:var(--mz-ink)!important}.site-header,.head,.header,.topbar,.headrow{background:rgba(255,255,255,.97)!important;color:var(--mz-ink)!important;border-bottom:1px solid var(--mz-line)!important;box-shadow:0 5px 24px rgba(23,37,43,.035)!important}.header-inner,.head .in,.headrow,.topbar{max-width:1240px}.brand,.brand-name,.brandname,.brandmark{color:var(--mz-ink)!important}.brand-name,.brandname{font-family:var(--mz-serif)!important;font-weight:700!important;letter-spacing:-.035em}.brand-sub,.brand-subtitle,.brand .small,.tag{color:var(--mz-muted)!important}.brand-mark,.brandmark,.mark{background:var(--mz-teal)!important;color:white!important;border-color:var(--mz-teal)!important}.nav a,.nav button,.navright a,.header-actions a,.lang,.lang-btn,.languages button,.lang-switch button{color:var(--mz-ink-soft)!important;font-weight:600!important}.nav a:hover,.nav a.active,.lang.active,.lang-btn.active,.lang-switch .active{color:var(--mz-teal)!important}.nav a.active:after,.nav a:hover:after{background:var(--mz-gold)!important}.menu-toggle{color:var(--mz-ink)!important;border-color:var(--mz-line)!important}
+/* Hero panels */
+.hero{color:var(--mz-ink)!important;background:linear-gradient(130deg,#eef4f0 0%,#fbfaf7 58%,#f5eddf 100%)!important;border-color:var(--mz-line)!important}.hero h1,.hero h2,.hero .heading,.heroTitle,.hero-title{color:var(--mz-ink)!important}.hero p,.hero .tagline,.hero .sub,.hero .hero-desc{color:var(--mz-ink-soft)!important}.eyebrow,.kicker,.hero .eyebrow{color:var(--mz-teal)!important;font-weight:750!important;letter-spacing:.13em!important;text-transform:uppercase!important;font-size:.75rem!important}.hero h1,.heroTitle,.hero-title,h1{font-family:var(--mz-serif)!important;letter-spacing:-.035em;line-height:1.13!important}h1,h2,h3,h4,h5{color:var(--mz-ink)!important;line-height:1.25!important}h2,h3{font-family:var(--mz-serif)!important;letter-spacing:-.02em} .rule,.ornament,.divider{border-color:var(--mz-gold)!important;color:var(--mz-gold)!important}
+/* Main content, grids and cards */
+main,.wrap,.container,.article-container,.content,.library-wrap{color:var(--mz-ink)!important}.panel,.card,.lead-card,.book-card,.poem-card,.article-card,.author-card,.saint-card,.term-card,.feature-card,.result-card,.item-card,.entry-card,.grid article,.grid>*,.articleGrid>*{background:var(--mz-white)!important;color:var(--mz-ink)!important;border:1px solid var(--mz-line)!important;border-radius:var(--mz-radius)!important;box-shadow:0 5px 22px rgba(23,37,43,.045)!important}.panel:hover,.card:hover,.article-card:hover,.book-card:hover,.feature-card:hover,.grid article:hover{box-shadow:var(--mz-shadow)!important;border-color:#c3d4ce!important}.panel p,.card p,.lead-card p,.article-card p,.book-card p,.grid article p{color:var(--mz-ink-soft)!important}.section-title,.sectionTitle,.heading{color:var(--mz-ink)!important}.section-title:after,.sectionTitle:after{background:var(--mz-gold)!important}.empty,.loading,.status,.status-detail,.muted,.small{color:var(--mz-muted)!important}.badge,.pill,.tag-pill{background:#e6f0ec!important;color:var(--mz-teal-deep)!important;border:1px solid #c8ded6!important;border-radius:999px!important}
+/* Buttons and search */
+.btn,.button,button.primary,.btn-primary,.primary,[type=submit]{background:var(--mz-teal)!important;color:#fff!important;border:1px solid var(--mz-teal)!important;border-radius:999px!important;font-weight:700!important;box-shadow:0 5px 14px rgba(7,94,89,.12)}.btn:hover,.button:hover,button.primary:hover,.btn-primary:hover,.primary:hover,[type=submit]:hover{background:var(--mz-teal-deep)!important;color:#fff!important;box-shadow:0 8px 20px rgba(7,94,89,.2)}.btn.secondary,.secondary,.btn-outline,.button.secondary{background:#fff!important;color:var(--mz-teal)!important;border:1px solid #b8cec7!important;box-shadow:none!important}.btn.danger,.danger{background:#9d3030!important;color:#fff!important;border-color:#9d3030!important}.search,input,select,textarea,.field input,.field select,.field textarea{background:#fff!important;color:var(--mz-ink)!important;border:1px solid #cbd6d2!important;border-radius:12px!important;box-shadow:none!important}input::placeholder,textarea::placeholder{color:#788589!important;opacity:1}input:focus,select:focus,textarea:focus{border-color:var(--mz-teal)!important;box-shadow:0 0 0 3px rgba(7,94,89,.12)!important;outline:none!important}label{color:var(--mz-ink)!important;font-weight:650}
+/* Poetry, Urdu and reading surfaces */
+.poem,.poetry,.verse,.sher,.couplet,.ghazal,.poem-text,.urdu,.arabic,[lang=ur],[dir=rtl]{color:var(--mz-ink)!important}.poem,.poetry,.verse,.sher,.couplet,.ghazal,.poem-text{background:#f7f4ec!important;border-color:#e5dac5!important}.urdu,.arabic,[lang=ur],[dir=rtl]{font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif!important;line-height:2.15!important}.reader,.reading,.article-body,.prose,.book-content,.entry-body{color:#24343a!important;font-size:1.04rem!important;line-height:1.95!important}.reader p,.reading p,.article-body p,.prose p,.book-content p,.entry-body p{color:#24343a!important;line-height:1.95!important}.reader blockquote,blockquote{border-left:3px solid var(--mz-gold)!important;background:#f5f1e8!important;color:var(--mz-ink)!important;padding:1.1rem 1.3rem!important;border-radius:0 12px 12px 0}
+/* Footer */
+footer,.footer{background:#14282d!important;color:#eaf0ed!important;border-top:3px solid var(--mz-gold)!important}footer p,footer li,footer small,.footer p,.footer li,.footer small{color:#d6e1dd!important}footer a,.footer a{color:#f2d9a7!important}footer a:hover,.footer a:hover{color:#fff!important}
+/* Tables and status */
+table{width:100%;border-collapse:collapse;color:var(--mz-ink)!important;background:#fff!important}th{background:#eaf1ed!important;color:var(--mz-ink)!important;font-weight:750}td,th{border-bottom:1px solid var(--mz-line)!important;padding:.8rem!important}tr:nth-child(even) td{background:#fafbf9!important}.spinner{border-color:#dce5e1!important;border-top-color:var(--mz-teal)!important}.status-title{color:var(--mz-ink)!important}
+/* Admin studio: clear, professional control surface */
+body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important}#loginScreen,.loginwrap,.loginbox,#app,.admin-card,.section-card{color:var(--mz-ink)!important}#loginScreen .card,.loginbox,.loginwrap .card{background:#fff!important;border:1px solid var(--mz-line)!important;box-shadow:var(--mz-shadow)!important}#app .sidebar,#app aside{background:#14282d!important;color:#edf4f0!important}#app .sidebar a,#app aside a{color:#e1ebe6!important}#app .sidebar a.active,#app aside a.active{background:#24534f!important;color:#fff!important}#app .muted,#loginScreen .muted{color:var(--mz-muted)!important}.hidden{display:none!important}
+/* Responsive and reduced-motion refinements */
+@media(max-width:760px){body{font-size:15px!important}.hero{padding:clamp(1.5rem,6vw,2.6rem)!important}.hero h1,.heroTitle,h1{font-size:clamp(2rem,9vw,3.3rem)!important}.nav{gap:.55rem!important}.panel,.card,.lead-card,.book-card,.poem-card,.article-card{border-radius:14px!important}.header-inner,.head .in,.headrow{padding-left:1rem!important;padding-right:1rem!important}table{display:block;overflow-x:auto}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 </style>
 </head>
 
@@ -134,7 +158,6 @@ td{font-size:13px}
     <button class="navbtn" data-section="editor">＋ Add / Edit Book</button>
     <button class="navbtn" data-section="authors">✦ Authors & Poets</button>
     <button class="navbtn" data-section="authorEditor">＋ Add / Edit Profile</button>
-    <button class="navbtn" data-section="publishers">🏛 Publishers</button>
     <button class="navbtn" data-section="works">♫ Kalaam & Works</button>
     <button class="navbtn" data-section="settings">⚙ Configuration</button>
   </aside>
@@ -205,17 +228,12 @@ td{font-size:13px}
             </select>
           </div>
           <div class="field">
-            <label for="authorSearchInput">Author / Poet (Search & Select)</label>
-            <input id="authorSearchInput" type="search" placeholder="Type to filter authors..." style="margin-bottom:6px">
-            <select id="authorId" size="4" style="height:90px">
-              <option value="">No author linked</option>
-            </select>
+            <label for="authorId">Author</label>
+            <select id="authorId"><option value="">No author linked</option></select>
           </div>
           <div class="field">
             <label for="publisher">Publisher</label>
-            <select id="publisher">
-              <option value="">Select publisher</option>
-            </select>
+            <input id="publisher">
           </div>
           <div class="field">
             <label for="year">Publication year</label>
@@ -280,9 +298,15 @@ td{font-size:13px}
         <p class="small muted">Files upload to the existing Supabase Storage bucket named <b>book</b>.</p>
         <div class="grid">
           <div class="field uploadbox">
-            <label for="pdfFile">PDF edition</label>
+            <label for="pdfFile">PDF upload</label>
             <input id="pdfFile" type="file" accept=".pdf,application/pdf">
+            <p class="small muted">Option 1: Upload a PDF directly to Supabase Storage.</p>
             <div id="pdfCurrent" class="small muted" style="margin-top:8px">No PDF linked.</div>
+          </div>
+          <div class="field uploadbox">
+            <label for="pdfUrl">PDF direct link</label>
+            <input id="pdfUrl" type="url" placeholder="https://example.com/book.pdf">
+            <p class="small muted">Option 2: Paste a publicly accessible PDF URL. No upload needed. If you select a PDF file too, the uploaded file takes priority.</p>
           </div>
           <div class="field uploadbox">
             <label for="epubFile">EPUB edition</label>
@@ -345,39 +369,6 @@ td{font-size:13px}
       </form>
     </section>
 
-    <!-- Publishers Section -->
-    <section id="section-publishers" class="section">
-      <div class="pagehead">
-        <div><h1>Publishers</h1><p class="muted">Manage publisher profiles (Name and Location are necessary).</p></div>
-        <button class="btn primary" id="newPublisherBtn">＋ Add Publisher</button>
-      </div>
-      <div class="card">
-        <div class="toolbar">
-          <input id="publisherSearch" type="search" placeholder="Search publisher name or location…">
-          <button class="btn" id="refreshPublishersBtn">Refresh</button>
-        </div>
-        <div id="publishersTable" class="tablewrap">Loading publishers…</div>
-      </div>
-      <form id="publisherForm" class="card hidden" style="margin-top:20px">
-        <input type="hidden" id="publisherId">
-        <h2 id="publisherHeading">Add Publisher</h2>
-        <div class="grid" style="margin-top:16px">
-          <div class="field">
-            <label for="pubName">Publisher Name *</label>
-            <input id="pubName" required placeholder="e.g. Maktaba Jamia">
-          </div>
-          <div class="field">
-            <label for="pubLocation">Location *</label>
-            <input id="pubLocation" required placeholder="e.g. Delhi, India">
-          </div>
-        </div>
-        <div class="formactions">
-          <button type="button" class="btn" id="cancelPublisherBtn">Cancel</button>
-          <button class="btn primary" type="submit" id="savePublisherBtn">Save Publisher</button>
-        </div>
-      </form>
-    </section>
-
     <section id="section-works" class="section"><div class="pagehead"><div><h1>Kalaam & Works</h1><p class="muted">Add poetry, books, naat, salaam, articles and other works linked to a profile.</p></div><button class="btn primary" id="newWorkBtn">＋ Add work</button></div>
       <form id="workForm" class="card hidden"><input type="hidden" id="workId"><h2 id="workHeading">Add work</h2><div class="grid" style="margin-top:16px"><div class="field"><label for="workProfile">Author / poet *</label><select id="workProfile" required><option value="">Select profile</option></select></div><div class="field"><label for="workSlug">URL slug *</label><input id="workSlug" required></div><div class="field"><label for="workType">Work category</label><select id="workType"><option value="ghazal">Ghazal</option><option value="sher">Sher</option><option value="bait">Bait</option><option value="nazm">Nazm</option><option value="rubai">Rubai</option><option value="hamd">Hamd</option><option value="naat">Naat</option><option value="manqabat">Manqabat</option><option value="salaam">Salaam</option><option value="marsiya">Marsiya</option><option value="qaseeda">Qaseeda</option><option value="book">Book</option><option value="article">Article</option><option value="letter">Letter</option><option value="malfuzat">Malfuzat</option><option value="story">Story</option><option value="audio">Audio</option><option value="video">Video</option><option value="other">Other</option></select></div><div class="field"><label for="workOriginalLanguage">Original language</label><select id="workOriginalLanguage"><option value="ur">Urdu</option><option value="hi">Hindi</option><option value="en">English</option><option value="fa">Persian</option><option value="ar">Arabic</option><option value="other">Other</option></select></div><div class="field"><label for="workStatus">Status</label><select id="workStatus"><option value="draft">Draft</option><option value="review">Review</option><option value="published">Published</option><option value="archived">Archived</option></select></div><div class="field"><label for="workYear">Year (optional)</label><input id="workYear" type="number" min="1" max="2200"></div><div class="field"><label for="workCover">Cover / image URL</label><input id="workCover" type="url"></div><div class="field"><label for="workFeatured">Featured</label><select id="workFeatured"><option value="false">No</option><option value="true">Yes</option></select></div></div>
       <div class="langtabs"><button type="button" class="langtab active" data-work-lang="en">English</button><button type="button" class="langtab" data-work-lang="hi">हिन्दी</button><button type="button" class="langtab" data-work-lang="ur">اردو</button><button type="button" class="langtab" data-work-lang="roman">Roman</button></div><div class="field"><label for="wTitle">Title *</label><input id="wTitle" required></div><div class="field"><label for="wSubtitle">Subtitle</label><input id="wSubtitle"></div><div class="field"><label for="wExcerpt">Excerpt</label><textarea id="wExcerpt"></textarea></div><div class="field"><label for="wBody">Text / content</label><textarea id="wBody" style="min-height:200px"></textarea></div><div class="field"><label for="wTransliteration">Transliteration</label><textarea id="wTransliteration"></textarea></div><div class="field"><label for="wTranslationNote">Translation note</label><textarea id="wTranslationNote"></textarea></div><div class="formactions"><button class="btn" type="button" id="cancelWorkBtn">Cancel</button><button class="btn primary" type="submit" id="saveWorkBtn">Save work</button></div></form>
@@ -399,6 +390,7 @@ td{font-size:13px}
 </div>
 
 <div id="notice" class="hidden" role="status"></div>
+
 <script>
 (() => {
 'use strict';
@@ -410,7 +402,7 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
 
 const state = {
-  user:null, role:null, books:[], people:[], publishers:[],
+  user:null, role:null, books:[], people:[],
   lang:'roman', translations:{}, pdfPath:null, epubPath:null,
   busy:false
 };
@@ -438,10 +430,9 @@ function showSection(name){
   $('section-'+name).classList.add('active');
   document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.section===name));
   if(name==='books'||name==='dashboard')loadBooks();
-  if(name==='editor'){loadPeople();loadPublishersListForDropdown();}
+  if(name==='editor')loadPeople();
   if(name==='authors')loadAuthors();
   if(name==='authorEditor')loadLocations();
-  if(name==='publishers')loadPublishers();
   if(name==='works'){loadAuthors();loadWorks();}
 }
 document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>showSection(b.dataset.section));
@@ -472,7 +463,6 @@ async function activate(user){
     $('sessionStatus').textContent='Authenticated';
     $('roleStatus').textContent=state.role.role+' — active';
     await loadPeople();
-    await loadPublishersList();
     await loadBooks();
   }catch(e){
     console.error(e);
@@ -519,7 +509,7 @@ async function loadBooks(){
   $('booksTable').textContent='Loading…';
   $('recentBooks').textContent='Loading…';
   const {data,error}=await db.from('content_items')
-    .select('id,type,slug,status,featured,cover_image_url,published_at,created_at,updated_at,source_notes,editorial_notes,seo_title,seo_description,content_translations(id,language_code,title,subtitle,excerpt,transliteration,translation_note,script_direction),book_details(content_id,author_id,publisher,publication_year,edition,isbn,page_count,language_original,pdf_storage_path,epub_storage_path,reading_mode)')
+    .select('id,type,slug,status,featured,cover_image_url,published_at,created_at,updated_at,source_notes,editorial_notes,seo_title,seo_description,content_translations(id,language_code,title,subtitle,excerpt,transliteration,translation_note,script_direction),book_details(content_id,author_id,publisher,publication_year,edition,isbn,page_count,language_original,pdf_storage_path,pdf_url,epub_storage_path,reading_mode)')
     .eq('type','book').order('updated_at',{ascending:false}).limit(500);
   if(error){
     $('booksTable').textContent='Could not load books: '+error.message;
@@ -566,63 +556,22 @@ function renderRecent(){
     '</tbody></table>';
   $('recentBooks').querySelectorAll('[data-recent-edit]').forEach(b=>b.onclick=()=>editBook(b.dataset.recentEdit));
 }
-
 async function loadPeople(){
   if(!state.user||!state.role)return;
-  try {
-    const {data, error} = await db
-      .from('author_profiles')
-      .select('id, slug, pen_name, real_name, author_profile_translations(language_code, display_name)')
-      .eq('status', 'published')
-      .order('updated_at', {ascending: false});
-      
-    if(error) throw error;
-    state.people = data || [];
-    renderAuthorDropdown();
-  } catch(err) {
-    console.warn('Author list load failed:', err.message);
-  }
-}
-
-function renderAuthorDropdown(filter=''){
-  const select = $('authorId');
-  if (!select) return;
-  const previous = select.value;
-  const f = filter.toLowerCase().trim();
-  
-  const filtered = state.people.filter(p => {
-    const ts = p.author_profile_translations || [];
-    const t = ts.find(x => x.language_code === 'en') || ts.find(x => x.language_code === 'ur') || ts[0] || {};
-    const name = (t.display_name || p.pen_name || p.real_name || p.slug).toLowerCase();
-    return !f || name.includes(f) || p.slug.toLowerCase().includes(f);
-  });
-
-  select.innerHTML = '<option value="">No author linked</option>' +
-    filtered.map(p => {
-      const ts = p.author_profile_translations || [];
-      const t = ts.find(x => x.language_code === 'en') || ts.find(x => x.language_code === 'ur') || ts[0] || {};
-      const displayName = t.display_name || p.pen_name || p.real_name || p.slug;
-      return `<option value="${esc(p.id)}">${esc(displayName)} (${esc(p.slug)})</option>`;
+  const {data,error}=await db.from('content_items')
+    .select('id,slug,content_translations(language_code,title)')
+    .eq('type','person').order('created_at',{ascending:false}).limit(500);
+  if(error){console.warn('Author list could not load:',error.message);return;}
+  state.people=data||[];
+  const select=$('authorId'),previous=select.value;
+  select.innerHTML='<option value="">No author linked</option>'+
+    state.people.map(p=>{
+      const ts=p.content_translations||[];
+      const t=ts.find(x=>x.language_code==='roman')||ts[0];
+      return '<option value="'+esc(p.id)+'">'+esc(t?.title||p.slug)+'</option>';
     }).join('');
-
-  if(previous) select.value = previous;
-}
-$('authorSearchInput')?.addEventListener('input', e => renderAuthorDropdown(e.target.value));
-
-async function loadPublishersList(){
-  try{
-    const {data}=await db.from('publishers').select('id,name,location').order('name');
-    state.publishers=data||[];
-  }catch(e){console.warn('Publishers table query failed',e);}
-}
-async function loadPublishersListForDropdown(){
-  await loadPublishersList();
-  const select=$('publisher'),previous=select.value;
-  select.innerHTML='<option value="">Select publisher</option>'+
-    state.publishers.map(pub=>'<option value="'+esc(pub.name)+'">'+esc(pub.name)+' ('+esc(pub.location)+')</option>').join('');
   if(previous)select.value=previous;
 }
-
 function blankTranslations(){
   return {
     roman:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:''},
@@ -663,6 +612,7 @@ function newBook(){
   $('contentId').value='';
   $('editorHeading').textContent='Add a book';
   $('pdfCurrent').textContent='No PDF linked.';
+  $('pdfUrl').value='';
   $('epubCurrent').textContent='No EPUB linked.';
   $('coverPreview').removeAttribute('src');
   switchLang('roman');showSection('editor');
@@ -692,7 +642,8 @@ async function editBook(id){
   $('seoDescription').value=b.seo_description||'';
   state.pdfPath=d.pdf_storage_path||null;
   state.epubPath=d.epub_storage_path||null;
-  $('pdfCurrent').textContent=state.pdfPath?'Linked: '+state.pdfPath:'No PDF linked.';
+  $('pdfUrl').value=d.pdf_url||'';
+  $('pdfCurrent').textContent=state.pdfPath?'Uploaded PDF: '+state.pdfPath:(d.pdf_url?'External PDF link saved.':'No PDF linked.');
   $('epubCurrent').textContent=state.epubPath?'Linked: '+state.epubPath:'No EPUB linked.';
   (b.content_translations||[]).forEach(t=>{
     if(state.translations[t.language_code])state.translations[t.language_code]={...t};
@@ -794,10 +745,14 @@ $('bookForm').addEventListener('submit',async e=>{
    }
 
     const pdfFile=$('pdfFile').files[0];
-    if(pdfFile)state.pdfPath=await uploadFile(pdfFile,'pdf',id);
+    let pdfUrl=$('pdfUrl').value.trim()||null;
+    if(pdfUrl&&!/^https?:\/\//i.test(pdfUrl))throw new Error('PDF link must start with http:// or https://');
+    if(pdfFile){state.pdfPath=await uploadFile(pdfFile,'pdf',id);pdfUrl=null;}
+    else if(pdfUrl){state.pdfPath=null;}
     const epubFile=$('epubFile').files[0];
     if(epubFile)state.epubPath=await uploadFile(epubFile,'epub',id);
 
+    /* These values match the database CHECK constraint exactly. */
     const details={
       content_id:id,
       author_id:$('authorId').value||null,
@@ -808,6 +763,7 @@ $('bookForm').addEventListener('submit',async e=>{
       page_count:$('pageCount').value?Number($('pageCount').value):null,
       language_original:$('originalLanguage').value,
       pdf_storage_path:state.pdfPath,
+      pdf_url:pdfUrl,
       epub_storage_path:state.epubPath,
       reading_mode:$('readingMode').value
     };
@@ -851,84 +807,18 @@ async function archiveBook(id){
   notice('Book archived.');
   await loadBooks();
 }
-
-// Publishers Management Functionality
-async function loadPublishers(){
-  const el=$('publishersTable');
-  el.textContent='Loading publishers…';
-  try{
-    const {data,error}=await db.from('publishers').select('*').order('name');
-    if(error)throw error;
-    state.publishers=data||[];
-    renderPublishers();
-  }catch(e){
-    el.textContent='Publishers table could not load: '+e.message;
-  }
-}
-function renderPublishers(){
-  const q=$('publisherSearch')?.value.trim().toLowerCase()||'';
-  const list=state.publishers.filter(p=>!q || p.name.toLowerCase().includes(q) || p.location.toLowerCase().includes(q));
-  const el=$('publishersTable');
-  if(!list.length){el.innerHTML='<p class="muted">No publishers found.</p>';return;}
-  el.innerHTML='<table><thead><tr><th>Publisher Name</th><th>Location</th><th>Actions</th></tr></thead><tbody>'+
-    list.map(p=>'<tr><td><b>'+esc(p.name)+'</b></td><td>'+esc(p.location)+'</td><td><div class="actions"><button class="btn" data-pub-edit="'+esc(p.id)+'">Edit</button><button class="btn danger" data-pub-delete="'+esc(p.id)+'">Delete</button></div></td></tr>').join('')+'</tbody></table>';
-  el.querySelectorAll('[data-pub-edit]').forEach(b=>b.onclick=()=>editPublisher(b.dataset.pubEdit));
-  el.querySelectorAll('[data-pub-delete]').forEach(b=>b.onclick=()=>deletePublisher(b.dataset.pubDelete));
-}
-$('publisherSearch')?.addEventListener('input',renderPublishers);
-$('newPublisherBtn').onclick=()=>{
-  $('publisherForm').reset();
-  $('publisherId').value='';
-  $('publisherHeading').textContent='Add Publisher';
-  $('publisherForm').classList.remove('hidden');
-};
-$('cancelPublisherBtn').onclick=()=>$('publisherForm').classList.add('hidden');
-
-async function editPublisher(id){
-  const p=state.publishers.find(x=>x.id==id);
-  if(!p)return;
-  $('publisherId').value=p.id;
-  $('pubName').value=p.name;
-  $('pubLocation').value=p.location;
-  $('publisherHeading').textContent='Edit Publisher';
-  $('publisherForm').classList.remove('hidden');
-}
-async function deletePublisher(id){
-  if(!confirm('Delete this publisher?'))return;
-  const {error}=await db.from('publishers').delete().eq('id',id);
-  if(error){notice('Delete failed: '+error.message,true);return;}
-  notice('Publisher deleted.');
-  loadPublishers();
-}
-$('publisherForm').addEventListener('submit',async e=>{
-  e.preventDefault();
-  const id=$('publisherId').value;
-  const payload={
-    name:$('pubName').value.trim(),
-    location:$('pubLocation').value.trim()
-  };
-  try{
-    const res=id?await db.from('publishers').update(payload).eq('id',id):await db.from('publishers').insert(payload);
-    if(res.error)throw res.error;
-    notice('Publisher saved successfully.');
-    $('publisherForm').classList.add('hidden');
-    loadPublishers();
-  }catch(err){notice('Save failed: '+err.message,true);}
-});
-$('refreshPublishersBtn').onclick=loadPublishers;
-
-// Author / poet profiles and works.
+// Author / poet profiles and works. Requires the companion author-profile SQL schema.
 const authorState={profiles:[],profileLang:'en',profileTranslations:{},works:[],workLang:'en',workTranslations:{},locations:[]};
 function emptyProfileTranslations(){return Object.fromEntries(['en','hi','ur'].map(l=>[l,{id:null,display_name:'',real_name:'',pen_name:'',short_bio:'',biography:'',life_and_legacy:'',seo_title:'',seo_description:''}]));}
 function emptyWorkTranslations(){return Object.fromEntries(['en','hi','ur','roman'].map(l=>[l,{id:null,title:'',subtitle:'',excerpt:'',body:'',transliteration:'',translation_note:''}]));}
 function currentProfileTranslation(){const t=authorState.profileTranslations[authorState.profileLang];t.display_name=$('aDisplayName').value.trim();t.real_name=$('aRealName').value.trim();t.pen_name=$('aPenName').value.trim();t.short_bio=$('aShortBio').value.trim();t.biography=$('aBiography').value.trim();t.life_and_legacy=$('aLifeLegacy').value.trim();t.seo_title=$('aSeoTitle').value.trim();t.seo_description=$('aSeoDescription').value.trim();}
 function switchProfileLang(lang){authorState.profileLang=lang;document.querySelectorAll('[data-author-lang]').forEach(b=>b.classList.toggle('active',b.dataset.authorLang===lang));const t=authorState.profileTranslations[lang]||{};[['aDisplayName','display_name'],['aRealName','real_name'],['aPenName','pen_name'],['aShortBio','short_bio'],['aBiography','biography'],['aLifeLegacy','life_and_legacy'],['aSeoTitle','seo_title'],['aSeoDescription','seo_description']].forEach(([id,k])=>$(id).value=t[k]||'');['aDisplayName','aRealName','aPenName','aShortBio','aBiography','aLifeLegacy'].forEach(id=>{ $(id).dir=lang==='ur'?'rtl':'ltr';$(id).classList.toggle('urdu',lang==='ur');});}
 document.querySelectorAll('[data-author-lang]').forEach(b=>b.onclick=()=>{currentProfileTranslation();switchProfileLang(b.dataset.authorLang)});
-async function loadAuthors(){if(!state.user||!state.role)return;const el=$('authorsTable');el.textContent='Loading profiles…';try{const {data,error}=await db.from('author_profiles').select('*,author_profile_translations(language_code,display_name)').order('updated_at',{ascending:false}).limit(500);if(error)throw error;authorState.profiles=data||[];renderAuthors();populateWorkProfiles();}catch(e){console.error('Markaz author profiles query failed:',e);el.textContent='Could not load profiles: '+(e.message||'Unknown error');notice('Author profiles could not be loaded: '+(e.message||'Unknown error'),true);}}
+async function loadAuthors(){if(!state.user||!state.role)return;const el=$('authorsTable');el.textContent='Loading profiles…';try{const {data,error}=await db.from('author_profiles').select('*,author_profile_translations(language_code,display_name)').order('updated_at',{ascending:false}).limit(500);if(error)throw error;authorState.profiles=data||[];renderAuthors();populateWorkProfiles();}catch(e){console.error('Markaz author profiles query failed:',e);el.textContent='Could not load profiles: '+(e.message||'Unknown error')+'. Check that author-profile tables exist and your signed-in admin/editor has SELECT permission.';notice('Author profiles could not be loaded: '+(e.message||'Unknown error'),true);}}
 function profileTitle(p){const ts=p.author_profile_translations||[];return (ts.find(t=>t.language_code==='en')||ts.find(t=>t.language_code==='ur')||ts[0]||{}).display_name||p.pen_name||p.real_name||p.slug;}
 function renderAuthors(){const q=($('authorSearch')?.value||'').toLowerCase().trim(),st=$('authorStatusFilter')?.value||'';const rows=authorState.profiles.filter(p=>(!q||profileTitle(p).toLowerCase().includes(q)||p.slug.toLowerCase().includes(q))&&(!st||p.status===st));if(!rows.length){$('authorsTable').innerHTML='<p class="muted">No profiles found.</p>';return;} $('authorsTable').innerHTML='<table><thead><tr><th>Profile</th><th>Status</th><th>Roles</th><th>Actions</th></tr></thead><tbody>'+rows.map(p=>'<tr><td><b>'+esc(profileTitle(p))+'</b><br><span class="muted">'+esc(p.slug)+'</span></td><td><span class="pill '+esc(p.status)+'">'+esc(p.status)+'</span></td><td>'+esc((p.role_tags||[]).join(', ')||'—')+'</td><td><div class="actions"><button class="btn" data-profile-edit="'+esc(p.id)+'">Edit</button><button class="btn" data-profile-archive="'+esc(p.id)+'">Archive</button></div></td></tr>').join('')+'</tbody></table>';document.querySelectorAll('[data-profile-edit]').forEach(b=>b.onclick=()=>editAuthor(b.dataset.profileEdit));document.querySelectorAll('[data-profile-archive]').forEach(b=>b.onclick=()=>archiveAuthor(b.dataset.profileArchive));}
 function populateWorkProfiles(){const opts='<option value="">Select profile</option>'+authorState.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(profileTitle(p))+'</option>').join('');if($('workProfile'))$('workProfile').innerHTML=opts;}
-async function loadLocations(){if(!state.user||!state.role)return;try{const {data,error}=await db.from('author_locations').select('id,slug,name_en,name_hi,name_ur').order('name_en').limit(1000);if(error)throw error;authorState.locations=data||[];}catch(e){console.warn('Locations unavailable',e.message);}}
+async function loadLocations(){if(!state.user||!state.role)return;try{const {data,error}=await db.from('author_locations').select('id,slug,name_en,name_hi,name_ur').order('name_en').limit(1000);if(error)throw error;authorState.locations=data||[];}catch(e){console.warn('Locations unavailable; UUIDs can be entered manually.',e.message);}}
 function newAuthor(){authorState.profileTranslations=emptyProfileTranslations();$('authorForm').reset();$('profileId').value='';if($('profilePublicUrl'))$('profilePublicUrl').value='';$('authorEditorHeading').textContent='Add author / poet';switchProfileLang('en');showSection('authorEditor');}
 async function editAuthor(id){try{const {data:p,error}=await db.from('author_profiles').select('*,author_profile_translations(*)').eq('id',id).single();if(error)throw error;newAuthor();$('profileId').value=p.id;$('authorEditorHeading').textContent='Edit author / poet';$('profileSlug').value=p.slug||'';if($('profileType'))$('profileType').value=p.profile_type||'author';updateProfilePublicUrl();$('profileStatus').value=p.status||'draft';$('profileRealName').value=p.real_name||'';$('profilePenName').value=p.pen_name||'';$('profileBirthDate').value=p.birth_date||'';$('profileDeathDate').value=p.death_date||'';$('profileBirthplace').value=p.birth_location_id||'';$('profileDeathplace').value=p.death_location_id||'';$('profileDomicile').value=p.domicile_location_id||'';$('profileImage').value=p.profile_image_url||'';$('profileRoles').value=(p.role_tags||[]).join(', ');$('profileFeatured').value=String(!!p.featured);(p.author_profile_translations||[]).forEach(t=>{if(authorState.profileTranslations[t.language_code])authorState.profileTranslations[t.language_code]={...t};});switchProfileLang('en');showSection('authorEditor');}catch(e){notice('Could not load profile: '+e.message,true);}}
 async function saveProfileTranslation(profileId,lang,t){
@@ -941,17 +831,16 @@ async function saveProfileTranslation(profileId,lang,t){
     : await db.from('author_profile_translations').insert(payload);
   if(result.error) throw new Error('Could not save '+lang+' translation: '+result.error.message);
 }
-$('authorForm').addEventListener('submit',async e=>{e.preventDefault();if(state.busy)return;if(!state.user||!state.role)return notice('Please sign in first.',true);currentProfileTranslation();if(!['en','hi','ur'].some(lang=>String(authorState.profileTranslations[lang]?.display_name||'').trim()))return notice('Enter a display name in at least one language.',true);state.busy=true;$('saveAuthorBtn').disabled=true;try{const id=$('profileId').value||null,now=new Date().toISOString(),payload={profile_type:$('profileType')?.value||'author',slug:slugify($('profileSlug').value),status:$('profileStatus').value,real_name:$('profileRealName').value.trim()||null,pen_name:$('profilePenName').value.trim()||null,birth_date:$('profileBirthDate').value||null,death_date:$('profileDeathDate').value||null,birth_location_id:$('profileBirthplace').value.trim()||null,death_location_id:$('profileDeathplace').value.trim()||null,domicile_location_id:$('profileDomicile').value.trim()||null,profile_image_url:$('profileImage').value.trim()||null,role_tags:$('profileRoles').value.split(',').map(x=>x.trim()).filter(Boolean),featured:$('profileFeatured').value==='true',updated_by:state.user.id,updated_at:now};if(!payload.slug)throw new Error('Enter a valid profile slug.');let profileId=id;if(id){const {error}=await db.from('author_profiles').update(payload).eq('id',id);if(error)throw error;}else{payload.created_by=state.user.id;const {data,error}=await db.from('author_profiles').insert(payload).select('id').single();if(error)throw error;profileId=data.id;}for(const lang of ['en','hi','ur'])await saveProfileTranslation(profileId,lang,authorState.profileTranslations[lang]);notice('Author profile saved.');await loadAuthors();showSection('authors');}catch(err){notice('Profile save failed: '+err.message,true);}finally{state.busy=false;$('saveAuthorBtn').disabled=false;}});
+$('authorForm').addEventListener('submit',async e=>{e.preventDefault();if(state.busy)return;if(!state.user||!state.role)return notice('Please sign in first.',true);currentProfileTranslation();if(!['en','hi','ur'].some(lang=>String(authorState.profileTranslations[lang]?.display_name||'').trim()))return notice('Enter a display name in at least one language (English, Hindi, or Urdu).',true);state.busy=true;$('saveAuthorBtn').disabled=true;try{const id=$('profileId').value||null,now=new Date().toISOString(),payload={profile_type:$('profileType')?.value||'author',slug:slugify($('profileSlug').value),status:$('profileStatus').value,real_name:$('profileRealName').value.trim()||null,pen_name:$('profilePenName').value.trim()||null,birth_date:$('profileBirthDate').value||null,death_date:$('profileDeathDate').value||null,birth_location_id:$('profileBirthplace').value.trim()||null,death_location_id:$('profileDeathplace').value.trim()||null,domicile_location_id:$('profileDomicile').value.trim()||null,profile_image_url:$('profileImage').value.trim()||null,role_tags:$('profileRoles').value.split(',').map(x=>x.trim()).filter(Boolean),featured:$('profileFeatured').value==='true',updated_by:state.user.id,updated_at:now};if(!payload.slug)throw new Error('Enter a valid profile slug.');let profileId=id;if(id){const {error}=await db.from('author_profiles').update(payload).eq('id',id);if(error)throw error;}else{payload.created_by=state.user.id;const {data,error}=await db.from('author_profiles').insert(payload).select('id').single();if(error)throw error;profileId=data.id;}for(const lang of ['en','hi','ur'])await saveProfileTranslation(profileId,lang,authorState.profileTranslations[lang]);notice('Author profile saved.');await loadAuthors();showSection('authors');}catch(err){notice('Profile save failed: '+err.message,true);}finally{state.busy=false;$('saveAuthorBtn').disabled=false;}});
 async function archiveAuthor(id){if(!confirm('Archive this profile?'))return;const {error}=await db.from('author_profiles').update({status:'archived',updated_by:state.user.id,updated_at:new Date().toISOString()}).eq('id',id);if(error)return notice('Archive failed: '+error.message,true);notice('Profile archived.');loadAuthors();}
 function updateProfilePublicUrl(){const slug=slugify($('profileSlug').value);const type=$('profileType')?.value||'author';const paths={poet:'poets',author:'authors',naatkhwan:'naatkhwan',sufi:'sufis',saint:'saints',scholar:'scholars',mufti:'muftis',book_contributor:'contributors',translator:'translators',historian:'historians',qawwal:'qawwals',other:'people',editor:'editors'};$('profilePublicUrl').value=slug?`${location.origin}/${paths[type]||'people'}/${encodeURIComponent(slug)}`:'';}
 $('profileSlug').addEventListener('input',updateProfilePublicUrl);$('profileType')?.addEventListener('change',updateProfilePublicUrl);
 $('newAuthorBtn').onclick=newAuthor;$('cancelAuthorBtn').onclick=$('cancelAuthorBtn2').onclick=()=>showSection('authors');$('refreshAuthorsBtn').onclick=loadAuthors;$('authorSearch').addEventListener('input',renderAuthors);$('authorStatusFilter').addEventListener('change',renderAuthors);
-
 function currentWorkTranslation(){const t=authorState.workTranslations[authorState.workLang];t.title=$('wTitle').value.trim();t.subtitle=$('wSubtitle').value.trim();t.excerpt=$('wExcerpt').value.trim();t.body=$('wBody').value;t.transliteration=$('wTransliteration').value;t.translation_note=$('wTranslationNote').value;}
 function switchWorkLang(lang){authorState.workLang=lang;document.querySelectorAll('[data-work-lang]').forEach(b=>b.classList.toggle('active',b.dataset.workLang===lang));const t=authorState.workTranslations[lang]||{};[['wTitle','title'],['wSubtitle','subtitle'],['wExcerpt','excerpt'],['wBody','body'],['wTransliteration','transliteration'],['wTranslationNote','translation_note']].forEach(([id,k])=>$(id).value=t[k]||'');['wTitle','wSubtitle','wExcerpt','wBody','wTransliteration','wTranslationNote'].forEach(id=>{ $(id).dir=lang==='ur'?'rtl':'ltr';$(id).classList.toggle('urdu',lang==='ur');});}
 document.querySelectorAll('[data-work-lang]').forEach(b=>b.onclick=()=>{currentWorkTranslation();switchWorkLang(b.dataset.workLang)});
 function newWork(){authorState.workTranslations=emptyWorkTranslations();$('workForm').reset();$('workId').value='';$('workHeading').textContent='Add work';switchWorkLang('en');$('workForm').classList.remove('hidden');$('workProfile').focus();}
-async function loadWorks(){if(!state.user||!state.role)return;$('worksTable').textContent='Loading…';try{const {data,error}=await db.from('author_works').select('*,author_work_translations(language_code,title),author_profiles(slug,author_profile_translations(language_code,display_name))').order('updated_at',{ascending:false}).limit(1000);if(error)throw error;authorState.works=data||[];renderWorks();}catch(e){$('worksTable').textContent='Could not load works: '+e.message;}}
+async function loadWorks(){if(!state.user||!state.role)return;$('worksTable').textContent='Loading…';try{const {data,error}=await db.from('author_works').select('*,author_work_translations(language_code,title),author_profiles(slug,author_profile_translations(language_code,display_name))').order('updated_at',{ascending:false}).limit(1000);if(error)throw error;authorState.works=data||[];renderWorks();}catch(e){$('worksTable').textContent='Could not load works: '+e.message+' — run the author-profile SQL schema first.';}}
 function workTitle(w){const ts=w.author_work_translations||[];return (ts.find(t=>t.language_code==='en')||ts.find(t=>t.language_code==='ur')||ts[0]||{}).title||w.slug;}
 function renderWorks(){const q=$('workSearch').value.trim().toLowerCase(),rows=authorState.works.filter(w=>!q||workTitle(w).toLowerCase().includes(q)||w.slug.toLowerCase().includes(q));if(!rows.length){$('worksTable').innerHTML='<p class="muted">No works found.</p>';return;}$('worksTable').innerHTML='<table><thead><tr><th>Work</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+rows.map(w=>'<tr><td><b>'+esc(workTitle(w))+'</b><br><span class="muted">'+esc(w.slug)+'</span></td><td>'+esc(w.work_type)+'</td><td><span class="pill '+esc(w.status)+'">'+esc(w.status)+'</span></td><td><div class="actions"><button class="btn" data-work-edit="'+esc(w.id)+'">Edit</button><button class="btn danger" data-work-archive="'+esc(w.id)+'">Archive</button></div></td></tr>').join('')+'</tbody></table>';document.querySelectorAll('[data-work-edit]').forEach(b=>b.onclick=()=>editWork(b.dataset.workEdit));document.querySelectorAll('[data-work-archive]').forEach(b=>b.onclick=()=>archiveWork(b.dataset.workArchive));}
 async function editWork(id){try{const {data:w,error}=await db.from('author_works').select('*,author_work_translations(*)').eq('id',id).single();if(error)throw error;newWork();$('workId').value=w.id;$('workHeading').textContent='Edit work';$('workProfile').value=w.profile_id;$('workSlug').value=w.slug;$('workType').value=w.work_type;$('workOriginalLanguage').value=w.original_language||'ur';$('workStatus').value=w.status||'draft';$('workYear').value=w.publication_year||'';$('workCover').value=w.cover_image_url||'';$('workFeatured').value=String(!!w.featured);(w.author_work_translations||[]).forEach(t=>{if(authorState.workTranslations[t.language_code])authorState.workTranslations[t.language_code]={...t};});switchWorkLang('en');}catch(e){notice('Could not load work: '+e.message,true);}}
@@ -967,4 +856,5 @@ $('newWorkBtn').onclick=newWork;$('cancelWorkBtn').onclick=()=>$('workForm').cla
 })();
 })();
 </script>
+</body>
 </html>
