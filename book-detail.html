@@ -221,24 +221,10 @@
                 return;
             }
 
-            // Select query joined with content_items to fetch author's text slug
+            // Simple robust query matching book-reader.html style
             const { data, error } = await db
                 .from('content_items')
-                .select(`
-                    id, 
-                    slug, 
-                    cover_image_url, 
-                    content_translations(language_code, title), 
-                    book_details(
-                        *,
-                        people:author_id(
-                            verified_name,
-                            person_kind,
-                            content_id,
-                            content_items:content_id(slug)
-                        )
-                    )
-                `)
+                .select('id, slug, cover_image_url, content_translations(language_code, title), book_details(*)')
                 .eq('slug', slug)
                 .eq('status', 'published')
                 .maybeSingle();
@@ -262,9 +248,30 @@
                 $('cover').src = 'https://via.placeholder.com/300x400?text=No+Cover';
             }
 
-            // Extract author name & readable text slug
-            const authorName = details.people?.verified_name || details.author || details.writer || '';
-            const authorSlug = details.people?.content_items?.slug || '';
+            // Safely fetch author name and text slug using author_id
+            let authorName = details.author || details.writer || '';
+            let authorSlug = '';
+
+            if (details.author_id) {
+                const { data: personData } = await db
+                    .from('people')
+                    .select('verified_name, content_id')
+                    .eq('content_id', details.author_id)
+                    .maybeSingle();
+
+                if (personData) {
+                    authorName = personData.verified_name || authorName;
+                    const { data: itemData } = await db
+                        .from('content_items')
+                        .select('slug')
+                        .eq('id', personData.content_id)
+                        .maybeSingle();
+
+                    if (itemData) {
+                        authorSlug = itemData.slug;
+                    }
+                }
+            }
 
             // Dynamic fields generation
             const metaContainer = $('meta-list');
@@ -290,7 +297,6 @@
                         const pubUrl = `publisher.html?name=${encodeURIComponent(item.value)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${pubUrl}">${item.value}</a>`;
                     } else if (item.isAuthorLink && item.authorSlug) {
-                        // Fixed: Generate URL using author's text slug instead of UUID
                         const authorUrl = `authors.html?slug=${encodeURIComponent(item.authorSlug)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${authorUrl}">${item.value}</a>`;
                     } else if (item.isYearLink) {
