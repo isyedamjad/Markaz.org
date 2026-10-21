@@ -444,8 +444,11 @@ main {
 
   function pickTranslation(rows) {
     if (!Array.isArray(rows) || !rows.length) return {};
+    // Robust fallback: matches selected language, then English, then Urdu, then Hindi, then anything available
     return rows.find(x => x.language_code === currentLang)
       || rows.find(x => x.language_code === "en")
+      || rows.find(x => x.language_code === "ur")
+      || rows.find(x => x.language_code === "hi")
       || rows[0]
       || {};
   }
@@ -503,7 +506,6 @@ main {
     const L = labels();
     const t = pickTranslation(translations);
 
-    // Main display name (e.g. Husam Ahmad Raza Khan)
     const displayName = profile.real_name || t.display_name || profile.pen_name || profile.slug || "Markaz.org";
 
     document.documentElement.lang = currentLang;
@@ -520,12 +522,10 @@ main {
 
     const imageURL = profile.profile_image_url || PLACEHOLDER;
 
-    // Subtitle facts under name (Only Birthdate and Domicile if available)
     let heroFactsHTML = "";
     if (profile.birth_date) heroFactsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.born)}</span>${escapeHTML(profile.birth_date)}</div>`;
     if (domicile) heroFactsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.domicile)}</span>${escapeHTML(domicile)}</div>`;
 
-    // Tabs Navigation
     const tabsList = ['profile', 'naat', 'manqabat', 'ghazal', 'article', 'sher'];
     let tabsHTML = '<nav class="profile-tabs" aria-label="Author sections">';
     tabsList.forEach(tabKey => {
@@ -538,7 +538,6 @@ main {
     let mainContentHTML = "";
 
     if (currentTab === 'profile') {
-      // Profile Tab Info Block (Real Name, Pen Name, Places, Dates)
       let infoItems = [];
       if (realName) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.realName)}:</span> ${escapeHTML(realName)}</div>`);
       if (penName) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.penName)}:</span> ${escapeHTML(penName)}</div>`);
@@ -556,7 +555,6 @@ main {
         mainContentHTML = `<div class="empty">${escapeHTML(L.noBio)}</div>`;
       }
     } else {
-      // Works Tab Filtering
       const filteredWorks = works.filter(w => {
         const type = (w.work_type || "").toLowerCase();
         const cat = (w.category || "").toLowerCase();
@@ -570,7 +568,6 @@ main {
         const targetPage = work.work_type === 'article' ? 'article.html' : 'work.html';
         const workUrl = `${targetPage}?slug=${encodeURIComponent(work.slug)}`;
 
-        // Direct Link on Card Title & Excerpt - No "Read text" button
         return `<article class="work-card">
           <div class="work-type">${escapeHTML(work.work_type || currentTab)}</div>
           <h3 class="work-title"><a href="${workUrl}">${escapeHTML(title)}</a></h3>
@@ -594,7 +591,6 @@ main {
       tabsHTML +
       mainContentHTML;
 
-    // Attach Tab click event
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         currentTab = btn.dataset.tab;
