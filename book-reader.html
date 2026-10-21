@@ -8,10 +8,6 @@
     
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    </script>
     
     <style>
         :root {
@@ -20,7 +16,6 @@
             --paper: #f7f8f5;
             --teal: #075e59;
             --deep: #064743;
-            --gold: #b58a48;
             --line: #dce4df;
         }
         * { box-sizing: border-box; }
@@ -57,66 +52,35 @@
             align-items: center;
             gap: 8px;
         }
-        .controls button, .controls a {
+        .controls a {
             border: 1px solid #444;
             border-radius: 6px;
-            padding: 6px 12px;
+            padding: 6px 14px;
             background: #2a2a2a;
             color: #fff;
             text-decoration: none;
             cursor: pointer;
             font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .controls button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .controls .page-info {
-            font-size: 0.85rem;
-            color: #ccc;
-            padding: 0 4px;
         }
         main {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: auto;
             position: relative;
             background: #2b2b2b;
-            padding: 15px;
         }
-        #canvas-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100%;
+        iframe, object {
             width: 100%;
-        }
-        canvas {
-            max-width: 100%;
-            height: auto !important;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            height: 100%;
+            border: none;
             background: #fff;
-            border-radius: 4px;
         }
         .state {
             color: #bbb;
             text-align: center;
             font-size: 1rem;
-        }
-        @media(max-width: 600px) {
-            .bar {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 8px;
-            }
-            .controls {
-                justify-content: space-between;
-            }
+            padding: 20px;
         }
     </style>
 </head>
@@ -125,18 +89,12 @@
     <header class="bar">
         <a class="brand" href="/library.html" id="book-title">Markaz Library</a>
         <div class="controls">
-            <button id="prev-btn">◀ Previous</button>
-            <span class="page-info"><span id="page-num">0</span> / <span id="page-count">0</span></span>
-            <button id="next-btn">Next ▶</button>
-            <a href="/library.html">Close</a>
+            <a href="/library.html">Close / Library</a>
         </div>
     </header>
 
     <main id="main-viewer">
-        <div id="state" class="state">Loading pages, please wait...</div>
-        <div id="canvas-container" hidden>
-            <canvas id="pdf-render"></canvas>
-        </div>
+        <div id="state" class="state">Loading book reader...</div>
     </main>
 
     <script>
@@ -146,89 +104,11 @@
 
         const $ = id => document.getElementById(id);
 
-        let pdfDoc = null,
-            pageNum = 1,
-            pageRendering = false,
-            pageNumPending = null,
-            scale = 1.4,
-            canvas = $('pdf-render'),
-            ctx = canvas.getContext('2d');
-
-        function getProxyUrl(url) {
-            if (!url) return '';
-            if (/^https?:\/\//i.test(url)) {
-                // External URLs like Internet Archive need CORS handling
-                return 'https://corsproxy.io/?' + encodeURIComponent(url);
-            }
-            const cleanPath = url.startsWith('/') ? url.slice(1) : url;
+        function getFileUrl(path) {
+            if (!path) return '';
+            if (/^https?:\/\//i.test(path)) return path;
+            const cleanPath = path.startsWith('/') ? path.slice(1) : path;
             return `${SUPABASE_URL}/storage/v1/object/public/book/${cleanPath}`;
-        }
-
-        function renderPage(num) {
-            pageRendering = true;
-            pdfDoc.getPage(num).then(page => {
-                const viewport = page.getViewport({ scale: scale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
-                };
-                const renderTask = page.render(renderContext);
-
-                renderTask.promise.then(() => {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
-                });
-            });
-
-            $('page-num').textContent = num;
-            $('prev-btn').disabled = num <= 1;
-            $('next-btn').disabled = num >= pdfDoc.numPages;
-        }
-
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
-        }
-
-        function onPrevPage() {
-            if (pageNum <= 1) return;
-            pageNum--;
-            queueRenderPage(pageNum);
-        }
-
-        function onNextPage() {
-            if (pageNum >= pdfDoc.numPages) return;
-            pageNum++;
-            queueRenderPage(pageNum);
-        }
-
-        $('prev-btn').addEventListener('click', onPrevPage);$('next-btn').addEventListener('click', onNextPage);
-
-        // Touch Swipe Navigation for Mobile
-        let touchstartX = 0;
-        let touchendX = 0;
-        
-        $('main-viewer').addEventListener('touchstart', e => {
-            touchstartX = e.changedTouches[0].screenX;
-        }, false);
-
-        $('main-viewer').addEventListener('touchend', e => {
-            touchendX = e.changedTouches[0].screenX;
-            handleGesture();
-        }, false);
-
-        function handleGesture() {
-            if (touchendX < touchstartX - 50) onNextPage();
-            if (touchendX > touchstartX + 50) onPrevPage();
         }
 
         async function loadReader() {
@@ -265,20 +145,16 @@
                 const matchedTranslation = translations.find(x => x.language_code === 'en') || translations.find(x => x.title) || {};
                 $('book-title').textContent = matchedTranslation.title || data.slug;
 
-                const pdfUrl = getProxyUrl(path);
+                const pdfUrl = getFileUrl(path);
 
-                pdfjsLib.getDocument(pdfUrl).promise.then(pdfDoc_ => {
-                    pdfDoc = pdfDoc_;
-                    $('page-count').textContent = pdfDoc.numPages;
-
-                    $('state').hidden = true;
-                    $('canvas-container').hidden = false;
-
-                    renderPage(pageNum);
-                }).catch(err => {
-                    console.error('PDF load error:', err);
-                    $('state').textContent = 'Error rendering PDF pages directly.';
-                });
+                // Native Browser PDF Viewer embedding (Works smoothly for Internet Archive & Supabase links)
+                $('main-viewer').innerHTML = `
+                    <object data="${pdfUrl}" type="application/pdf" width="100%" height="100%">
+                        <iframe src="${pdfUrl}" width="100%" height="100%">
+                            <p class="state">Your browser does not support embedded PDFs. <a href="${pdfUrl}" target="_blank" style="color:#b58a4b;">Click here to download/open PDF</a>.</p>
+                        </iframe>
+                    </object>
+                `;
 
             } catch (err) {
                 console.error(err);
@@ -286,7 +162,7 @@
             }
         }
 
-        loadReader();
-    </script>
+loadReader();
+</script>
 </body>
 </html>
