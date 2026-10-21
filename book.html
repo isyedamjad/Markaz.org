@@ -98,7 +98,6 @@ function renderBook(b) {
         ? `<img src="${esc(coverUrl)}" alt="${esc(t.cover)}: ${esc(title)}" onerror="this.remove();document.getElementById('coverFallback').hidden=false"><span class="cover-fallback" id="coverFallback" hidden>${esc(title)}</span>`
         : `<span class="cover-fallback" id="coverFallback">${esc(title)}</span>`;
 
-    // Publication Year aur Language ko Filterable Links banaya gaya hai
     $('metadata').innerHTML = 
         meta(t.publisher, d.publisher) +
         meta(t.year, d.publication_year, 'year') +
