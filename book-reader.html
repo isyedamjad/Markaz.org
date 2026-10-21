@@ -278,7 +278,6 @@
         function getFileUrl(path) {
             if (!path) return '';
             if (/^https?:\/\//i.test(path)) {
-                // External link ke liye CORS bypass proxy use karenge taaki PDF.js canvas par render kar sake
                 return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(path);
             }
             const cleanPath = path.startsWith('/') ? path.slice(1) : path;
@@ -399,8 +398,9 @@
                     return;
                 }
 
-                $('close-link').href = `book.html?slug=${slug}`;
-                $('book-title').href = `book.html?slug=${slug}`;
+                // Updated link to point to book-detail.html instead of book.html
+                $('close-link').href = `book-detail.html?slug=${slug}`;
+                $('book-title').href = `book-detail.html?slug=${slug}`;
 
                 const { data, error } = await db
                     .from('content_items')
@@ -432,7 +432,6 @@
 
                 const targetUrl = getFileUrl(path);
 
-                // Dono types ke liye ab ek hi PDF.js canvas viewer chalega, design bilkul uniform rahega
                 const loadingTask = pdfjsLib.getDocument({
                     url: targetUrl,
                     disableAutoFetch: false,
