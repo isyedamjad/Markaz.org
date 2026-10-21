@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#111111">
+    <meta name="theme-color" content="#181818">
     <title>Book Reader | Markaz.org</title>
     
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -15,8 +15,8 @@
     
     <style>
         :root {
-            --paper: #1e1e1e;
-            --bar-bg: rgba(20, 20, 20, 0.95);
+            --paper: #161616;
+            --bar-bg: rgba(24, 24, 24, 0.95);
             --accent: #b58a48;
             --text-main: #f0f0f0;
             --line: #333;
@@ -33,6 +33,7 @@
             overflow: hidden;
         }
         
+        /* Top Header Bar */
         .top-bar {
             background: var(--bar-bg);
             backdrop-filter: blur(10px);
@@ -42,7 +43,7 @@
             align-items: center;
             justify-content: space-between;
             z-index: 10;
-            height: 50px;
+            height: 52px;
         }
         .brand {
             font: 600 0.95rem 'Playfair Display', serif;
@@ -63,6 +64,7 @@
             text-decoration: none;
         }
 
+        /* Main PDF Canvas Surface */
         main {
             flex: 1;
             display: flex;
@@ -70,7 +72,7 @@
             align-items: center;
             overflow: auto;
             position: relative;
-            background: #161616;
+            background: #111;
             padding: 10px;
         }
         #canvas-container {
@@ -85,15 +87,9 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.8);
             background: #fff;
-            border-radius: 2px;
-        }
-        iframe.pdf-embed {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #fff;
+            border-radius: 4px;
         }
         .state {
             color: #aaa;
@@ -103,17 +99,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
-            position: absolute;
-            inset: 0;
-            justify-content: center;
-            background: #161616;
-            z-index: 5;
+            gap: 14px;
         }
         .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid #444;
+            width: 38px;
+            height: 38px;
+            border: 3px solid #333;
             border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
@@ -122,12 +113,13 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Rekhta Style Bottom Floating Control Bar */
         .bottom-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(26, 26, 26, 0.92);
+            background: rgba(22, 22, 22, 0.95);
             backdrop-filter: blur(12px);
             border-top: 1px solid var(--line);
             display: flex;
@@ -135,7 +127,7 @@
             justify-content: space-between;
             padding: 10px 20px;
             z-index: 100;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
             height: 64px;
         }
         .tool-group {
@@ -144,13 +136,13 @@
             gap: 12px;
         }
         .circle-btn {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             background: #2a2a2a;
             border: 1px solid #444;
             color: #fff;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -170,8 +162,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 0.9rem;
-            color: #ddd;
+            font-size: 0.95rem;
+            color: #eee;
             font-weight: 600;
         }
         .page-indicator span.sub {
@@ -185,11 +177,13 @@
 </head>
 <body>
 
+    <!-- Top Bar -->
     <header class="top-bar">
         <a class="brand" href="library.html" id="book-title">Loading...</a>
         <a class="close-btn" href="library.html">Close</a>
     </header>
 
+    <!-- Main View -->
     <main id="main-viewer">
         <div id="state" class="state">
             <div class="spinner"></div>
@@ -200,17 +194,21 @@
         </div>
     </main>
 
-    <footer class="bottom-bar" id="bottom-controls">
+    <!-- Rekhta Style Bottom Floating Bar -->
+    <footer class="bottom-bar" id="bottom-controls" hidden>
+        <!-- Zoom Controls -->
         <div class="tool-group">
             <button id="zoom-out" class="circle-btn" title="Zoom Out">−</button>
             <button id="zoom-in" class="circle-btn" title="Zoom In">+</button>
         </div>
 
+        <!-- Page Indicator / Number -->
         <div class="page-indicator">
-            <div><span id="page-num">1</span> / <span id="page-count">--</span></div>
+            <div><span id="page-num">1</span> / <span id="page-count">0</span></div>
             <span class="sub">Page</span>
         </div>
 
+        <!-- Page Navigation Buttons -->
         <div class="tool-group">
             <button id="prev-btn" class="circle-btn" disabled title="Previous Page">‹</button>
             <button id="next-btn" class="circle-btn" disabled title="Next Page">›</button>
@@ -234,7 +232,10 @@
 
         function getFileUrl(path) {
             if (!path) return '';
-            if (/^https?:\/\//i.test(path)) return path;
+            if (/^https?:\/\//i.test(path)) {
+                // Internet Archive ya external links ke liye CORS Proxy
+                return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(path);
+            }
             const cleanPath = path.startsWith('/') ? path.slice(1) : path;
             return `${SUPABASE_URL}/storage/v1/object/public/book/${cleanPath}`;
         }
@@ -297,7 +298,7 @@
             renderPage(pageNum);
         });
 
-        // Touch Swipe
+        // Touch Swipe Gesture for Mobile
         let touchstartX = 0, touchendX = 0;
         const mainViewer = $('main-viewer');
         mainViewer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, { passive: true });
@@ -305,8 +306,8 @@
             touchendX = e.changedTouches[0].screenX;
             const dist = touchendX - touchstartX;
             if (Math.abs(dist) > 40) {
-                if (dist < 0) onNextPage();
-                else onPrevPage();
+                if (dist < 0) onNextPage();  // Swipe Left -> Next Page
+                else onPrevPage();              // Swipe Right -> Previous Page
             }
         }, { passive: true });
 
@@ -346,32 +347,29 @@
 
                 const targetUrl = getFileUrl(path);
 
-                // Agar external link (Internet Archive) hai, toh seedha iframe embed kar do taaki bina wait ke turant khul jaye
-                if (/^https?:\/\//i.test(path)) {
-                    $('state').hidden = true;
-                    $('canvas-container').hidden = true;
-                    $('main-viewer').innerHTML = `<iframe class="pdf-embed" src="${targetUrl}#view=FitH"></iframe>`;
-                    $('bottom-controls').style.display = 'none'; // Native viewer ke apne controls hote hain
-                    return;
-                }
+                // PDF file ko fetch karke PDF.js ke through load karna
+                const response = await fetch(targetUrl);
+                if (!response.ok) throw new Error('Failed to fetch file');
+                const arrayBuffer = await response.arrayBuffer();
 
-                // Supabase internal files ke liye PDF.js canvas rendering with proper loader overlay
-                pdfjsLib.getDocument(targetUrl).promise.then(pdfDoc_ => {
+                pdfjsLib.getDocument({ data: arrayBuffer }).promise.then(pdfDoc_ => {
                     pdfDoc = pdfDoc_;
                     $('page-count').textContent = pdfDoc.numPages;
 
+                    // Loader hide karke canvas aur bottom control bar show karna
                     $('state').hidden = true;
                     $('canvas-container').hidden = false;
+                    $('bottom-controls').hidden = false;
 
                     renderPage(pageNum);
                 }).catch(err => {
                     console.error(err);
-                    $('state').innerHTML = '<span>PDF render karne mein samasya aayi.</span>';
+                    $('state').innerHTML = '<span>PDF render karne mein samasya aayi. Kripya dubara koshish karein.</span>';
                 });
 
             } catch (err) {
                 console.error(err);
-                $('state').innerHTML = '<span>Network error. Kripya dubara koshish karein.</span>';
+                $('state').innerHTML = '<span>Network error ya file load hone mein samasya hai.</span>';
             }
         }
 
