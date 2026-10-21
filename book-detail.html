@@ -221,7 +221,7 @@
                 return;
             }
 
-            // Updated query including people relation for author name
+            // Select query joined with content_items to fetch author's text slug
             const { data, error } = await db
                 .from('content_items')
                 .select(`
@@ -233,7 +233,9 @@
                         *,
                         people:author_id(
                             verified_name,
-                            person_kind
+                            person_kind,
+                            content_id,
+                            content_items:content_id(slug)
                         )
                     )
                 `)
@@ -260,15 +262,16 @@
                 $('cover').src = 'https://via.placeholder.com/300x400?text=No+Cover';
             }
 
-            // Extract author name from the joined people table
+            // Extract author name & readable text slug
             const authorName = details.people?.verified_name || details.author || details.writer || '';
+            const authorSlug = details.people?.content_items?.slug || '';
 
             // Dynamic fields generation
             const metaContainer = $('meta-list');
             metaContainer.innerHTML = '';
 
             const fieldsList = [
-                { key: 'author', label: 'Author', value: authorName, isAuthorLink: true },
+                { key: 'author', label: 'Author', value: authorName, isAuthorLink: true, authorSlug: authorSlug },
                 { key: 'translator', label: 'Translator', value: details.translator },
                 { key: 'editor', label: 'Editor', value: details.editor },
                 { key: 'publisher', label: 'Publisher', value: details.publisher, isPublisherLink: true },
@@ -286,8 +289,9 @@
                     if (item.isPublisherLink) {
                         const pubUrl = `publisher.html?name=${encodeURIComponent(item.value)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${pubUrl}">${item.value}</a>`;
-                    } else if (item.isAuthorLink && details.author_id) {
-                        const authorUrl = `authors.html?slug=${encodeURIComponent(details.author_id)}`;
+                    } else if (item.isAuthorLink && item.authorSlug) {
+                        // Fixed: Generate URL using author's text slug instead of UUID
+                        const authorUrl = `authors.html?slug=${encodeURIComponent(item.authorSlug)}`;
                         li.innerHTML = `<strong>${item.label}:</strong> <a href="${authorUrl}">${item.value}</a>`;
                     } else if (item.isYearLink) {
                         const yearUrl = `library.html?year=${encodeURIComponent(item.value)}`;
