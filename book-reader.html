@@ -8,11 +8,6 @@
     
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- PDF.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    </script>
     
     <style>
         :root {
@@ -73,7 +68,7 @@
             border-color: var(--teal);
         }
         main {
-            max-width: 900px;
+            max-width: 950px;
             margin: auto;
             padding: 24px 20px 70px;
         }
@@ -86,7 +81,7 @@
             margin-bottom: 16px;
         }
         h1 {
-            font: 600 clamp(1.5rem, 3vw, 2.5rem)/1.2 'Playfair Display', serif;
+            font: 600 clamp(1.4rem, 3vw, 2.2rem)/1.2 'Playfair Display', serif;
             margin: 0;
             color: var(--deep);
         }
@@ -96,24 +91,20 @@
             margin-top: 4px;
         }
         .frame {
-            height: calc(100vh - 210px);
-            min-height: 540px;
+            height: calc(100vh - 190px);
+            min-height: 600px;
             background: #222;
             border: 1px solid var(--line);
             border-radius: 14px;
-            overflow-y: auto;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            gap: 20px;
         }
-        .frame canvas {
-            max-width: 100%;
-            height: auto !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        .frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
             background: #fff;
-            border-radius: 4px;
         }
         .state {
             padding: 24px;
@@ -123,34 +114,23 @@
             color: var(--muted);
             text-align: center;
         }
-        body.focus .bar, body.focus .meta, body.focus .note {
+        body.focus .bar, body.focus .meta {
             display: none;
         }
         body.focus main {
             max-width: 100%;
-            padding: 12px;
+            padding: 10px;
         }
         body.focus .frame {
-            height: calc(100vh - 24px);
-        }
-        .note {
-            font-size: .82rem;
-            color: var(--muted);
-            margin-top: 12px;
-            text-align: center;
+            height: calc(100vh - 20px);
         }
         @media(max-width: 600px) {
-            .barin {
-                align-items: flex-start;
-                flex-direction: column;
-            }
             .frame {
-                height: calc(100vh - 240px);
-                min-height: 450px;
-                padding: 10px;
+                height: calc(100vh - 160px);
+                min-height: 480px;
             }
             main {
-                padding: 18px 12px 40px;
+                padding: 12px 10px 40px;
             }
         }
     </style>
@@ -168,7 +148,7 @@
     </header>
 
     <main>
-        <div id="state" class="state">Preparing your book…</div>
+        <div id="state" class="state">Preparing your book reader…</div>
         
         <section id="book" hidden>
             <div class="meta">
@@ -178,19 +158,15 @@
                 </div>
             </div>
             
-            <div class="frame" id="viewer-container"></div>
-            
-            <p class="note">Scroll down to read pages seamlessly.</p>
+            <div class="frame" id="viewer-container">
+                <!-- PDF iframe yahan inject hoga -->
+            </div>
         </section>
     </main>
 
     <script>
         const SUPABASE_URL = 'https://pooatzegjnegutflkcbm.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN';
-        
-        if (!window.supabase) {
-            document.getElementById('state').textContent = 'Failed to load Supabase library. Please check your internet connection.';
-        }
         
         const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const $ = id => document.getElementById(id);
@@ -202,69 +178,30 @@
             return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${cleanPath}`;
         }
 
-        async function renderPDF(url) {
-            const container = $('viewer-container');
-            container.innerHTML = '';
-
-            // Agar external link hai (jaise Internet Archive), toh iframe use karein
-            if (/^https?:\/\//i.test(url)) {
-                container.innerHTML = `<iframe src="${url}" style="width:100%; height:75vh; border:none; background:#fff; border-radius:8px;"></iframe>`;
-                return;
-            }
-
-            try {
-                const loadingTask = pdfjsLib.getDocument(url);
-                const pdfDoc = await loadingTask.promise;
-                const numPages = pdfDoc.numPages;
-
-                for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-                    const page = await pdfDoc.getPage(pageNum);
-                    const viewport = page.getViewport({ scale: 1.5 });
-                    
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-
-                    container.appendChild(canvas);
-
-                    const renderContext = {
-                        canvasContext: context,
-                        viewport: viewport
-                    };
-                    await page.render(renderContext).promise;
-                }
-            } catch (err) {
-                console.error('PDF Render Error:', err);
-                container.innerHTML = `<p style="color:white; padding:20px; text-align:center;">Failed to render via PDF.js. <a href="${url}" target="_blank" style="color:#b58a4b;">Click here to open PDF directly</a>.</p>`;
-            }
-        }
-
         async function load() {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const slug = params.get('slug');
 
                 if (!slug) {
-                    $('state').textContent = 'No book was selected. Return to the digital library.';
+                    $('state').textContent = 'No book was selected.';
                     return;
                 }
 
                 const { data, error } = await db
                     .from('content_items')
-                    .select('id, slug, cover_image_url, content_translations(language_code, title), book_details(*)')
+                    .select('id, slug, content_translations(language_code, title), book_details(*)')
                     .eq('slug', slug)
                     .eq('status', 'published')
                     .maybeSingle();
 
                 if (error || !data) {
-                    $('state').textContent = 'This book could not be found or is not published.';
+                    $('state').textContent = 'Book not found or unavailable.';
                     return;
                 }
 
                 const details = Array.isArray(data.book_details) ? data.book_details[0] : data.book_details;
                 const path = details?.pdf_storage_path || details?.epub_storage_path;
-
                 const url = fileUrl(path, 'book');
 
                 if (!url) {
@@ -279,14 +216,15 @@
                 $('title').textContent = title;
                 $('by').textContent = details?.publisher ? `Publisher: ${details.publisher}` : '';
 
+                // **Iframe ke zariye PDF ko usi box ke andar load karna**
+                $('viewer-container').innerHTML = `<iframe src="${url}#view=FitH"></iframe>`;
+
                 $('state').hidden = true;
                 $('book').hidden = false;
                 document.title = `${title} | Markaz.org`;
 
-                await renderPDF(url);
-
             } catch (err) {
-                console.error('Error loading book:', err);
+                console.error('Error:', err);
                 $('state').textContent = 'An unexpected error occurred while loading the book.';
             }
         }
