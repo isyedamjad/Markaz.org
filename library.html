@@ -1081,23 +1081,32 @@ function normalise(value) {
 }
 
 /*
-  Use only an image URL supplied by the database.
-  Do not construct URLs from titles or filenames.
+  Resolve cover images saved as either a full URL or a Supabase
+  Storage path. The admin uploader stores covers in the existing
+  public "book" bucket, under paths such as covers/<content-id>/... .
 */
-
 function validCoverUrl(value) {
-  const url = cleanText(value);
-
-  if (!url) return '';
+  const raw = cleanText(value);
+  if (!raw) return '';
 
   try {
-    const parsed = new URL(url, window.location.href);
-
-    if (!['http:', 'https:'].includes(parsed.protocol)) {
-      return '';
+    // Full external or Supabase public URL already stored in the database.
+    if (/^https?:\/\//i.test(raw)) {
+      const parsed = new URL(raw);
+      return ['http:', 'https:'].includes(parsed.protocol) ? parsed.href : '';
     }
 
-    return parsed.href;
+    // Handle a root-relative URL already pointing at a public object.
+    if (raw.startsWith('/') && raw.includes('/storage/v1/object/public/')) {
+      const parsed = new URL(raw, window.location.origin);
+      return ['http:', 'https:'].includes(parsed.protocol) ? parsed.href : '';
+    }
+
+    // Older records may contain only the Storage object path, not its URL.
+    const path = raw.replace(/^\/+/, '').replace(/^storage\/v1\/object\/public\/book\//, '');
+    if (!path || path.split('/').some(part => part === '..')) return '';
+    return SUPABASE_URL.replace(/\/$/, '') + '/storage/v1/object/public/book/' +
+      path.split('/').map(part => encodeURIComponent(decodeURIComponent(part))).join('/');
   } catch {
     return '';
   }
@@ -1170,12 +1179,6 @@ function coverHTML(book, title) {
     </div>
   `;
 
-  return `
-      <div class="cover">
-        ${fallback}
-      </div>
-  `;
-
   if (!cover) {
     return `
       <div class="cover">
@@ -1192,7 +1195,6 @@ function coverHTML(book, title) {
         alt="${escapeHtml('Cover of ' + title)}"
         loading="lazy"
         decoding="async"
-        referrerpolicy="no-referrer"
       >
       ${fallback}
     </div>
