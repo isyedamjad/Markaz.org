@@ -444,9 +444,13 @@ main {
 
   function pickTranslation(rows) {
     if (!Array.isArray(rows) || !rows.length) return {};
-    // Robust fallback: matches selected language, then English, then Urdu, then Hindi, then anything available
-    return rows.find(x => x.language_code === currentLang)
-      || rows.find(x => x.language_code === "en")
+    
+    // Check exact match for current selected language with biography content
+    let match = rows.find(x => x.language_code === currentLang && (x.biography || x.display_name));
+    if (match) return match;
+
+    // Fallbacks
+    return rows.find(x => x.language_code === "en")
       || rows.find(x => x.language_code === "ur")
       || rows.find(x => x.language_code === "hi")
       || rows[0]
@@ -546,12 +550,17 @@ main {
       if (profile.death_place) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.deathPlace)}:</span> ${escapeHTML(profile.death_place)}</div>`);
 
       const infoSectionHTML = infoItems.length ? `<div class="profile-info-list">${infoItems.join('')}</div>` : '';
-      const shortBioHTML = t.short_bio ? `<p class="short-bio" style="margin-bottom:20px;">${escapeHTML(t.short_bio)}</p>` : '';
-      const longBioHTML = t.biography ? `<section class="panel"><h2>${escapeHTML(L.bio)}</h2><div>${withLineBreaks(t.biography)}</div></section>` : '';
+      const shortBioHTML = (t.short_bio && !t.short_bio.includes("poori biography likhein")) ? `<p class="short-bio" style="margin-bottom:20px;">${escapeHTML(t.short_bio)}</p>` : '';
+
+      // Check if biography exists and isn't placeholder text
+      let validBiography = (t.biography && !t.biography.includes("poori biography likhein")) ? t.biography : null;
+
+      const longBioHTML = validBiography ? `<section class="panel"><h2>${escapeHTML(L.bio)}</h2><div>${withLineBreaks(validBiography)}</div></section>` : '';
       const legacyHTML = t.life_and_legacy ? `<section class="panel"><h2>${escapeHTML(L.legacy)}</h2><div>${withLineBreaks(t.life_and_legacy)}</div></section>` : '';
 
       mainContentHTML = infoSectionHTML + shortBioHTML + longBioHTML + legacyHTML;
-      if (!infoItems.length && !t.short_bio && !t.biography && !t.life_and_legacy) {
+      
+      if (!infoItems.length && !shortBioHTML && !validBiography && !t.life_and_legacy) {
         mainContentHTML = `<div class="empty">${escapeHTML(L.noBio)}</div>`;
       }
     } else {
@@ -661,6 +670,15 @@ main {
     } finally {
       loading = false;
     }
+  }
+
+  function showError(msg) {
+    statusEl.hidden = false;
+    contentEl.hidden = true;
+    statusEl.className = "status";
+    statusEl.innerHTML =
+      '<h1 class="status-title">' + escapeHTML(labels().error) + '</h1>' +
+      '<p class="status-detail">' + escapeHTML(msg) + '</p>';
   }
 
   document.querySelectorAll("[data-lang]").forEach(function (button) {
