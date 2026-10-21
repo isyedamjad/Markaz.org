@@ -26,7 +26,7 @@
   --soft:#f4f7f8;
   --serif:'Playfair Display',Georgia,'Times New Roman',serif;
   --sans:'DM Sans',Arial,sans-serif;
-  --reader-size:18px;
+  --reader-size:17px;
 }
 
 *{box-sizing:border-box}
@@ -233,10 +233,12 @@ h1{
 }
 .poem[lang="en"]{
   font-family:Georgia,'Times New Roman',serif;
-  font-style:normal;
+  font-style:italic;
+  letter-spacing:.012em;
 }
 
 /* Each couplet is a calm, open block—not two side-by-side columns */
+.translation-unavailable{color:#687579;font-style:normal;font-size:.9rem;padding:18px 0}
 .poem .couplet{
   display:block;
   width:100%;
@@ -245,7 +247,7 @@ h1{
   padding:0;
   border:0;
 }
-.poem .misra{
+.poem .misra-text{white-space:nowrap;display:inline-block;max-width:none;transform-origin:left center}\n.poem[dir="rtl"] .misra-text{transform-origin:right center}\n.poem .misra{
   display:block;
   width:100%;
   min-width:0;
@@ -258,6 +260,7 @@ h1{
   line-height:1.82;
   white-space:nowrap;
   overflow-wrap:normal;
+  max-width:100%;
   word-break:normal;
   hyphens:none;
 }
@@ -319,6 +322,12 @@ h1{
   .poem{padding:21px 0 36px}
 }
 @media(max-width:620px){
+  :root{--reader-size:15px}
+  .poem{font-size:var(--reader-size);padding-left:0;padding-right:0}
+  .poem[dir="rtl"]{font-size:var(--reader-size);}
+  .poem .couplet{margin-bottom:1.15em}
+  .poem .misra{line-height:1.65}
+
   .mast-in{align-items:flex-start;flex-direction:column;padding:12px 15px;gap:11px}
   .brand{font-size:1.3rem}
   .brand small{font-size:.62rem}
@@ -373,6 +382,32 @@ h1{
 @media(max-width:520px){.works-archive{padding:18px 14px 45px}.works-grid{grid-template-columns:1fr;gap:11px}.work-card{padding:17px}.category-tabs{margin-right:-14px}}
 
 </style>
+<style id="markaz-shared-design">
+
+/* MARKAZ.ORG — high-contrast editorial design system */
+:root{color-scheme:light;--mz-ink:#17252b;--mz-ink-soft:#35464b;--mz-muted:#59696d;--mz-paper:#fbfaf7;--mz-white:#fff;--mz-panel:#f1f4f1;--mz-line:#dce3df;--mz-teal:#075e59;--mz-teal-deep:#064743;--mz-gold:#a7782d;--mz-gold-pale:#f3e8d2;--mz-shadow:0 16px 42px rgba(23,37,43,.08);--mz-radius:18px;--mz-serif:Georgia,'Times New Roman',serif;--mz-sans:Inter,'Segoe UI',Arial,sans-serif}
+html{scroll-behavior:smooth;background:var(--mz-paper)}body{background:var(--mz-paper)!important;color:var(--mz-ink)!important;font-family:var(--mz-sans)!important;line-height:1.7!important;font-size:16px!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body *{box-sizing:border-box}p,li,dd,dt,label,small,.muted,.eyebrow,.tag,.brand-sub,.brand-subtitle,.subtitle,.description,.meta,.date,.status-detail{color:var(--mz-ink-soft)}p{line-height:1.8}a{color:var(--mz-teal)!important;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:var(--mz-gold)!important}button,input,select,textarea{font:inherit}button,.btn,[type=submit],[role=button]{transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}button:hover,.btn:hover,[type=submit]:hover{transform:translateY(-1px)}:focus-visible{outline:3px solid #d4a54d!important;outline-offset:3px!important}img{max-width:100%}
+/* Shared mastheads and navigation */
+.topline,.top,.topbar,.topline *{border-color:var(--mz-line)}.topline,.top{background:#f0f3ef!important;color:var(--mz-ink)!important}.topline a,.top a{color:var(--mz-ink)!important}.site-header,.head,.header,.topbar,.headrow{background:rgba(255,255,255,.97)!important;color:var(--mz-ink)!important;border-bottom:1px solid var(--mz-line)!important;box-shadow:0 5px 24px rgba(23,37,43,.035)!important}.header-inner,.head .in,.headrow,.topbar{max-width:1240px}.brand,.brand-name,.brandname,.brandmark{color:var(--mz-ink)!important}.brand-name,.brandname{font-family:var(--mz-serif)!important;font-weight:700!important;letter-spacing:-.035em}.brand-sub,.brand-subtitle,.brand .small,.tag{color:var(--mz-muted)!important}.brand-mark,.brandmark,.mark{background:var(--mz-teal)!important;color:white!important;border-color:var(--mz-teal)!important}.nav a,.nav button,.navright a,.header-actions a,.lang,.lang-btn,.languages button,.lang-switch button{color:var(--mz-ink-soft)!important;font-weight:600!important}.nav a:hover,.nav a.active,.lang.active,.lang-btn.active,.lang-switch .active{color:var(--mz-teal)!important}.nav a.active:after,.nav a:hover:after{background:var(--mz-gold)!important}.menu-toggle{color:var(--mz-ink)!important;border-color:var(--mz-line)!important}
+/* Hero panels */
+.hero{color:var(--mz-ink)!important;background:linear-gradient(130deg,#eef4f0 0%,#fbfaf7 58%,#f5eddf 100%)!important;border-color:var(--mz-line)!important}.hero h1,.hero h2,.hero .heading,.heroTitle,.hero-title{color:var(--mz-ink)!important}.hero p,.hero .tagline,.hero .sub,.hero .hero-desc{color:var(--mz-ink-soft)!important}.eyebrow,.kicker,.hero .eyebrow{color:var(--mz-teal)!important;font-weight:750!important;letter-spacing:.13em!important;text-transform:uppercase!important;font-size:.75rem!important}.hero h1,.heroTitle,.hero-title,h1{font-family:var(--mz-serif)!important;letter-spacing:-.035em;line-height:1.13!important}h1,h2,h3,h4,h5{color:var(--mz-ink)!important;line-height:1.25!important}h2,h3{font-family:var(--mz-serif)!important;letter-spacing:-.02em} .rule,.ornament,.divider{border-color:var(--mz-gold)!important;color:var(--mz-gold)!important}
+/* Main content, grids and cards */
+main,.wrap,.container,.article-container,.content,.library-wrap{color:var(--mz-ink)!important}.panel,.card,.lead-card,.book-card,.poem-card,.article-card,.author-card,.saint-card,.term-card,.feature-card,.result-card,.item-card,.entry-card,.grid article,.grid>*,.articleGrid>*{background:var(--mz-white)!important;color:var(--mz-ink)!important;border:1px solid var(--mz-line)!important;border-radius:var(--mz-radius)!important;box-shadow:0 5px 22px rgba(23,37,43,.045)!important}.panel:hover,.card:hover,.article-card:hover,.book-card:hover,.feature-card:hover,.grid article:hover{box-shadow:var(--mz-shadow)!important;border-color:#c3d4ce!important}.panel p,.card p,.lead-card p,.article-card p,.book-card p,.grid article p{color:var(--mz-ink-soft)!important}.section-title,.sectionTitle,.heading{color:var(--mz-ink)!important}.section-title:after,.sectionTitle:after{background:var(--mz-gold)!important}.empty,.loading,.status,.status-detail,.muted,.small{color:var(--mz-muted)!important}.badge,.pill,.tag-pill{background:#e6f0ec!important;color:var(--mz-teal-deep)!important;border:1px solid #c8ded6!important;border-radius:999px!important}
+/* Buttons and search */
+.btn,.button,button.primary,.btn-primary,.primary,[type=submit]{background:var(--mz-teal)!important;color:#fff!important;border:1px solid var(--mz-teal)!important;border-radius:999px!important;font-weight:700!important;box-shadow:0 5px 14px rgba(7,94,89,.12)}.btn:hover,.button:hover,button.primary:hover,.btn-primary:hover,.primary:hover,[type=submit]:hover{background:var(--mz-teal-deep)!important;color:#fff!important;box-shadow:0 8px 20px rgba(7,94,89,.2)}.btn.secondary,.secondary,.btn-outline,.button.secondary{background:#fff!important;color:var(--mz-teal)!important;border:1px solid #b8cec7!important;box-shadow:none!important}.btn.danger,.danger{background:#9d3030!important;color:#fff!important;border-color:#9d3030!important}.search,input,select,textarea,.field input,.field select,.field textarea{background:#fff!important;color:var(--mz-ink)!important;border:1px solid #cbd6d2!important;border-radius:12px!important;box-shadow:none!important}input::placeholder,textarea::placeholder{color:#788589!important;opacity:1}input:focus,select:focus,textarea:focus{border-color:var(--mz-teal)!important;box-shadow:0 0 0 3px rgba(7,94,89,.12)!important;outline:none!important}label{color:var(--mz-ink)!important;font-weight:650}
+/* Poetry, Urdu and reading surfaces */
+.poem,.poetry,.verse,.sher,.couplet,.ghazal,.poem-text,.urdu,.arabic,[lang=ur],[dir=rtl]{color:var(--mz-ink)!important}.poem,.poetry,.verse,.sher,.couplet,.ghazal,.poem-text{background:#f7f4ec!important;border-color:#e5dac5!important}.urdu,.arabic,[lang=ur],[dir=rtl]{font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif!important;line-height:2.15!important}.reader,.reading,.article-body,.prose,.book-content,.entry-body{color:#24343a!important;font-size:1.04rem!important;line-height:1.95!important}.reader p,.reading p,.article-body p,.prose p,.book-content p,.entry-body p{color:#24343a!important;line-height:1.95!important}.reader blockquote,blockquote{border-left:3px solid var(--mz-gold)!important;background:#f5f1e8!important;color:var(--mz-ink)!important;padding:1.1rem 1.3rem!important;border-radius:0 12px 12px 0}
+/* Footer */
+footer,.footer{background:#14282d!important;color:#eaf0ed!important;border-top:3px solid var(--mz-gold)!important}footer p,footer li,footer small,.footer p,.footer li,.footer small{color:#d6e1dd!important}footer a,.footer a{color:#f2d9a7!important}footer a:hover,.footer a:hover{color:#fff!important}
+/* Tables and status */
+table{width:100%;border-collapse:collapse;color:var(--mz-ink)!important;background:#fff!important}th{background:#eaf1ed!important;color:var(--mz-ink)!important;font-weight:750}td,th{border-bottom:1px solid var(--mz-line)!important;padding:.8rem!important}tr:nth-child(even) td{background:#fafbf9!important}.spinner{border-color:#dce5e1!important;border-top-color:var(--mz-teal)!important}.status-title{color:var(--mz-ink)!important}
+/* Admin studio: clear, professional control surface */
+body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important}#loginScreen,.loginwrap,.loginbox,#app,.admin-card,.section-card{color:var(--mz-ink)!important}#loginScreen .card,.loginbox,.loginwrap .card{background:#fff!important;border:1px solid var(--mz-line)!important;box-shadow:var(--mz-shadow)!important}#app .sidebar,#app aside{background:#14282d!important;color:#edf4f0!important}#app .sidebar a,#app aside a{color:#e1ebe6!important}#app .sidebar a.active,#app aside a.active{background:#24534f!important;color:#fff!important}#app .muted,#loginScreen .muted{color:var(--mz-muted)!important}.hidden{display:none!important}
+/* Responsive and reduced-motion refinements */
+@media(max-width:760px){body{font-size:15px!important}.hero{padding:clamp(1.5rem,6vw,2.6rem)!important}.hero h1,.heroTitle,h1{font-size:clamp(2rem,9vw,3.3rem)!important}.nav{gap:.55rem!important}.panel,.card,.lead-card,.book-card,.poem-card,.article-card{border-radius:14px!important}.header-inner,.head .in,.headrow{padding-left:1rem!important;padding-right:1rem!important}table{display:block;overflow-x:auto}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+
+</style>
 </head>
 
 <body>
@@ -423,7 +458,7 @@ h1{
 
     <div class="reader-controls" aria-label="Choose reading language">
       <button type="button" data-lang="ur" aria-pressed="false">اردو</button>
-      <button type="button" data-lang="roman" aria-pressed="true">Roman</button>
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
       <button type="button" data-lang="hi" aria-pressed="false">हिन्दी</button>
     </div>
 
@@ -447,10 +482,10 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
 
 let work = null;
-let lang = 'roman';
+let lang = 'en';
 let fontSize = 18;
 
-const VERSE_TYPES = ['ghazal','naat','manqabat','salam','hamd','poetry'];
+const VERSE_TYPES = ['ghazal','naat','manqabat','salam','salaam','hamd','poetry','kalam','kalaam','sher','bait','rubai','qaseeda','marsiya','nazm','doha','manzoom'];
 
 function esc(value){
   return String(value ?? '').replace(/[&<>"']/g, char => ({
@@ -471,14 +506,15 @@ function normalizedType(){
 
 function translation(){
   const translations = work?.author_work_translations || [];
-  const selected = translations.find(t => t.language_code === lang && t.body) ||
-    translations.find(t => t.language_code === lang && t.title);
+  // The public "English" tab intentionally displays the Roman Urdu/Hinglish
+  // transcription; it must never fall back to Urdu script.
+  const code = lang === 'en' ? 'roman' : lang;
+  const selected = translations.find(t => t.language_code === code && t.body) ||
+    translations.find(t => t.language_code === code && t.title);
   if(selected) return selected;
-
-  return translations.find(t => t.language_code === 'roman' && t.body) ||
-    translations.find(t => t.language_code === 'ur' && t.body) ||
-    translations.find(t => t.body) ||
-    translations.find(t => t.title) || {};
+  // Do not silently render Urdu-script content in the English/Roman tab.
+  if(lang === 'en') return {};
+  return translations.find(t => t.body) || translations.find(t => t.title) || {};
 }
 
 /* Blank lines split couplets. Inside a couplet, the first line is misra one;
@@ -499,8 +535,8 @@ function bodyHTML(text){
       const firstMisra = lines[0];
       const secondMisra = lines.slice(1).join(' ');
       return `<div class="couplet">
-        <div class="misra">${esc(firstMisra)}</div>
-        ${secondMisra ? `<div class="misra">${esc(secondMisra)}</div>` : ''}
+        <div class="misra"><span class="misra-text">${esc(firstMisra)}</span></div>
+        ${secondMisra ? `<div class="misra"><span class="misra-text">${esc(secondMisra)}</span></div>` : ''}
       </div>`;
     }).join('');
   }
@@ -522,19 +558,32 @@ function fitMisras(){
   const poem = $('body');
   if(!poem) return;
   poem.querySelectorAll('.misra').forEach(line => {
+    const text = line.querySelector('.misra-text') || line;
     line.style.fontSize = '';
-    const base = lang === 'ur' ? fontSize + 1 : fontSize;
+    text.style.transform = '';
+    text.style.transformOrigin = lang === 'ur' ? 'right center' : 'left center';
+    const base = fontSize;
     let size = base;
-    const minSize = window.innerWidth < 600 ? 12 : 14;
+    const minSize = window.innerWidth < 600 ? 9 : 10;
     line.style.fontSize = size + 'px';
-    // Keep each misra on a single line, reducing type only as much as needed.
-    while(line.scrollWidth > line.clientWidth + 1 && size > minSize){
+    // First reduce font size; then gently compress only unusually long lines
+    // so every language stays on one line on phones, tablets and desktops.
+    while(text.scrollWidth > line.clientWidth + 1 && size > minSize){
       size -= 0.5;
       line.style.fontSize = size + 'px';
     }
+    const available = Math.max(1, line.clientWidth);
+    const measured = text.scrollWidth;
+    if(measured > available + 1){
+      const scale = Math.max(0.55, available / measured);
+      text.style.display = 'inline-block';
+      text.style.transform = `scaleX(${scale})`;
+      text.style.transformOrigin = lang === 'ur' ? 'right center' : 'left center';
+    } else {
+      text.style.display = 'inline';
+    }
   });
 }
-
 function updateWorkLabel(authorName, workType){
   const type = String(workType || 'poetry').replace(/[_-]+/g, ' ').trim();
   const pretty = type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Poetry';
@@ -556,7 +605,7 @@ function render(){
 
   const translations = work.author_work_translations || [];
   const romanTranslation = translations.find(item =>
-    item.language_code === 'roman' && item.transliteration
+    (item.language_code === 'roman' || item.language_code === 'en') && item.transliteration
   );
 
   const profileTranslations = work.author_profiles?.author_profile_translations || [];
@@ -590,7 +639,10 @@ function render(){
   byline.classList.toggle('hidden', !byline.textContent.trim());
   updateWorkLabel(authorName, work.work_type);
 
-  poem.innerHTML = bodyHTML(t.body || t.excerpt || '');
+  const selectedBody = t.body || t.excerpt || '';
+  poem.innerHTML = selectedBody
+    ? bodyHTML(selectedBody)
+    : `<p class="translation-unavailable">${lang === 'en' ? 'Roman Urdu / Hinglish text has not been added for this work yet.' : 'Text is not available in this language yet.'}</p>`;
 
   const isUrdu = lang === 'ur';
   poem.dir = isUrdu ? 'rtl' : 'ltr';
@@ -611,7 +663,7 @@ function render(){
   document.documentElement.lang = isUrdu ? 'ur' : (lang === 'hi' ? 'hi' : 'en');
   updateLanguageControls();
 
-  if(romanTranslation){
+  if(romanTranslation && lang !== 'en'){
     $('translit').textContent = romanTranslation.transliteration;
     $('translitWrap').classList.remove('hidden');
   }else{
