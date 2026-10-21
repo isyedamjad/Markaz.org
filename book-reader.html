@@ -278,7 +278,7 @@
         function getFileUrl(path) {
             if (!path) return '';
             if (/^https?:\/\//i.test(path)) {
-                // External links (jaise Archive.org) ke liye CORS bypass proxy use karenge taaki PDF.js bina error ke read kar sake
+                // External link ke liye CORS bypass proxy use karenge taaki PDF.js canvas par render kar sake
                 return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(path);
             }
             const cleanPath = path.startsWith('/') ? path.slice(1) : path;
@@ -432,7 +432,7 @@
 
                 const targetUrl = getFileUrl(path);
 
-                // Universal PDF.js loader for both internal and external links
+                // Dono types ke liye ab ek hi PDF.js canvas viewer chalega, design bilkul uniform rahega
                 const loadingTask = pdfjsLib.getDocument({
                     url: targetUrl,
                     disableAutoFetch: false,
