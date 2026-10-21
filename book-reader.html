@@ -214,7 +214,10 @@
 
         function getFileUrl(path) {
             if (!path) return '';
-            if (/^https?:\/\//i.test(path)) return path;
+            if (/^https?:\/\//i.test(path)) {
+                // External PDF links (jaise Internet Archive) ke liye CORS Proxy
+                return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(path);
+            }
             const cleanPath = path.startsWith('/') ? path.slice(1) : path;
             return `${SUPABASE_URL}/storage/v1/object/public/book/${cleanPath}`;
         }
