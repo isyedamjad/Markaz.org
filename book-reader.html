@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#181818">
+    <meta name="theme-color" content="#111111">
     <title>Book Reader | Markaz.org</title>
     
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
     <style>
         :root {
             --paper: #161616;
-            --bar-bg: rgba(24, 24, 24, 0.95);
+            --bar-bg: rgba(20, 20, 20, 0.95);
             --accent: #b58a48;
             --text-main: #f0f0f0;
             --line: #333;
@@ -43,7 +43,7 @@
             align-items: center;
             justify-content: space-between;
             z-index: 10;
-            height: 52px;
+            height: 50px;
         }
         .brand {
             font: 600 0.95rem 'Playfair Display', serif;
@@ -64,16 +64,16 @@
             text-decoration: none;
         }
 
-        /* Main PDF Canvas Surface */
+        /* Main Viewer Workspace */
         main {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: auto;
             position: relative;
             background: #111;
-            padding: 10px;
+            overflow: auto;
+            padding-bottom: 70px; /* Floating Bottom Bar Space */
         }
         #canvas-container {
             display: flex;
@@ -82,28 +82,35 @@
             width: 100%;
             height: 100%;
             overflow: auto;
+            padding: 10px;
         }
         canvas {
+            display: block;
+            margin: auto;
             max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
+            height: auto;
             box-shadow: 0 8px 30px rgba(0,0,0,0.8);
             background: #fff;
-            border-radius: 4px;
+            border-radius: 2px;
         }
+
+        /* Loading Overlay - Fixed Absolute Screen Centering */
         .state {
+            position: absolute;
+            inset: 0;
+            background: #111;
             color: #aaa;
-            text-align: center;
-            font-size: 0.95rem;
-            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 14px;
+            z-index: 20;
+            font-size: 0.95rem;
         }
         .spinner {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border: 3px solid #333;
             border-top-color: var(--accent);
             border-radius: 50%;
@@ -147,7 +154,11 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            user-select: none;
             transition: background 0.2s, border-color 0.2s;
+        }
+        .circle-btn:active {
+            transform: scale(0.95);
         }
         .circle-btn:hover:not(:disabled) {
             background: var(--accent);
@@ -177,38 +188,35 @@
 </head>
 <body>
 
-    <!-- Top Bar -->
+    <!-- Top Header Bar -->
     <header class="top-bar">
         <a class="brand" href="library.html" id="book-title">Loading...</a>
         <a class="close-btn" href="library.html">Close</a>
     </header>
 
-    <!-- Main View -->
+    <!-- Main Reader Space -->
     <main id="main-viewer">
         <div id="state" class="state">
             <div class="spinner"></div>
-            <span>Kitab load ho rahi hai, kripya pratiksha karein...</span>
+            <span id="state-text">Kitab load ho rahi hai...</span>
         </div>
-        <div id="canvas-container" hidden>
+        <div id="canvas-container">
             <canvas id="pdf-render"></canvas>
         </div>
     </main>
 
-    <!-- Rekhta Style Bottom Floating Bar -->
-    <footer class="bottom-bar" id="bottom-controls" hidden>
-        <!-- Zoom Controls -->
+    <!-- Rekhta Bottom Floating Toolbar -->
+    <footer class="bottom-bar" id="bottom-controls">
         <div class="tool-group">
             <button id="zoom-out" class="circle-btn" title="Zoom Out">−</button>
             <button id="zoom-in" class="circle-btn" title="Zoom In">+</button>
         </div>
 
-        <!-- Page Indicator / Number -->
         <div class="page-indicator">
-            <div><span id="page-num">1</span> / <span id="page-count">0</span></div>
-            <span class="sub">Page</span>
+            <div><span id="page-num">1</span> / <span id="page-count">--</span></div>
+            <span class="sub">PAGE</span>
         </div>
 
-        <!-- Page Navigation Buttons -->
         <div class="tool-group">
             <button id="prev-btn" class="circle-btn" disabled title="Previous Page">‹</button>
             <button id="next-btn" class="circle-btn" disabled title="Next Page">›</button>
@@ -233,7 +241,6 @@
         function getFileUrl(path) {
             if (!path) return '';
             if (/^https?:\/\//i.test(path)) {
-                // Internet Archive ya external links ke liye CORS Proxy
                 return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(path);
             }
             const cleanPath = path.startsWith('/') ? path.slice(1) : path;
@@ -243,16 +250,35 @@
         function renderPage(num) {
             if (!pdfDoc) return;
             pageRendering = true;
+
             pdfDoc.getPage(num).then(page => {
                 const viewport = page.getViewport({ scale: scale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+                
+                // Device Pixel Ratio Smooth Quality Adjustment
+                const outputScale = window.devicePixelRatio || 1;
+                canvas.width = Math.floor(viewport.width * outputScale);
+                canvas.height = Math.floor(viewport.height * outputScale);
+                canvas.style.width = Math.floor(viewport.width) + "px";
+                canvas.style.height = "auto";
 
-                const renderContext = { canvasContext: ctx, viewport: viewport };
+                const transform = outputScale !== 1 
+                    ? [outputScale, 0, 0, outputScale, 0, 0] 
+                    : null;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    transform: transform,
+                    viewport: viewport
+                };
+
                 const renderTask = page.render(renderContext);
 
                 renderTask.promise.then(() => {
                     pageRendering = false;
+                    
+                    // Hide Loading Overlay completely once first page is drawn
+                    $('state').style.display = 'none';
+
                     if (pageNumPending !== null) {
                         renderPage(pageNumPending);
                         pageNumPending = null;
@@ -284,30 +310,38 @@
             queueRenderPage(pageNum);
         }
 
+        // Button Event Listeners
         $('prev-btn').addEventListener('click', onPrevPage);$('next-btn').addEventListener('click', onNextPage);
 
+        // Functional Zoom Controls
         $('zoom-in').addEventListener('click', () => {
+            if (!pdfDoc) return;
             scale += 0.25;
-            if (scale > 2.5) scale = 2.5;
-            renderPage(pageNum);
+            if (scale > 3.0) scale = 3.0;
+            queueRenderPage(pageNum);
         });
 
         $('zoom-out').addEventListener('click', () => {
+            if (!pdfDoc) return;
             scale -= 0.25;
-            if (scale < 0.8) scale = 0.8;
-            renderPage(pageNum);
+            if (scale < 0.6) scale = 0.6;
+            queueRenderPage(pageNum);
         });
 
-        // Touch Swipe Gesture for Mobile
+        // Touch Swipe Navigation for Mobile
         let touchstartX = 0, touchendX = 0;
         const mainViewer = $('main-viewer');
-        mainViewer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, { passive: true });
+        
+        mainViewer.addEventListener('touchstart', e => { 
+            touchstartX = e.changedTouches[0].screenX; 
+        }, { passive: true });
+
         mainViewer.addEventListener('touchend', e => {
             touchendX = e.changedTouches[0].screenX;
             const dist = touchendX - touchstartX;
-            if (Math.abs(dist) > 40) {
-                if (dist < 0) onNextPage();  // Swipe Left -> Next Page
-                else onPrevPage();              // Swipe Right -> Previous Page
+            if (Math.abs(dist) > 50) {
+                if (dist < 0) onNextPage();  // Swipe Left -> Next
+                else onPrevPage();          // Swipe Right -> Prev
             }
         }, { passive: true });
 
@@ -317,7 +351,7 @@
                 const slug = params.get('slug');
 
                 if (!slug) {
-                    $('state').innerHTML = '<span>No book selected.</span>';
+                    $('state-text').textContent = 'No book selected.';
                     return;
                 }
 
@@ -329,7 +363,7 @@
                     .maybeSingle();
 
                 if (error || !data) {
-                    $('state').innerHTML = '<span>Book unavailable or not found.</span>';
+                    $('state-text').textContent = 'Book unavailable or not found.';
                     return;
                 }
 
@@ -337,7 +371,7 @@
                 const path = details?.pdf_storage_path || details?.epub_storage_path;
 
                 if (!path) {
-                    $('state').innerHTML = '<span>No digital PDF attached to this book.</span>';
+                    $('state-text').textContent = 'No digital PDF attached to this book.';
                     return;
                 }
 
@@ -347,7 +381,7 @@
 
                 const targetUrl = getFileUrl(path);
 
-                // PDF file ko fetch karke PDF.js ke through load karna
+                // Fetch PDF ArrayBuffer
                 const response = await fetch(targetUrl);
                 if (!response.ok) throw new Error('Failed to fetch file');
                 const arrayBuffer = await response.arrayBuffer();
@@ -356,20 +390,16 @@
                     pdfDoc = pdfDoc_;
                     $('page-count').textContent = pdfDoc.numPages;
 
-                    // Loader hide karke canvas aur bottom control bar show karna
-                    $('state').hidden = true;
-                    $('canvas-container').hidden = false;
-                    $('bottom-controls').hidden = false;
-
+                    // First page render triggering
                     renderPage(pageNum);
                 }).catch(err => {
                     console.error(err);
-                    $('state').innerHTML = '<span>PDF render karne mein samasya aayi. Kripya dubara koshish karein.</span>';
+                    $('state-text').textContent = 'PDF render karne mein samasya aayi.';
                 });
 
             } catch (err) {
                 console.error(err);
-                $('state').innerHTML = '<span>Network error ya file load hone mein samasya hai.</span>';
+                $('state-text').textContent = 'Network error ya file load nahi ho saki.';
             }
         }
 
