@@ -1,36 +1,941 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#075e59">
-<meta name="description" content="Read poetry, ghazals and literary works in a calm, premium reading experience.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#075e59">
+<meta name="description" content="Read poetry, ghazals, naats and literary works in a premium reading experience.">
 <title>Reading Room | Markaz.org</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;500;600&family=Noto+Serif+Devanagari:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--ink:#19282b;--muted:#647174;--paper:#fbfaf6;--white:#fff;--teal:#075e59;--deep:#064743;--gold:#ad7d35;--line:#dfe6e1;--serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',Arial,sans-serif;--reader-size:22px;--reader-gap:1.65}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.8 var(--sans);-webkit-font-smoothing:antialiased}a{color:var(--teal);text-decoration:none}.mast{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:4}.mast-in{max-width:1120px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font:700 1.3rem var(--serif);color:var(--deep)}.brand small{display:block;font:600 .65rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.tools button,.tools select{border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 12px;color:var(--ink);cursor:pointer}.tools button:hover{border-color:var(--teal)}.shell{max-width:980px;margin:0 auto;padding:28px 22px 90px}.crumb{font-size:.82rem;color:var(--muted);margin-bottom:26px}.state{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;color:var(--muted)}.work-head{text-align:center;padding:26px 10px 30px;border-bottom:1px solid var(--line)}.kicker{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--teal)}h1{font:600 clamp(2rem,5vw,3.5rem)/1.2 var(--serif);letter-spacing:-.035em;margin:12px 0;color:var(--deep)}.subtitle{color:var(--muted);font:1.08rem/1.7 var(--serif);margin:0}.byline{font-size:.85rem;color:var(--muted);margin-top:14px}.reader-controls{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;padding:18px 0}.reader-controls button{border:1px solid var(--line);border-radius:999px;background:#fff;padding:7px 13px;color:var(--ink);cursor:pointer}.reader-controls button.active{background:#e5f0ec;border-color:#bfd7ce;color:var(--deep)}.poem{max-width:850px;margin:0 auto;padding:22px 10px 50px;font-size:var(--reader-size);line-height:var(--reader-gap);transition:font-size .15s}.poem[dir=rtl]{font-family:'Noto Nastaliq Urdu',serif;text-align:right;font-size:calc(var(--reader-size) + 3px);line-height:2.15}.poem p{margin:0 0 1.4em;white-space:pre-wrap;overflow-wrap:anywhere}.poem.ghazal .couplet{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,5vw,70px);align-items:start;margin:0 auto 2.25em;max-width:850px}.poem.ghazal .misra{white-space:pre-wrap;text-align:center;line-height:var(--reader-gap);overflow-wrap:anywhere}.poem.ghazal[dir=rtl] .couplet{direction:rtl}.poem.ghazal[dir=rtl] .misra{font-family:'Noto Nastaliq Urdu',serif;line-height:2.25}.poem.nazm p{margin-bottom:.85em}.translit{border-top:1px solid var(--line);padding:24px 10px;color:var(--muted);white-space:pre-wrap;line-height:1.9}.translit h2{font:600 1.1rem var(--serif);color:var(--ink)}.footer{text-align:center;background:#102c2b;color:#dce9e2;padding:24px;font-size:.8rem}.hidden{display:none!important}.reader-mode .mast,.reader-mode .crumb,.reader-mode .reader-controls,.reader-mode .footer{display:none}.reader-mode .shell{max-width:900px;padding-top:28px}.reader-mode .work-head{padding-top:10px}@media(max-width:620px){.mast-in{align-items:flex-start;flex-direction:column;padding:12px 16px}.shell{padding:22px 15px 60px}.poem{padding-left:0;padding-right:0}.poem.ghazal .couplet{gap:14px;font-size:.9em;margin-bottom:2em}.tools{width:100%}.tools button{padding:7px 10px}}
+:root{
+  --ink:#29251f;
+  --muted:#777168;
+  --paper:#fbfaf6;
+  --white:#ffffff;
+  --teal:#075e59;
+  --deep:#064743;
+  --gold:#ad7d35;
+  --line:#e9e3d9;
+  --soft:#f3f0e8;
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'DM Sans',Arial,sans-serif;
+  --reader-size:22px;
+  --reader-gap:1.8;
+}
+
+*{box-sizing:border-box}
+
+html{
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:16px/1.8 var(--sans);
+  -webkit-font-smoothing:antialiased;
+  overflow-wrap:break-word;
+}
+
+a{
+  color:var(--teal);
+  text-decoration:none;
+}
+
+button,select{
+  font:inherit;
+}
+
+button{
+  -webkit-tap-highlight-color:transparent;
+}
+
+.mast{
+  background:rgba(255,255,255,.97);
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+  backdrop-filter:blur(12px);
+}
+
+.mast-in{
+  max-width:1120px;
+  margin:auto;
+  padding:13px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.brand{
+  font:700 1.3rem var(--serif);
+  color:var(--deep);
+  white-space:nowrap;
+}
+
+.brand small{
+  display:block;
+  font:600 .65rem var(--sans);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.tools{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.tools button,
+.tools select{
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:#fff;
+  padding:8px 12px;
+  color:var(--ink);
+  cursor:pointer;
+}
+
+.tools button:hover,
+.tools button:focus-visible{
+  border-color:var(--teal);
+  outline:none;
+}
+
+.tools a{
+  font-size:.9rem;
+  padding:5px;
+}
+
+.shell{
+  width:100%;
+  max-width:980px;
+  margin:0 auto;
+  padding:25px 22px 80px;
+}
+
+.crumb{
+  font-size:.82rem;
+  color:var(--muted);
+  margin-bottom:22px;
+}
+
+.crumb a{
+  color:var(--muted);
+}
+
+.crumb a:hover{
+  color:var(--teal);
+}
+
+.state{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:24px;
+  color:var(--muted);
+  overflow-wrap:anywhere;
+}
+
+.work-head{
+  text-align:center;
+  padding:28px 12px 26px;
+  border-bottom:1px solid var(--line);
+}
+
+.kicker{
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--teal);
+}
+
+h1{
+  font:600 clamp(1.9rem,5vw,3.35rem)/1.3 var(--serif);
+  letter-spacing:-.035em;
+  margin:13px 0;
+  color:var(--deep);
+  overflow-wrap:anywhere;
+}
+
+.subtitle{
+  color:var(--muted);
+  font:1.08rem/1.75 var(--serif);
+  margin:0;
+  overflow-wrap:anywhere;
+}
+
+.byline{
+  font-size:.85rem;
+  color:var(--muted);
+  margin-top:14px;
+}
+
+.reader-controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:17px 0;
+}
+
+.reader-controls button{
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:#fff;
+  padding:8px 13px;
+  color:var(--ink);
+  cursor:pointer;
+  font-size:.88rem;
+  min-height:38px;
+}
+
+.reader-controls button.active{
+  background:#e5f0ec;
+  border-color:#bfd7ce;
+  color:var(--deep);
+}
+
+.reader-controls button:focus-visible{
+  outline:2px solid var(--teal);
+  outline-offset:2px;
+}
+
+/* =====================================
+   PREMIUM READING AREA
+===================================== */
+
+.poem{
+  width:100%;
+  max-width:850px;
+  min-width:0;
+  margin:0 auto;
+  padding:25px 12px 45px;
+  font-size:var(--reader-size);
+  line-height:var(--reader-gap);
+  transition:font-size .15s ease;
+  overflow-wrap:anywhere;
+  color:var(--ink);
+}
+
+.poem[dir="rtl"]{
+  direction:rtl;
+  text-align:right;
+  font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif;
+  font-size:calc(var(--reader-size) + 2px);
+  line-height:2.2;
+}
+
+.poem[lang="hi"]{
+  font-family:'Noto Serif Devanagari','Noto Sans Devanagari',serif;
+}
+
+.poem[lang="en"],
+.poem[lang="roman"]{
+  font-family:Georgia,'Times New Roman',serif;
+}
+
+/* Regular prose and nazm */
+.poem p{
+  margin:0 0 1.45em;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-height:1.95;
+}
+
+.poem.nazm p{
+  margin-bottom:1em;
+}
+
+/* =====================================
+   COUPLET LAYOUT — REKHTA-INSPIRED
+===================================== */
+
+.poem.ghazal .couplet,
+.poem.naat .couplet,
+.poem.manqabat .couplet,
+.poem.salam .couplet,
+.poem.hamd .couplet,
+.poem.poetry .couplet{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(12px,3.2vw,40px);
+  align-items:start;
+  width:100%;
+  max-width:850px;
+  margin:0 auto 22px;
+  padding:0 0 18px;
+  border-bottom:1px solid var(--line);
+}
+
+/* Each individual misra */
+.poem .misra{
+  display:block;
+  min-width:0;
+  max-width:100%;
+  margin:0;
+  padding:0 2px;
+  text-align:center;
+  font-size:1em;
+  font-weight:400;
+  line-height:1.9;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  hyphens:none;
+}
+
+/* Urdu couplets */
+.poem[dir="rtl"] .couplet{
+  direction:rtl;
+}
+
+.poem[dir="rtl"] .misra{
+  direction:rtl;
+  text-align:center;
+  font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif;
+  line-height:2.3;
+  padding:0 1px;
+}
+
+/* Layout toggle: plain reading */
+.poem.plain-layout .couplet{
+  display:block;
+  border-bottom:0;
+  margin-bottom:1.5em;
+  padding-bottom:0;
+}
+
+.poem.plain-layout .misra{
+  text-align:start;
+  margin-bottom:.5em;
+}
+
+.poem[dir="rtl"].plain-layout .misra{
+  text-align:right;
+}
+
+/* Transliteration */
+.translit{
+  border-top:1px solid var(--line);
+  padding:24px 12px;
+  color:var(--muted);
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  line-height:1.95;
+  font-family:Georgia,'Times New Roman',serif;
+}
+
+.translit h2{
+  font:600 1.1rem var(--serif);
+  color:var(--ink);
+  margin:0 0 12px;
+}
+
+/* Utility */
+.hidden{
+  display:none!important;
+}
+
+/* Focus reading mode */
+.reader-mode{
+  background:var(--paper);
+}
+
+.reader-mode .mast,
+.reader-mode .crumb,
+.reader-mode .reader-controls,
+.reader-mode .footer{
+  display:none;
+}
+
+.reader-mode .shell{
+  max-width:900px;
+  padding-top:24px;
+}
+
+.reader-mode .work-head{
+  padding-top:12px;
+}
+
+/* =====================================
+   TABLET
+===================================== */
+
+@media(max-width:760px){
+  .mast-in{
+    padding:12px 16px;
+    gap:12px;
+  }
+
+  .shell{
+    padding:22px 17px 60px;
+  }
+
+  .poem{
+    padding:22px 4px 38px;
+  }
+
+  .poem.ghazal .couplet,
+  .poem.naat .couplet,
+  .poem.manqabat .couplet,
+  .poem.salam .couplet,
+  .poem.hamd .couplet,
+  .poem.poetry .couplet{
+    gap:12px;
+    margin-bottom:19px;
+    padding-bottom:14px;
+  }
+
+  .poem .misra{
+    font-size:.94em;
+    line-height:1.85;
+  }
+
+  .poem[dir="rtl"] .misra{
+    line-height:2.2;
+  }
+}
+
+/* =====================================
+   MOBILE — SCREEN-FITTED POETRY
+===================================== */
+
+@media(max-width:620px){
+  .mast-in{
+    align-items:flex-start;
+    flex-direction:column;
+    padding:11px 15px;
+    gap:9px;
+  }
+
+  .brand{
+    font-size:1.2rem;
+  }
+
+  .tools{
+    width:100%;
+    gap:7px;
+  }
+
+  .tools button{
+    padding:7px 10px;
+    font-size:.83rem;
+  }
+
+  .tools a{
+    font-size:.83rem;
+  }
+
+  .shell{
+    padding:17px 12px 48px;
+  }
+
+  .crumb{
+    font-size:.77rem;
+    margin-bottom:15px;
+  }
+
+  .work-head{
+    padding:22px 4px 20px;
+  }
+
+  h1{
+    font-size:clamp(1.7rem,7vw,2.5rem);
+    line-height:1.35;
+  }
+
+  .subtitle{
+    font-size:1rem;
+  }
+
+  .reader-controls{
+    gap:6px;
+    padding:14px 0;
+  }
+
+  .reader-controls button{
+    padding:7px 10px;
+    font-size:.82rem;
+    min-height:36px;
+  }
+
+  .poem{
+    padding:18px 0 30px;
+    font-size:clamp(17px,4.5vw,20px);
+    line-height:1.9;
+  }
+
+  .poem[dir="rtl"]{
+    font-size:clamp(19px,5vw,22px);
+    line-height:2.15;
+  }
+
+  .poem.ghazal .couplet,
+  .poem.naat .couplet,
+  .poem.manqabat .couplet,
+  .poem.salam .couplet,
+  .poem.hamd .couplet,
+  .poem.poetry .couplet{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:9px;
+    margin-bottom:17px;
+    padding-bottom:13px;
+  }
+
+  .poem .misra{
+    font-size:.9em;
+    line-height:1.85;
+    padding:0;
+  }
+
+  .poem[dir="rtl"] .misra{
+    font-size:1em;
+    line-height:2.15;
+  }
+
+  .poem p{
+    line-height:1.9;
+    margin-bottom:1.2em;
+  }
+
+  .translit{
+    padding:20px 2px;
+    font-size:.95rem;
+  }
+}
+
+/* Extra-narrow phones: stack each couplet vertically */
+@media(max-width:380px){
+  .shell{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .poem.ghazal .couplet,
+  .poem.naat .couplet,
+  .poem.manqabat .couplet,
+  .poem.salam .couplet,
+  .poem.hamd .couplet,
+  .poem.poetry .couplet{
+    grid-template-columns:minmax(0,1fr);
+    gap:4px;
+    margin-bottom:17px;
+    padding-bottom:12px;
+  }
+
+  .poem .misra{
+    font-size:1em;
+    line-height:1.8;
+  }
+
+  .poem[dir="rtl"] .misra{
+    line-height:2.1;
+  }
+
+  .tools button{
+    padding:7px 9px;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media(prefers-reduced-motion:reduce){
+  html{
+    scroll-behavior:auto;
+  }
+
+  *{
+    transition:none!important;
+  }
+}
+
+.footer{
+  text-align:center;
+  background:#102c2b;
+  color:#dce9e2;
+  padding:24px 14px;
+  font-size:.8rem;
+}
 </style>
 </head>
+
 <body>
-<header class="mast"><div class="mast-in"><a class="brand" href="/home.html">Markaz.org<small>Poetry · People · Heritage</small></a><div class="tools"><button id="smaller" aria-label="Decrease text size">A−</button><button id="larger" aria-label="Increase text size">A+</button><button id="readerToggle">Focus reading</button><a href="/poets">Poets</a><a href="/library.html">Library</a></div></div></header>
-<main class="shell"><div class="crumb"><a href="/home.html">Home</a> / <a href="/poetry.html">Poetry</a> / Reading room</div><div id="loading" class="state">Opening the reading room…</div><div id="error" class="state hidden">This work is unavailable or has not been published.</div>
-<article id="entry" class="hidden"><header class="work-head"><div class="kicker" id="type">Literary work</div><h1 id="title"></h1><p class="subtitle" id="subtitle"></p><div class="byline" id="byline"></div></header>
-<div class="reader-controls" aria-label="Reading options"><button data-lang="ur">اردو</button><button data-lang="roman">Roman</button><button data-lang="hi">हिन्दी</button><button data-lang="en">English</button><button id="layoutToggle">Couplet layout</button></div>
-<div class="poem" id="body"></div><section id="translitWrap" class="translit hidden"><h2>Transliteration</h2><div id="translit"></div></section></article></main>
-<footer class="footer">Markaz.org · A living archive of literature, Sufi thought and heritage</footer>
+
+<header class="mast">
+  <div class="mast-in">
+    <a class="brand" href="/home.html">
+      Markaz.org
+      <small>Poetry · People · Heritage</small>
+    </a>
+
+    <div class="tools">
+      <button id="smaller" type="button" aria-label="Decrease text size">A−</button>
+      <button id="larger" type="button" aria-label="Increase text size">A+</button>
+      <button id="readerToggle" type="button">Focus reading</button>
+      <a href="/poets">Poets</a>
+      <a href="/library.html">Library</a>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  <div class="crumb">
+    <a href="/home.html">Home</a> /
+    <a href="/poetry.html">Poetry</a> /
+    Reading room
+  </div>
+
+  <div id="loading" class="state" role="status">
+    Opening the reading room…
+  </div>
+
+  <div id="error" class="state hidden" role="alert">
+    This work is unavailable or has not been published.
+  </div>
+
+  <article id="entry" class="hidden">
+    <header class="work-head">
+      <div class="kicker" id="type">Literary work</div>
+      <h1 id="title"></h1>
+      <p class="subtitle" id="subtitle"></p>
+      <div class="byline" id="byline"></div>
+    </header>
+
+    <div class="reader-controls" aria-label="Reading options">
+      <button type="button" data-lang="ur">اردو</button>
+      <button type="button" data-lang="roman">Roman</button>
+      <button type="button" data-lang="hi">हिन्दी</button>
+      <button type="button" data-lang="en">English</button>
+      <button type="button" id="layoutToggle">Couplet layout</button>
+    </div>
+
+    <div class="poem" id="body"></div>
+
+    <section id="translitWrap" class="translit hidden">
+      <h2>Transliteration</h2>
+      <div id="translit"></div>
+    </section>
+  </article>
+</main>
+
+<footer class="footer">
+  Markaz.org · A living archive of literature, Sufi thought and heritage
+</footer>
+
 <script>
-const SUPABASE_URL='https://pooatzegjnegutflkcbm.supabase.co',SUPABASE_KEY='sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN';
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),$=id=>document.getElementById(id);
-let work=null,lang='roman',fontSize=22,layout='auto';
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function translation(){const ts=work?.author_work_translations||[];return ts.find(t=>t.language_code===lang&&t.body)||ts.find(t=>t.language_code===lang&&t.title)||ts.find(t=>t.language_code==='roman'&&t.body)||ts.find(t=>t.language_code==='en'&&t.body)||ts[0]||{};}
-function bodyHTML(text){if(!text)return '';const isGhazal=(work.work_type||'').toLowerCase()==='ghazal';if(isGhazal&&layout!=='plain'){const blocks=text.trim().split(/\n\s*\n/);return blocks.map(b=>{const lines=b.split(/\n/).filter(Boolean);if(lines.length>=2)return '<div class="couplet"><div class="misra">'+esc(lines[0])+'</div><div class="misra">'+esc(lines.slice(1).join('\n'))+'</div></div>';return '<div class="couplet"><div class="misra">'+esc(lines[0]||'')+'</div><div class="misra"></div></div>';}).join('');}return text.split(/\n{2,}/).map(p=>'<p>'+esc(p).replace(/\n/g,'<br>')+'</p>').join('');}
-function render(){const t=translation();$('title').textContent=t.title||work.slug;$('subtitle').textContent=t.subtitle||'';$('subtitle').classList.toggle('hidden',!t.subtitle);$('type').textContent=(work.work_type||'literary work').replaceAll('_',' ');$('byline').textContent=work.publication_year?'Published '+work.publication_year:'';$('body').innerHTML=bodyHTML(t.body||t.excerpt||'');$('body').dir=lang==='ur'?'rtl':'ltr';$('body').classList.toggle('ghazal',(work.work_type||'').toLowerCase()==='ghazal');$('body').classList.toggle('nazm',(work.work_type||'').toLowerCase()==='nazm');$('body').style.setProperty('--reader-size',fontSize+'px');document.documentElement.lang=lang==='hi'?'hi':'en';document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));const tr=(work.author_work_translations||[]).find(x=>x.language_code==='roman'&&x.transliteration);if(tr){$('translit').textContent=tr.transliteration;$('translitWrap').classList.remove('hidden')}else $('translitWrap').classList.add('hidden');document.title=(t.title||work.slug)+' | Markaz.org';}
-async function load(){const slug=new URLSearchParams(location.search).get('slug');if(!slug){$('loading').classList.add('hidden');$('error').classList.remove('hidden');return;}const {data,error}=await db.from('author_works').select('*,author_work_translations(*),author_profiles(slug,real_name,pen_name,profile_type,author_profile_translations(language_code,display_name))').eq('slug',slug).eq('status','published').maybeSingle();$('loading').classList.add('hidden');if(error||!data){console.error(error);$('error').classList.remove('hidden');return;}work=data;$('entry').classList.remove('hidden');const pt=data.author_profiles?.author_profile_translations||[];const person=pt.find(x=>x.language_code===lang)||pt.find(x=>x.language_code==='en');$('byline').textContent=(person?.display_name||data.author_profiles?.real_name||data.author_profiles?.pen_name||'')+(data.publication_year?' · '+data.publication_year:'');render();}
-document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{lang=b.dataset.lang;if(work)render();}));
-$('smaller').onclick=()=>{fontSize=Math.max(16,fontSize-2);if(work)render();};$('larger').onclick=()=>{fontSize=Math.min(34,fontSize+2);if(work)render();};
-$('readerToggle').onclick=()=>{document.body.classList.toggle('reader-mode');$('readerToggle').textContent=document.body.classList.contains('reader-mode')?'Exit focus reading':'Focus reading';};
-$('layoutToggle').onclick=()=>{layout=layout==='plain'?'auto':'plain';$('layoutToggle').classList.toggle('active',layout==='auto');if(work)render();};
+'use strict';
+
+const SUPABASE_URL = 'https://pooatzegjnegutflkcbm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN';
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+
+let work = null;
+let lang = 'roman';
+let fontSize = 22;
+let layout = 'auto';
+
+const VERSE_TYPES = [
+  'ghazal',
+  'naat',
+  'manqabat',
+  'salam',
+  'hamd',
+  'poetry'
+];
+
+function esc(value){
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  })[char]);
+}
+
+function normalizedType(){
+  return String(work?.work_type || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, '_');
+}
+
+function translation(){
+  const translations = work?.author_work_translations || [];
+
+  const bodyTranslation =
+    translations.find(t => t.language_code === lang && t.body) ||
+    translations.find(t => t.language_code === lang && t.title);
+
+  if(bodyTranslation) return bodyTranslation;
+
+  return (
+    translations.find(t => t.language_code === 'roman' && t.body) ||
+    translations.find(t => t.language_code === 'en' && t.body) ||
+    translations.find(t => t.body) ||
+    translations.find(t => t.title) ||
+    {}
+  );
+}
+
+/*
+  Verse formatting:
+  Blank lines separate stanzas/couplets.
+  Within each stanza, first line = first misra,
+  remaining lines = second misra.
+*/
+function bodyHTML(text){
+  if(!text) return '';
+
+  const type = normalizedType();
+  const isVerse = VERSE_TYPES.includes(type);
+  const useCouplets = isVerse && layout !== 'plain';
+
+  if(useCouplets){
+    const blocks = String(text)
+      .replace(/\r\n?/g, '\n')
+      .trim()
+      .split(/\n\s*\n+/)
+      .filter(block => block.trim());
+
+    return blocks.map(block => {
+      const lines = block
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean);
+
+      if(!lines.length) return '';
+
+      if(lines.length === 1){
+        return `
+          <div class="couplet">
+            <div class="misra">${esc(lines[0])}</div>
+            <div class="misra"></div>
+          </div>
+        `;
+      }
+
+      const firstMisra = lines[0];
+      const secondMisra = lines.slice(1).join(' ');
+
+      return `
+        <div class="couplet">
+          <div class="misra">${esc(firstMisra)}</div>
+          <div class="misra">${esc(secondMisra)}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  return String(text)
+    .replace(/\r\n?/g, '\n')
+    .split(/\n{2,}/)
+    .map(paragraph => {
+      return '<p>' +
+        esc(paragraph.trim()).replace(/\n/g, '<br>') +
+        '</p>';
+    })
+    .join('');
+}
+
+function updateLanguageControls(){
+  document.querySelectorAll('[data-lang]').forEach(button => {
+    button.classList.toggle(
+      'active',
+      button.dataset.lang === lang
+    );
+    button.setAttribute(
+      'aria-pressed',
+      button.dataset.lang === lang ? 'true' : 'false'
+    );
+  });
+}
+
+function render(){
+  if(!work) return;
+
+  const t = translation();
+  const type = normalizedType();
+  const poem = $('body');
+
+  $('title').textContent = t.title || work.slug || 'Literary work';
+
+  $('subtitle').textContent = t.subtitle || '';
+  $('subtitle').classList.toggle('hidden', !t.subtitle);
+
+  $('type').textContent = (work.work_type || 'literary work')
+    .replaceAll('_', ' ');
+
+  const translations = work.author_work_translations || [];
+  const romanTranslation = translations.find(
+    item => item.language_code === 'roman' && item.transliteration
+  );
+
+  const pt = work.author_profiles?.author_profile_translations || [];
+  const person =
+    pt.find(item => item.language_code === lang) ||
+    pt.find(item => item.language_code === 'en') ||
+    pt[0] ||
+    {};
+
+  const authorName =
+    person.display_name ||
+    work.author_profiles?.real_name ||
+    work.author_profiles?.pen_name ||
+    '';
+
+  const year = work.publication_year
+    ? String(work.publication_year)
+    : '';
+
+  $('byline').textContent = [authorName, year]
+    .filter(Boolean)
+    .join(' · ');
+
+  poem.innerHTML = bodyHTML(t.body || t.excerpt || '');
+
+  const isUrdu = lang === 'ur';
+
+  poem.dir = isUrdu ? 'rtl' : 'ltr';
+  poem.lang = lang;
+
+  poem.classList.toggle('ghazal', type === 'ghazal');
+  poem.classList.toggle('naat', type === 'naat');
+  poem.classList.toggle('manqabat', type === 'manqabat');
+  poem.classList.toggle('salam', type === 'salam');
+  poem.classList.toggle('hamd', type === 'hamd');
+  poem.classList.toggle('poetry', VERSE_TYPES.includes(type));
+  poem.classList.toggle('nazm', type === 'nazm');
+  poem.classList.toggle('plain-layout', layout === 'plain');
+
+  poem.style.setProperty('--reader-size', fontSize + 'px');
+
+  document.documentElement.lang = isUrdu ? 'ur' : lang;
+  document.documentElement.dir = isUrdu ? 'rtl' : 'ltr';
+
+  updateLanguageControls();
+
+  $('layoutToggle').classList.toggle('active', layout === 'auto');
+  $('layoutToggle').textContent =
+    layout === 'auto' ? 'Couplet layout' : 'Plain layout';
+  $('layoutToggle').setAttribute(
+    'aria-pressed',
+    layout === 'auto' ? 'true' : 'false'
+  );
+
+  if(romanTranslation){
+    $('translit').textContent = romanTranslation.transliteration;
+    $('translitWrap').classList.remove('hidden');
+  }else{
+    $('translit').textContent = '';
+    $('translitWrap').classList.add('hidden');
+  }
+
+  document.title = (t.title || work.slug || 'Reading Room') +
+    ' | Markaz.org';
+}
+
+async function load(){
+  const params = new URLSearchParams(window.location.search);
+  const slug = (params.get('slug') || '').trim();
+
+  if(!slug){
+    $('loading').classList.add('hidden');
+    $('error').classList.remove('hidden');
+    return;
+  }
+
+  try{
+    const { data, error } = await db
+      .from('author_works')
+      .select(
+        '*,author_work_translations(*),author_profiles(slug,real_name,pen_name,profile_type,author_profile_translations(language_code,display_name))'
+      )
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .maybeSingle();
+
+    $('loading').classList.add('hidden');
+
+    if(error) throw error;
+    if(!data) throw new Error('Work not found or not published.');
+
+    work = data;
+
+    $('entry').classList.remove('hidden');
+
+    render();
+  }catch(error){
+    console.error('Could not load literary work:', error);
+
+    $('loading').classList.add('hidden');
+    $('entry').classList.add('hidden');
+    $('error').classList.remove('hidden');
+  }
+}
+
+/* Language switching */
+document.querySelectorAll('[data-lang]').forEach(button => {
+  button.addEventListener('click', () => {
+    lang = button.dataset.lang;
+    render();
+  });
+});
+
+/* Font-size controls */
+$('smaller').addEventListener('click', () => {
+  fontSize = Math.max(16, fontSize - 2);
+  render();
+});
+
+$('larger').addEventListener('click', () => {
+  fontSize = Math.min(34, fontSize + 2);
+  render();
+});
+
+/* Focus reading */
+$('readerToggle').addEventListener('click', () => {
+  const enabled = document.body.classList.toggle('reader-mode');
+
+  $('readerToggle').textContent = enabled
+    ? 'Exit focus reading'
+    : 'Focus reading';
+
+  $('readerToggle').setAttribute(
+    'aria-pressed',
+    enabled ? 'true' : 'false'
+  );
+});
+
+/* Switch between couplet and plain layout */
+$('layoutToggle').addEventListener('click', () => {
+  layout = layout === 'plain' ? 'auto' : 'plain';
+  render();
+});
+
+/* Start */
 load();
-</script></body></html>
+</script>
+
+</body>
+</html>
