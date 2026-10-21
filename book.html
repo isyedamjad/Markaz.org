@@ -82,6 +82,10 @@ function renderBook(b) {
     const rows = b.content_translations || [];
     const tr = trFor(rows);
     const d = Array.isArray(b.book_details) ? (b.book_details[0] || {}) : (b.book_details || {});
+    
+    // Author name extraction from joined people table
+    const authorName = d.people?.verified_name || '';
+
     const title = tr.title || b.slug || t.untitled;
     const coverUrl = storageUrl(b.cover_image_url);
 
@@ -89,7 +93,15 @@ function renderBook(b) {
     $('crumbTitle').textContent = title;
     $('bookTitle').textContent = title;
     $('bookSubtitle').textContent = tr.subtitle \vert{}\vert{} '';$('bookSubtitle').hidden = !tr.subtitle;
-    $('byline').hidden = true;
+    
+    // Render author in byline if available
+    if (authorName) {
+        $('byline').innerHTML = `${esc(t.by)} <strong>${esc(authorName)}</strong>`;
+        $('byline').hidden = false;
+    } else {
+        $('byline').hidden = true;
+    }
+
     $('summary').textContent = tr.excerpt \vert{}\vert{} tr.body \vert{}\vert{} '';$('summary').hidden = !tr.excerpt && !tr.body;
     $('kicker').textContent = t.kicker;
     $('coverCaption').textContent = t.cover;
@@ -99,6 +111,7 @@ function renderBook(b) {
         : `<span class="cover-fallback" id="coverFallback">${esc(title)}</span>`;
 
     $('metadata').innerHTML = 
+        (authorName ? meta(t.by, authorName) : '') +
         meta(t.publisher, d.publisher) +
         meta(t.year, d.publication_year, 'year') +
         meta(t.edition, d.edition) +
@@ -151,7 +164,29 @@ async function loadBook() {
     try {
         const { data, error } = await client
             .from('content_items')
-            .select('id,type,slug,status,cover_image_url,content_translations(language_code,title,subtitle,excerpt,body,transliteration),book_details(content_id,publisher,publication_year,edition,isbn,page_count,language_original,pdf_storage_path,epub_storage_path)')
+            .select(`
+                id,
+                type,
+                slug,
+                status,
+                cover_image_url,
+                content_translations(language_code,title,subtitle,excerpt,body,transliteration),
+                book_details(
+                    content_id,
+                    publisher,
+                    publication_year,
+                    edition,
+                    isbn,
+                    page_count,
+                    language_original,
+                    pdf_storage_path,
+                    epub_storage_path,
+                    people:author_id(
+                        verified_name,
+                        person_kind
+                    )
+                )
+            `)
             .eq('slug', slug)
             .eq('type', 'book')
             .eq('status', 'published')
