@@ -33,7 +33,6 @@
             overflow: hidden;
         }
         
-        /* Top Header Bar */
         .top-bar {
             background: var(--bar-bg);
             backdrop-filter: blur(10px);
@@ -64,7 +63,6 @@
             text-decoration: none;
         }
 
-        /* Main PDF Canvas Surface */
         main {
             flex: 1;
             display: flex;
@@ -73,7 +71,7 @@
             overflow: auto;
             position: relative;
             background: #161616;
-            padding: 10px;
+            padding: 0;
         }
         #canvas-container {
             display: flex;
@@ -82,6 +80,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
+            padding: 10px;
         }
         canvas {
             max-width: 100%;
@@ -91,6 +90,12 @@
             background: #fff;
             border-radius: 2px;
         }
+        iframe.pdf-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
         .state {
             color: #aaa;
             text-align: center;
@@ -98,7 +103,6 @@
             padding: 20px;
         }
 
-        /* Rekhta Style Bottom Floating Control Bar */
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -162,13 +166,11 @@
 </head>
 <body>
 
-    <!-- Top Bar -->
     <header class="top-bar">
-        <a class="brand" href="/library.html" id="book-title">Loading...</a>
-        <a class="close-btn" href="/library.html">Close</a>
+        <a class="brand" href="library.html" id="book-title">Loading...</a>
+        <a class="close-btn" href="library.html">Close</a>
     </header>
 
-    <!-- Main View -->
     <main id="main-viewer">
         <div id="state" class="state">Preparing book viewer...</div>
         <div id="canvas-container" hidden>
@@ -176,21 +178,17 @@
         </div>
     </main>
 
-    <!-- Rekhta Style Bottom Floating Bar -->
-    <footer class="bottom-bar">
-        <!-- Zoom Controls -->
+    <footer class="bottom-bar" id="bottom-controls">
         <div class="tool-group">
             <button id="zoom-out" class="circle-btn" title="Zoom Out">−</button>
             <button id="zoom-in" class="circle-btn" title="Zoom In">+</button>
         </div>
 
-        <!-- Page Indicator / Number -->
         <div class="page-indicator">
-            <div><span id="page-num">0</span> / <span id="page-count">0</span></div>
-            <span class="sub">of <span id="total-sub">0</span></span>
+            <div><span id="page-num">1</span> / <span id="page-count">--</span></div>
+            <span class="sub">Page</span>
         </div>
 
-        <!-- Page Navigation Buttons -->
         <div class="tool-group">
             <button id="prev-btn" class="circle-btn" disabled title="Previous Page">‹</button>
             <button id="next-btn" class="circle-btn" disabled title="Next Page">›</button>
@@ -212,27 +210,22 @@
             canvas = $('pdf-render'),
             ctx = canvas.getContext('2d');
 
-        function getFileUrl(path) {
+        function rawUrl(path) {
             if (!path) return '';
-            if (/^https?:\/\//i.test(path)) {
-                // External PDF links (jaise Internet Archive) ke liye CORS Proxy
-                return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(path);
-            }
+            if (/^https?:\/\//i.test(path)) return path;
             const cleanPath = path.startsWith('/') ? path.slice(1) : path;
             return `${SUPABASE_URL}/storage/v1/object/public/book/${cleanPath}`;
         }
 
         function renderPage(num) {
+            if (!pdfDoc) return;
             pageRendering = true;
             pdfDoc.getPage(num).then(page => {
                 const viewport = page.getViewport({ scale: scale });
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
 
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
-                };
+                const renderContext = { canvasContext: ctx, viewport: viewport };
                 const renderTask = page.render(renderContext);
 
                 renderTask.promise.then(() => {
@@ -263,15 +256,13 @@
         }
 
         function onNextPage() {
-            if (pageNum >= pdfDoc.numPages) return;
+            if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
             pageNum++;
             queueRenderPage(pageNum);
         }
 
-        // Button Controls
         $('prev-btn').addEventListener('click', onPrevPage);$('next-btn').addEventListener('click', onNextPage);
 
-        // Zoom Controls
         $('zoom-in').addEventListener('click', () => {
             scale += 0.25;
             if (scale > 2.5) scale = 2.5;
@@ -284,29 +275,25 @@
             renderPage(pageNum);
         });
 
-        // Touch Swipe Navigation (Left/Right Slide)
-        let touchstartX = 0;
-        let touchendX = 0;
-        
+        // Touch Swipe
+        let touchstartX = 0, touchendX = 0;
         const mainViewer = $('main-viewer');
-        mainViewer.addEventListener('touchstart', e => {
-            touchstartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
+        mainViewer.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, { passive: true });
         mainViewer.addEventListener('touchend', e => {
             touchendX = e.changedTouches[0].screenX;
-            handleSwipe();
+            const dist = touchendX - touchstartX;
+            if (Math.abs(dist) > 40) {
+                if (dist < 0) onNextPage();
+                else onPrevPage();
+            }
         }, { passive: true });
 
-        function handleSwipe() {
-            const distance = touchendX - touchstartX;
-            if (Math.abs(distance) > 40) {
-                if (distance < 0) onNextPage();  // Swipe Left -> Next Page
-                else onPrevPage();              // Swipe Right -> Previous Page
-            }
+        // Direct Embed Fallback for heavy Internet Archive Links
+        function embedDirectViewer(url) {
+            $('state').hidden = true;
+            $('bottom-controls').hidden = true; // Native viewer has its own controls$('main-viewer').innerHTML = `<iframe class="pdf-embed" src="${url}#toolbar=1&navpanes=0"></iframe>`;
         }
 
-        // Fetch PDF Stream
         async function loadReader() {
             try {
                 const params = new URLSearchParams(window.location.search);
@@ -341,25 +328,44 @@
                 const matchedTranslation = translations.find(x => x.language_code === 'en') || translations.find(x => x.title) || {};
                 $('book-title').textContent = matchedTranslation.title || data.slug;
 
-                const pdfUrl = getFileUrl(path);
+                const targetUrl = rawUrl(path);
 
-                const response = await fetch(pdfUrl);
-                if (!response.ok) throw new Error('Failed to fetch PDF file');
-                const arrayBuffer = await response.arrayBuffer();
+                // Check if external link (Internet Archive)
+                if (/^https?:\/\//i.test(path)) {
+                    // Try PDF.js direct streaming with 4-second timeout limit
+                    let loaded = false;
+                    const timeout = setTimeout(() => {
+                        if (!loaded) {
+                            console.warn("Direct stream timeout, switching to native embed...");
+                            embedDirectViewer(targetUrl);
+                        }
+                    }, 3500);
 
-                pdfjsLib.getDocument({ data: arrayBuffer }).promise.then(pdfDoc_ => {
-                    pdfDoc = pdfDoc_;
-                    $('page-count').textContent = pdfDoc.numPages;
-                    $('total-sub').textContent = pdfDoc.numPages;
-
-                    $('state').hidden = true;
-                    $('canvas-container').hidden = false;
-
-                    renderPage(pageNum);
-                }).catch(err => {
-                    console.error('PDF JS load error:', err);
-                    $('state').textContent = 'Failed to render PDF pages.';
-                });
+                    pdfjsLib.getDocument({ url: targetUrl, withCredentials: false }).promise.then(pdfDoc_ => {
+                        loaded = true;
+                        clearTimeout(timeout);
+                        pdfDoc = pdfDoc_;
+                        $('page-count').textContent = pdfDoc.numPages;
+                        $('state').hidden = true;
+                        $('canvas-container').hidden = false;
+                        renderPage(pageNum);
+                    }).catch(err => {
+                        clearTimeout(timeout);
+                        console.warn("PDF.js stream blocked, rendering direct embed:", err);
+                        embedDirectViewer(targetUrl);
+                    });
+                } else {
+                    // Internal Supabase Path
+                    pdfjsLib.getDocument(targetUrl).promise.then(pdfDoc_ => {
+                        pdfDoc = pdfDoc_;
+                        $('page-count').textContent = pdfDoc.numPages;
+                        $('state').hidden = true;
+                        $('canvas-container').hidden = false;
+                        renderPage(pageNum);
+                    }).catch(err => {
+                        $('state').textContent = 'Error loading PDF storage path.';
+                    });
+                }
 
             } catch (err) {
                 console.error(err);
