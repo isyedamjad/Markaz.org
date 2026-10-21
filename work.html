@@ -26,7 +26,7 @@
   --soft:#f4f7f8;
   --serif:'Playfair Display',Georgia,'Times New Roman',serif;
   --sans:'DM Sans',Arial,sans-serif;
-  --reader-size:24px;
+  --reader-size:18px;
 }
 
 *{box-sizing:border-box}
@@ -112,9 +112,9 @@ button:focus-visible,a:focus-visible{
 /* Main reading column */
 .shell{
   width:100%;
-  max-width:1120px;
+  max-width:100%;
   margin:0 auto;
-  padding:23px 32px 74px;
+  padding:18px clamp(12px,2.4vw,32px) 54px;
 }
 .crumb{
   margin:0 0 23px;
@@ -211,15 +211,15 @@ h1{
   padding:24px 0 44px;
   color:#202124;
   font-size:var(--reader-size);
-  line-height:1.9;
-  overflow-wrap:break-word;
+  line-height:1.75;
+  overflow-wrap:normal;
   transition:font-size .15s ease;
 }
 .poem[dir="rtl"]{
   direction:rtl;
   text-align:right;
   font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif;
-  font-size:calc(var(--reader-size) + 2px);
+  font-size:calc(var(--reader-size) + 1px);
   line-height:2.35;
 }
 .poem[lang="hi"]{
@@ -256,8 +256,8 @@ h1{
   font-size:1em;
   font-weight:400;
   line-height:1.82;
-  white-space:normal;
-  overflow-wrap:anywhere;
+  white-space:nowrap;
+  overflow-wrap:normal;
   word-break:normal;
   hyphens:none;
 }
@@ -325,24 +325,24 @@ h1{
   .tools{width:100%;justify-content:flex-start;gap:6px}
   .tools button{min-height:36px;padding:6px 10px;font-size:.82rem}
   .tools a{padding:6px 3px;font-size:.84rem}
-  .shell{padding:17px 16px 45px}
+  .shell{padding:14px 10px 38px}
   .crumb{margin-bottom:17px;font-size:.78rem}
   .work-head{padding:5px 0 20px}
-  h1{font-size:clamp(1.75rem,7.4vw,2.35rem);line-height:1.28;letter-spacing:-.02em}
+  h1{font-size:clamp(1.45rem,6vw,2rem);line-height:1.28;letter-spacing:-.02em}
   .byline{margin-top:11px;font-size:.8rem;letter-spacing:.13em;line-height:1.7}
   .subtitle{margin-top:11px;font-size:.98rem}
   .kicker{margin-top:9px;font-size:.66rem}
   .reader-controls{gap:7px;padding:14px 0 9px}
   .reader-controls button{min-height:36px;padding:6px 11px;font-size:.83rem}
-  .poem{padding:20px 0 30px;font-size:var(--reader-size);line-height:1.85}
-  .poem .couplet{margin-bottom:1.38em}
-  .poem .misra{line-height:1.83}
-  .poem[dir="rtl"]{font-size:calc(var(--reader-size) + 1px);line-height:2.25}
-  .poem[dir="rtl"] .misra{line-height:2.22}
+  .poem{padding:18px 0 28px;font-size:var(--reader-size);line-height:1.75}
+  .poem .couplet{margin-bottom:1.05em}
+  .poem .misra{line-height:1.65}
+  .poem[dir="rtl"]{font-size:calc(var(--reader-size) + 1px);line-height:2}
+  .poem[dir="rtl"] .misra{line-height:1.95}
   .translit{padding:19px 0;font-size:.94rem}
 }
 @media(max-width:380px){
-  .shell{padding-left:13px;padding-right:13px}
+  .shell{padding-left:9px;padding-right:9px}
   .tools{gap:5px}
   .tools button{padding:6px 9px}
   .reader-controls{gap:6px}
@@ -376,7 +376,7 @@ h1{
   <nav class="crumb" aria-label="Breadcrumb">
     <a href="/home.html">Home</a> /
     <a href="/poetry.html">Poetry</a> /
-    Reading room
+    <span id="pageLabel">Poetry</span>
   </nav>
 
   <div id="loading" class="state" role="status">Opening the reading room…</div>
@@ -394,7 +394,6 @@ h1{
       <button type="button" data-lang="ur" aria-pressed="false">اردو</button>
       <button type="button" data-lang="roman" aria-pressed="true">Roman</button>
       <button type="button" data-lang="hi" aria-pressed="false">हिन्दी</button>
-      <button type="button" data-lang="en" aria-pressed="false">English</button>
     </div>
 
     <div class="poem" id="body" aria-label="Literary work text"></div>
@@ -418,7 +417,7 @@ const $ = id => document.getElementById(id);
 
 let work = null;
 let lang = 'roman';
-let fontSize = 24;
+let fontSize = 18;
 
 const VERSE_TYPES = ['ghazal','naat','manqabat','salam','hamd','poetry'];
 
@@ -446,7 +445,7 @@ function translation(){
   if(selected) return selected;
 
   return translations.find(t => t.language_code === 'roman' && t.body) ||
-    translations.find(t => t.language_code === 'en' && t.body) ||
+    translations.find(t => t.language_code === 'ur' && t.body) ||
     translations.find(t => t.body) ||
     translations.find(t => t.title) || {};
 }
@@ -488,6 +487,29 @@ function updateLanguageControls(){
   });
 }
 
+function fitMisras(){
+  const poem = $('body');
+  if(!poem) return;
+  poem.querySelectorAll('.misra').forEach(line => {
+    line.style.fontSize = '';
+    const base = lang === 'ur' ? fontSize + 1 : fontSize;
+    let size = base;
+    const minSize = window.innerWidth < 600 ? 12 : 14;
+    line.style.fontSize = size + 'px';
+    // Keep each misra on a single line, reducing type only as much as needed.
+    while(line.scrollWidth > line.clientWidth + 1 && size > minSize){
+      size -= 0.5;
+      line.style.fontSize = size + 'px';
+    }
+  });
+}
+
+function updateWorkLabel(authorName, workType){
+  const type = String(workType || 'poetry').replace(/[_-]+/g, ' ').trim();
+  const pretty = type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Poetry';
+  $('pageLabel').textContent = authorName ? pretty + ' by ' + authorName : pretty;
+}
+
 function render(){
   if(!work) return;
 
@@ -508,7 +530,7 @@ function render(){
 
   const profileTranslations = work.author_profiles?.author_profile_translations || [];
   const person = profileTranslations.find(item => item.language_code === lang) ||
-    profileTranslations.find(item => item.language_code === 'en') ||
+    profileTranslations.find(item => item.language_code === 'roman') ||
     profileTranslations[0] || {};
 
   const authorName = person.display_name ||
@@ -517,6 +539,7 @@ function render(){
   const year = work.publication_year ? String(work.publication_year) : '';
   $('byline').textContent = [authorName, year].filter(Boolean).join(' · ');
   $('byline').classList.toggle('hidden', !$('byline').textContent.trim());
+  updateWorkLabel(authorName, work.work_type);
 
   poem.innerHTML = bodyHTML(t.body || t.excerpt || '');
 
@@ -534,6 +557,7 @@ function render(){
   poem.classList.toggle('poetry', VERSE_TYPES.includes(type));
   poem.classList.toggle('nazm', type === 'nazm');
   poem.style.setProperty('--reader-size', fontSize + 'px');
+  requestAnimationFrame(fitMisras);
 
   document.documentElement.lang = isUrdu ? 'ur' : (lang === 'hi' ? 'hi' : 'en');
   updateLanguageControls();
@@ -592,13 +616,15 @@ document.querySelectorAll('[data-lang]').forEach(button => {
 
 /* Font-size controls */
 $('smaller').addEventListener('click', () => {
-  fontSize = Math.max(16, fontSize - 2);
+  fontSize = Math.max(14, fontSize - 2);
   render();
 });
 $('larger').addEventListener('click', () => {
-  fontSize = Math.min(36, fontSize + 2);
+  fontSize = Math.min(28, fontSize + 2);
   render();
 });
+
+window.addEventListener('resize', () => requestAnimationFrame(fitMisras));
 
 /* Focus reading */
 $('readerToggle').addEventListener('click', () => {
