@@ -238,12 +238,29 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
             return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${cleanPath}`;
         }
 
+        const BOOK_LANGUAGES = ['en', 'hi', 'ur'];
+        const BOOK_MESSAGES = {
+            en: { noBook: 'No book selected.', notFound: 'Book not found or unavailable.', unavailable: 'This book title is not available in the selected language.', noCover: 'No cover available', readNow: 'Read Now' },
+            hi: { noBook: 'कोई पुस्तक चयनित नहीं है।', notFound: 'पुस्तक नहीं मिली या उपलब्ध नहीं है।', unavailable: 'इस भाषा में पुस्तक का शीर्षक उपलब्ध नहीं है।', noCover: 'कवर उपलब्ध नहीं', readNow: 'अभी पढ़ें' },
+            ur: { noBook: 'کوئی کتاب منتخب نہیں کی گئی۔', notFound: 'کتاب نہیں ملی یا دستیاب نہیں ہے۔', unavailable: 'منتخب زبان میں اس کتاب کا عنوان دستیاب نہیں۔', noCover: 'سرورق دستیاب نہیں', readNow: 'ابھی پڑھیں' }
+        };
+        function selectedBookLanguage() {
+            try {
+                const value = localStorage.getItem('markaz_site_language');
+                return BOOK_LANGUAGES.includes(value) ? value : 'en';
+            } catch (_) { return 'en'; }
+        }
+        function selectedTranslation(rows, field = 'title') {
+            const language = selectedBookLanguage();
+            return (rows || []).find(row => row.language_code === language && row[field] && String(row[field]).trim()) || null;
+        }
+
         async function loadDetail() {
             const params = new URLSearchParams(window.location.search);
             const slug = params.get('slug');
 
             if (!slug) {
-                $('state').textContent = 'No book selected.';
+                $('state').textContent = BOOK_MESSAGES[selectedBookLanguage()].noBook;
                 return;
             }
 
@@ -256,14 +273,14 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
                 .maybeSingle();
 
             if (error || !data) {
-                $('state').textContent = 'Book not found or unavailable.';
+                $('state').textContent = BOOK_MESSAGES[selectedBookLanguage()].notFound;
                 return;
             }
 
             const details = Array.isArray(data.book_details) ? data.book_details[0] : (data.book_details || {});
             const translations = data.content_translations || [];
-            const matched = translations.find(x => x.language_code === 'en') || translations.find(x => x.title) || {};
-            const title = matched.title || data.slug;
+            const matched = selectedTranslation(translations);
+            const title = matched ? matched.title : BOOK_MESSAGES[selectedBookLanguage()].unavailable;
 
             $('title').textContent = title;
             
@@ -271,12 +288,14 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
             if (data.cover_image_url) {
                 $('cover').src = fileUrl(data.cover_image_url, 'book');
             } else {
-                $('cover').src = 'https://via.placeholder.com/300x400?text=No+Cover';
+                $('cover').removeAttribute('src');
+                $('cover').alt = BOOK_MESSAGES[selectedBookLanguage()].noCover;
             }
 
             // Safely fetch author name and text slug using author_id
-            let authorName = details.author || details.writer || '';
+            let authorName = '';
             let authorSlug = '';
+            const currentLanguage = selectedBookLanguage();
 
             if (details.author_id) {
                 const { data: personData } = await db
@@ -286,17 +305,27 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
                     .maybeSingle();
 
                 if (personData) {
-                    authorName = personData.verified_name || authorName;
+                    const { data: authorTranslations } = await db
+                        .from('content_translations')
+                        .select('language_code, title')
+                        .eq('content_id', personData.content_id)
+                        .eq('language_code', currentLanguage);
+                    const localizedAuthor = selectedTranslation(authorTranslations);
+                    if (localizedAuthor) authorName = localizedAuthor.title;
+
                     const { data: itemData } = await db
                         .from('content_items')
                         .select('slug')
                         .eq('id', personData.content_id)
                         .maybeSingle();
 
-                    if (itemData) {
-                        authorSlug = itemData.slug;
-                    }
+                    if (itemData) authorSlug = itemData.slug;
                 }
+            }
+
+            // Legacy free-text author fields have no language metadata, so only show them in English.
+            if (!details.author_id && currentLanguage === 'en') {
+                authorName = details.author || details.writer || '';
             }
 
             // Dynamic fields generation
@@ -340,11 +369,13 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
             });
 
             // Read Now button link pointing to reader page with slug
-            $('read-btn').href = `book-reader.html?slug=${slug}`;
-
+            $('read-btn').href = `book-reader.html?slug=${encodeURIComponent(slug)}`;
+            $('read-btn').textContent = BOOK_MESSAGES[selectedBookLanguage()].readNow;
+            $('read-btn').hidden = !matched;
             $('state').hidden = true;
             $('book-content').hidden = false;
             document.title = `${title} | Markaz.org`;
+            document.dispatchEvent(new CustomEvent('markaz:refresh-language'));
         }
 
         loadDetail();
@@ -367,7 +398,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 (function(){
 'use strict';
 var KEY='markaz_site_language', allowed=['en','hi','ur'];
-var dict={"Home":["मुखपृष्ठ","صفحۂ اوّل"],"About Us":["हमारे बारे में","ہمارے بارے میں"],"About":["परिचय","تعارف"],"Articles":["लेख","مضامین"],"Article":["लेख","مضمون"],"Books":["किताबें","کتابیں"],"Book":["किताब","کتاب"],"Library":["पुस्तकालय","کتب خانہ"],"Digital Library":["डिजिटल पुस्तकालय","ڈیجیٹل کتب خانہ"],"Authors":["लेखक","مصنفین"],"Author":["लेखक","مصنف"],"Publishers":["प्रकाशक","ناشرین"],"Publisher":["प्रकाशक","ناشر"],"Poetry":["शायरी","شاعری"],"Ghazals":["ग़ज़लें","غزلیں"],"Naat Shareef":["नात शरीफ़","نعت شریف"],"Manqabat":["मनक़बत","منقبت"],"Saints":["सूफ़ी संत","صوفی بزرگ"],"Sufis, Saints & Poets":["सूफ़ी, संत और शायर","صوفیا، اولیا اور شعرا"],"Understanding Sufism":["सूफ़ीवाद को समझें","تصوف کو سمجھیں"],"Sufism":["सूफ़ीवाद","تصوف"],"Terminology":["शब्दावली","اصطلاحات"],"Places & Heritage":["स्थल और विरासत","مقامات اور ورثہ"],"Heritage":["विरासत","ورثہ"],"Blog":["ब्लॉग","بلاگ"],"Contact Us":["संपर्क करें","رابطہ کریں"],"Contact":["संपर्क","رابطہ"],"Copyright Policy":["कॉपीराइट नीति","حقوقِ اشاعت کی پالیسی"],"Reading Room":["अध्ययन कक्ष","مطالعہ گاہ"],"Read":["पढ़ें","پڑھیں"],"Work":["कार्य","کام"],"Search":["खोजें","تلاش کریں"],"Search…":["खोजें…","تلاش کریں…"],"Search poetry, saints, poets, books and topics…":["शायरी, संतों, शायरों, किताबों और विषयों को खोजें…","شاعری، اولیا، شعرا، کتابوں اور موضوعات میں تلاش کریں…"],"Search books, authors, topics…":["किताबें, लेखक और विषय खोजें…","کتابیں، مصنفین اور موضوعات تلاش کریں…"],"Explore":["देखें","ملاحظہ کریں"],"Explore the Archive":["अभिलेखागार देखें","ذخیرۂ ادب ملاحظہ کریں"],"Learn More":["और जानें","مزید جانیے"],"Read More":["और पढ़ें","مزید پڑھیے"],"View All":["सभी देखें","سب دیکھیں"],"View Details":["विवरण देखें","تفصیلات دیکھیں"],"Back":["वापस","واپس"],"Next":["अगला","اگلا"],"Previous":["पिछला","پچھلا"],"Loading…":["लोड हो रहा है…","لوڈ ہو رہا ہے…"],"Loading...":["लोड हो रहा है...","لوڈ ہو رہا ہے..."],"Loading":["लोड हो रहा है","لوڈ ہو رہا ہے"],"No results found.":["कोई परिणाम नहीं मिला।","کوئی نتیجہ نہیں ملا۔"],"No results found":["कोई परिणाम नहीं मिला","کوئی نتیجہ نہیں ملا"],"Try again":["फिर कोशिश करें","دوبارہ کوشش کریں"],"Submit":["जमा करें","جمع کریں"],"Send Message":["संदेश भेजें","پیغام بھیجیں"],"Name":["नाम","نام"],"Email":["ईमेल","ای میل"],"Message":["संदेश","پیغام"],"Subject":["विषय","موضوع"],"Your Name":["आपका नाम","آپ کا نام"],"Your Email":["आपका ईमेल","آپ کا ای میل"],"Your Message":["आपका संदेश","آپ کا پیغام"],"Read Online":["ऑनलाइन पढ़ें","آن لائن پڑھیے"],"Download":["डाउनलोड","ڈاؤن لوڈ"],"Published":["प्रकाशित","شائع شدہ"],"Author Profile":["लेखक परिचय","مصنف کا تعارف"],"Publisher Profile":["प्रकाशक परिचय","ناشر کا تعارف"],"All rights reserved.":["सर्वाधिकार सुरक्षित।","جملہ حقوق محفوظ ہیں۔"],"Privacy Policy":["गोपनीयता नीति","رازداری کی پالیسی"],"Terms":["नियम एवं शर्तें","شرائط"],"Featured":["विशेष","نمایاں"],"Featured Books":["चयनित पुस्तकें","منتخب کتابیں"],"Latest Articles":["नवीनतम लेख","تازہ مضامین"],"Recent Articles":["हाल के लेख","حالیہ مضامین"],"Recent Books":["हाल की पुस्तकें","حالیہ کتابیں"],"About Markaz.org":["Markaz.org के बारे में","Markaz.org کے بارے میں"],"Markaz.org":["Markaz.org","Markaz.org"],"Language":["भाषा","زبان"],"English":["अंग्रेज़ी","انگریزی"],"Hindi":["हिन्दी","ہندی"],"Urdu":["उर्दू","اردو"],"All":["सभी","سب"],"All Books":["सभी किताबें","تمام کتابیں"],"All Authors":["सभी लेखक","تمام مصنفین"],"Browse":["ब्राउज़ करें","ملاحظہ کریں"],"Categories":["श्रेणियाँ","اقسام"],"Details":["विवरण","تفصیلات"],"Title":["शीर्षक","عنوان"],"Description":["विवरण","تفصیل"],"Year":["वर्ष","سال"]};
+var dict={"Home":["मुखपृष्ठ","صفحۂ اوّل"],"About Us":["हमारे बारे में","ہمارے بارے میں"],"About":["परिचय","تعارف"],"Articles":["लेख","مضامین"],"Article":["लेख","مضمون"],"Books":["किताबें","کتابیں"],"Book":["किताब","کتاب"],"Read Now":["अभी पढ़ें","ابھی پڑھیں"],"No book selected.":["कोई पुस्तक चयनित नहीं है।","کوئی کتاب منتخب نہیں کی گئی۔"],"Book not found or unavailable.":["पुस्तक नहीं मिली या उपलब्ध नहीं है।","کتاب نہیں ملی یا دستیاب نہیں ہے۔"],"Author:":["लेखक:","مصنف:"],"Translator:":["अनुवादक:","مترجم:"],"Editor:":["संपादक:","مدیر:"],"Publisher:":["प्रकाशक:","ناشر:"],"Page counts:":["पृष्ठ संख्या:","صفحات:"],"Publication year:":["प्रकाशन वर्ष:","سنِ اشاعت:"],"Edition:":["संस्करण:","ایڈیشن:"],"Language:":["भाषा:","زبان:"],"Notes:":["टिप्पणियाँ:","نوٹس:"],"Library":["पुस्तकालय","کتب خانہ"],"Digital Library":["डिजिटल पुस्तकालय","ڈیجیٹل کتب خانہ"],"Authors":["लेखक","مصنفین"],"Author":["लेखक","مصنف"],"Publishers":["प्रकाशक","ناشرین"],"Publisher":["प्रकाशक","ناشر"],"Poetry":["शायरी","شاعری"],"Ghazals":["ग़ज़लें","غزلیں"],"Naat Shareef":["नात शरीफ़","نعت شریف"],"Manqabat":["मनक़बत","منقبت"],"Saints":["सूफ़ी संत","صوفی بزرگ"],"Sufis, Saints & Poets":["सूफ़ी, संत और शायर","صوفیا، اولیا اور شعرا"],"Understanding Sufism":["सूफ़ीवाद को समझें","تصوف کو سمجھیں"],"Sufism":["सूफ़ीवाद","تصوف"],"Terminology":["शब्दावली","اصطلاحات"],"Places & Heritage":["स्थल और विरासत","مقامات اور ورثہ"],"Heritage":["विरासत","ورثہ"],"Blog":["ब्लॉग","بلاگ"],"Contact Us":["संपर्क करें","رابطہ کریں"],"Contact":["संपर्क","رابطہ"],"Copyright Policy":["कॉपीराइट नीति","حقوقِ اشاعت کی پالیسی"],"Reading Room":["अध्ययन कक्ष","مطالعہ گاہ"],"Read":["पढ़ें","پڑھیں"],"Work":["कार्य","کام"],"Search":["खोजें","تلاش کریں"],"Search…":["खोजें…","تلاش کریں…"],"Search poetry, saints, poets, books and topics…":["शायरी, संतों, शायरों, किताबों और विषयों को खोजें…","شاعری، اولیا، شعرا، کتابوں اور موضوعات میں تلاش کریں…"],"Search books, authors, topics…":["किताबें, लेखक और विषय खोजें…","کتابیں، مصنفین اور موضوعات تلاش کریں…"],"Explore":["देखें","ملاحظہ کریں"],"Explore the Archive":["अभिलेखागार देखें","ذخیرۂ ادب ملاحظہ کریں"],"Learn More":["और जानें","مزید جانیے"],"Read More":["और पढ़ें","مزید پڑھیے"],"View All":["सभी देखें","سب دیکھیں"],"View Details":["विवरण देखें","تفصیلات دیکھیں"],"Back":["वापस","واپس"],"Next":["अगला","اگلا"],"Previous":["पिछला","پچھلا"],"Loading…":["लोड हो रहा है…","لوڈ ہو رہا ہے…"],"Loading...":["लोड हो रहा है...","لوڈ ہو رہا ہے..."],"Loading":["लोड हो रहा है","لوڈ ہو رہا ہے"],"No results found.":["कोई परिणाम नहीं मिला।","کوئی نتیجہ نہیں ملا۔"],"No results found":["कोई परिणाम नहीं मिला","کوئی نتیجہ نہیں ملا"],"Try again":["फिर कोशिश करें","دوبارہ کوشش کریں"],"Submit":["जमा करें","جمع کریں"],"Send Message":["संदेश भेजें","پیغام بھیجیں"],"Name":["नाम","نام"],"Email":["ईमेल","ای میل"],"Message":["संदेश","پیغام"],"Subject":["विषय","موضوع"],"Your Name":["आपका नाम","آپ کا نام"],"Your Email":["आपका ईमेल","آپ کا ای میل"],"Your Message":["आपका संदेश","آپ کا پیغام"],"Read Online":["ऑनलाइन पढ़ें","آن لائن پڑھیے"],"Download":["डाउनलोड","ڈاؤن لوڈ"],"Published":["प्रकाशित","شائع شدہ"],"Author Profile":["लेखक परिचय","مصنف کا تعارف"],"Publisher Profile":["प्रकाशक परिचय","ناشر کا تعارف"],"All rights reserved.":["सर्वाधिकार सुरक्षित।","جملہ حقوق محفوظ ہیں۔"],"Privacy Policy":["गोपनीयता नीति","رازداری کی پالیسی"],"Terms":["नियम एवं शर्तें","شرائط"],"Featured":["विशेष","نمایاں"],"Featured Books":["चयनित पुस्तकें","منتخب کتابیں"],"Latest Articles":["नवीनतम लेख","تازہ مضامین"],"Recent Articles":["हाल के लेख","حالیہ مضامین"],"Recent Books":["हाल की पुस्तकें","حالیہ کتابیں"],"About Markaz.org":["Markaz.org के बारे में","Markaz.org کے بارے میں"],"Markaz.org":["Markaz.org","Markaz.org"],"Language":["भाषा","زبان"],"English":["अंग्रेज़ी","انگریزی"],"Hindi":["हिन्दी","ہندی"],"Urdu":["उर्दू","اردو"],"All":["सभी","سب"],"All Books":["सभी किताबें","تمام کتابیں"],"All Authors":["सभी लेखक","تمام مصنفین"],"Browse":["ब्राउज़ करें","ملاحظہ کریں"],"Categories":["श्रेणियाँ","اقسام"],"Details":["विवरण","تفصیلات"],"Title":["शीर्षक","عنوان"],"Description":["विवरण","تفصیل"],"Year":["वर्ष","سال"]};
 function getLang(){try{var l=localStorage.getItem(KEY);return allowed.indexOf(l)>=0?l:'en'}catch(e){return 'en'}}
 function saveLang(l){try{localStorage.setItem(KEY,l)}catch(e){}}
 function norm(s){return (s||'').replace(/\s+/g,' ').trim()}
