@@ -482,7 +482,14 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
 
 let work = null;
-let lang = (localStorage.getItem('markaz_site_language') || 'en');
+const SUPPORTED_LANGUAGES = ['en','hi','ur'];
+function readSelectedLanguage(){
+  try {
+    const saved = localStorage.getItem('markaz_site_language');
+    return SUPPORTED_LANGUAGES.includes(saved) ? saved : 'en';
+  } catch (_) { return 'en'; }
+}
+let lang = readSelectedLanguage();
 let fontSize = 18;
 
 const VERSE_TYPES = ['ghazal','naat','manqabat','salam','salaam','hamd','poetry','kalam','kalaam','sher','bait','rubai','qaseeda','marsiya','nazm','doha','manzoom'];
@@ -506,15 +513,13 @@ function normalizedType(){
 
 function translation(){
   const translations = work?.author_work_translations || [];
-  // The public "English" tab intentionally displays the Roman Urdu/Hinglish
-  // transcription; it must never fall back to Urdu script.
-  const code = lang === 'en' ? 'roman' : lang;
-  const selected = translations.find(t => t.language_code === code && t.body) ||
-    translations.find(t => t.language_code === code && t.title);
-  if(selected) return selected;
-  // Do not silently render Urdu-script content in the English/Roman tab.
-  if(lang === 'en') return {};
-  return translations.find(t => t.body) || translations.find(t => t.title) || {};
+  // English/Roman accepts only its own stored aliases. Hindi and Urdu never
+  // borrow text from another language when their translation is missing.
+  const allowedCodes = lang === 'en' ? ['roman','en'] : [lang];
+  return translations.find(t =>
+    allowedCodes.includes(String(t.language_code || '').toLowerCase()) &&
+    (String(t.body || '').trim() || String(t.title || '').trim())
+  ) || {};
 }
 
 /* Blank lines split couplets. Inside a couplet, the first line is misra one;
@@ -596,7 +601,10 @@ function render(){
   const t = translation();
   const type = normalizedType();
   const poem = $('body');
-  const title = t.title || work.slug || 'Literary work';
+  const title = String(t.title || '').trim() ||
+    (lang === 'hi' ? 'इस भाषा में शीर्षक उपलब्ध नहीं है' :
+     lang === 'ur' ? 'اس زبان میں عنوان دستیاب نہیں' :
+     'Title unavailable in this language');
   $('title').textContent = title;
 
   $('subtitle').textContent = t.subtitle || '';
@@ -609,13 +617,12 @@ function render(){
   );
 
   const profileTranslations = work.author_profiles?.author_profile_translations || [];
-  const person = profileTranslations.find(item => item.language_code === lang) ||
-    profileTranslations.find(item => item.language_code === 'roman') ||
-    profileTranslations[0] || {};
+  const personCodes = lang === 'en' ? ['roman','en'] : [lang];
+  const person = profileTranslations.find(item =>
+    personCodes.includes(String(item.language_code || '').toLowerCase())
+  ) || {};
 
-  const authorName = person.display_name ||
-    work.author_profiles?.real_name ||
-    work.author_profiles?.pen_name || '';
+  const authorName = person.display_name || '';
   const year = work.publication_year ? String(work.publication_year) : '';
   const profileSlug = work.author_profiles?.slug || '';
   const profileType = String(work.author_profiles?.profile_type || 'poet').toLowerCase();
@@ -642,7 +649,7 @@ function render(){
   const selectedBody = t.body || t.excerpt || '';
   poem.innerHTML = selectedBody
     ? bodyHTML(selectedBody)
-    : `<p class="translation-unavailable">${lang === 'en' ? 'Roman Urdu / Hinglish text has not been added for this work yet.' : 'Text is not available in this language yet.'}</p>`;
+    : `<p class="translation-unavailable">${lang === 'en' ? 'Roman Urdu / Hinglish text has not been added for this work yet.' : lang === 'hi' ? 'इस भाषा में पाठ उपलब्ध नहीं है।' : 'اس زبان میں متن دستیاب نہیں ہے۔'}</p>`;
 
   const isUrdu = lang === 'ur';
   poem.dir = isUrdu ? 'rtl' : 'ltr';
@@ -672,6 +679,7 @@ function render(){
   }
 
   document.title = title + ' | Markaz.org';
+  document.dispatchEvent(new Event('markaz:refresh-language'));
 }
 
 const CATEGORY_LABELS = {
@@ -682,16 +690,21 @@ const CATEGORY_LABELS = {
 };
 let archiveWorks = [];
 let activeCategory = 'all';
+function selectedLanguageCodes(){
+  return lang === 'en' ? ['roman','en'] : [lang];
+}
 function workTitle(item){
   const ts=item.author_work_translations||[];
-  const t=ts.find(x=>x.language_code==='en'&&x.title)||ts.find(x=>x.language_code==='roman'&&x.title)||ts.find(x=>x.title)||{};
-  return t.title||item.slug||'Untitled work';
+  const codes=selectedLanguageCodes();
+  const t=ts.find(x=>codes.includes(String(x.language_code||'').toLowerCase()) && String(x.title||'').trim());
+  return t ? t.title : (lang==='hi'?'इस भाषा में शीर्षक उपलब्ध नहीं है':lang==='ur'?'اس زبان میں عنوان دستیاب نہیں':'Title unavailable in this language');
 }
 function workAuthor(item){
   const profile=item.author_profiles||{};
   const ts=profile.author_profile_translations||[];
-  const t=ts.find(x=>x.language_code==='en')||ts.find(x=>x.language_code==='roman')||ts[0]||{};
-  return t.display_name||profile.pen_name||profile.real_name||'';
+  const codes=selectedLanguageCodes();
+  const t=ts.find(x=>codes.includes(String(x.language_code||'').toLowerCase()) && String(x.display_name||'').trim());
+  return t ? t.display_name : (lang==='hi'?'लेखक का नाम उपलब्ध नहीं':lang==='ur'?'مصنف کا نام دستیاب نہیں':'Author name unavailable');
 }
 function workProfileUrl(item){
   const profile=item.author_profiles||{};
@@ -711,6 +724,7 @@ function renderArchive(){
     return `<article class="work-card"><span class="work-category">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' '))}</span><h2>${esc(title)}</h2><p class="work-author">${author?'By ':''}${author?(profileUrl?`<a href="${esc(profileUrl)}">${esc(author)}</a>`:esc(author)):'Author not listed'}</p><a class="open-work" href="/work.html?slug=${encodeURIComponent(item.slug||'')}">Read work →</a></article>`;
   }).join('');
   $('archiveEmpty').classList.toggle('hidden',shown.length>0);
+  document.dispatchEvent(new Event('markaz:refresh-language'));
 }
 async function loadWorksArchive(){
   try{
@@ -765,9 +779,26 @@ async function load(){
 /* Language switching */
 document.querySelectorAll('[data-lang]').forEach(button => {
   button.addEventListener('click', () => {
-    lang = button.dataset.lang;
+    const selected = button.dataset.lang;
+    if (!SUPPORTED_LANGUAGES.includes(selected)) return;
+    lang = selected;
+    try { localStorage.setItem('markaz_site_language', lang); } catch (_) {}
+    updateLanguageControls();
     render();
+    document.documentElement.lang = lang === 'ur' ? 'ur' : (lang === 'hi' ? 'hi' : 'en');
+    document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
+    document.dispatchEvent(new CustomEvent('markaz:language-change', { detail: { language: lang } }));
   });
+});
+
+/* Keep the work content synchronized with the shared multilingual selector. */
+document.addEventListener('markaz:language-change', event => {
+  const selected = event.detail && event.detail.language;
+  if (!SUPPORTED_LANGUAGES.includes(selected)) return;
+  lang = selected;
+  updateLanguageControls();
+  if (work) render();
+  if (archiveWorks.length) renderArchive();
 });
 
 /* Font-size controls */
@@ -845,8 +876,17 @@ function addSwitcher(){
  var box=document.createElement('div');box.id='markaz-global-language';box.setAttribute('aria-label','Website language');
  box.innerHTML='<span>भाषा / زبان</span><button type="button" data-markaz-lang="en">EN</button><button type="button" data-markaz-lang="hi">हिन्दी</button><button type="button" data-markaz-lang="ur">اردو</button>';
  document.body.appendChild(box);
- box.addEventListener('click',function(e){var b=e.target.closest('button[data-markaz-lang]');if(!b)return;apply(b.dataset.markazLang)});
+ box.addEventListener('click',function(e){
+  var b=e.target.closest('button[data-markaz-lang]');if(!b)return;
+  apply(b.dataset.markazLang);
+  document.dispatchEvent(new CustomEvent('markaz:language-change',{detail:{language:b.dataset.markazLang}}));
+});
 }
+document.addEventListener('markaz:language-change',function(e){
+  var selected=e.detail&&e.detail.language;
+  if(allowed.indexOf(selected)>=0)apply(selected);
+});
+document.addEventListener('markaz:refresh-language',function(){apply(getLang())});
 function start(){addSwitcher();apply(getLang());}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
