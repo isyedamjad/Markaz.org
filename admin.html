@@ -167,6 +167,7 @@ html,body{background:#fbf9f8!important;color:#171313!important}body,body *{color
     <button class="navbtn" data-section="pendingWorks">◷ Pending Works <span id="pendingCount" class="pill">0</span></button>
     <button class="navbtn" data-section="authorEditor">＋ Add / Edit Profile</button>
     <button class="navbtn" data-section="works">♫ Kalaam & Works</button>
+    <button class="navbtn" data-section="publishers">▣ Publishers</button>
     <button class="navbtn" data-section="settings">⚙ Configuration</button>
   </aside>
 
@@ -383,6 +384,31 @@ html,body{background:#fbf9f8!important;color:#171313!important}body,body *{color
       <div class="card" style="margin-top:16px"><div class="toolbar"><input id="workSearch" type="search" placeholder="Search title or slug…"><button class="btn" id="refreshWorksBtn">Refresh</button></div><div id="worksTable" class="tablewrap">Load works after SQL setup.</div></div>
     </section>
 
+    <section id="section-publishers" class="section">
+      <div class="pagehead">
+        <div><h1>Publishers</h1><p class="muted">Add and manage publishing houses shown in the public publisher directory.</p></div>
+        <button class="btn secondary" id="publisherResetBtn" type="button">＋ New publisher</button>
+      </div>
+      <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px;align-items:start">
+        <div class="card">
+          <h2 id="publisherFormHeading">Add publisher</h2>
+          <form id="publisherForm">
+            <input id="publisherId" type="hidden">
+            <div class="field"><label for="publisherName">Publisher name *</label><input id="publisherName" required maxlength="180" placeholder="e.g. Mustafawi Publishing"></div>
+            <div class="field"><label for="publisherLocation">Location</label><input id="publisherLocation" maxlength="240" placeholder="City, country (optional)"></div>
+            <div class="field"><label for="publisherDescription">Description</label><textarea id="publisherDescription" rows="4" maxlength="3000" placeholder="Brief description of the publishing house (optional)"></textarea></div>
+            <p class="muted small">Publisher names should match the Publisher field on book records so the public profile can list the books correctly.</p>
+            <div class="toolbar"><button class="btn primary" id="publisherSaveBtn" type="submit">Save publisher</button><button class="btn secondary" type="button" id="publisherCancelBtn">Clear</button></div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="toolbar" style="justify-content:space-between"><h2 style="margin:0">Publisher directory</h2><button class="btn secondary" type="button" id="publisherRefreshBtn">Refresh</button></div>
+          <div class="field"><label for="publisherSearch">Search publishers</label><input id="publisherSearch" type="search" placeholder="Search name or location…"></div>
+          <div id="publishersTable" class="tablewrap muted">Publishers will appear here after loading.</div>
+        </div>
+      </div>
+    </section>
+
     <section id="section-settings" class="section">
       <div class="pagehead"><div><h1>Configuration</h1><p class="muted">Connection and account status.</p></div></div>
       <div class="card">
@@ -443,6 +469,7 @@ function showSection(name){
   if(name==='pendingWorks')loadPendingWorks();
   if(name==='authorEditor')loadLocations();
   if(name==='works'){loadAuthors();loadWorks();}
+  if(name==='publishers')loadPublishers();
 }
 document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>showSection(b.dataset.section));
 $('newBookBtn').onclick=$('newBookBtn2').onclick=()=>newBook();
@@ -839,6 +866,60 @@ async function archiveBook(id){
   notice('Book archived.');
   await loadBooks();
 }
+// Publisher directory management (public publisher.html reads name, location, description).
+const publisherState={items:[],busy:false};
+function resetPublisherForm(){
+  $('publisherForm').reset();$('publisherId').value='';
+  $('publisherFormHeading').textContent='Add publisher';$('publisherSaveBtn').textContent='Save publisher';
+}
+function renderPublishers(){
+  const q=($('publisherSearch').value||'').trim().toLowerCase();
+  const rows=publisherState.items.filter(p=>[p.name,p.location,p.description].some(v=>String(v||'').toLowerCase().includes(q)));
+  if(!rows.length){$('publishersTable').innerHTML='<p class="muted">'+(q?'No publishers match your search.':'No publishers added yet. Add one using the form.')+'</p>';return;}
+  $('publishersTable').innerHTML='<table><thead><tr><th>Name</th><th>Location</th><th>Actions</th></tr></thead><tbody>'+rows.map(p=>'<tr><td><strong>'+esc(p.name||'Unnamed publisher')+'</strong><div class="small muted">'+esc(p.description||'')+'</div></td><td>'+esc(p.location||'—')+'</td><td><div class="toolbar"><button type="button" class="btn secondary" data-publisher-edit="'+esc(p.id)+'">Edit</button><a class="btn secondary" href="/publisher.html?name='+encodeURIComponent(p.name||'')+'" target="_blank" rel="noopener">View</a></div></td></tr>').join('')+'</tbody></table>';
+  $('publishersTable').querySelectorAll('[data-publisher-edit]').forEach(b=>b.addEventListener('click',()=>editPublisher(b.dataset.publisherEdit)));
+}
+async function loadPublishers(){
+  if(!state.user||!state.role)return;
+  $('publishersTable').textContent='Loading publishers…';
+  try{
+    const {data,error}=await db.from('publishers').select('id,name,location,description').order('name',{ascending:true});
+    if(error)throw error;
+    publisherState.items=data||[];renderPublishers();
+  }catch(e){
+    $('publishersTable').textContent='Could not load publishers: '+e.message+'. Check that the publishers table exists and admin/editor has SELECT permission.';
+  }
+}
+function editPublisher(id){
+  const p=publisherState.items.find(x=>String(x.id)===String(id));if(!p)return;
+  $('publisherId').value=p.id;$('publisherName').value=p.name||'';
+  $('publisherLocation').value=p.location||'';$('publisherDescription').value=p.description||'';
+  $('publisherFormHeading').textContent='Edit publisher';$('publisherSaveBtn').textContent='Update publisher';
+  $('publisherName').focus();
+}
+$('publisherForm').addEventListener('submit',async e=>{
+  e.preventDefault();if(publisherState.busy)return;
+  if(!state.user||!state.role){notice('Please sign in first.',true);return;}
+  const name=$('publisherName').value.trim();
+  if(!name){notice('Enter a publisher name.',true);return;}
+  const payload={name,location:$('publisherLocation').value.trim()||null,description:$('publisherDescription').value.trim()||null};
+  publisherState.busy=true;$('publisherSaveBtn').disabled=true;
+  try{
+    const id=$('publisherId').value;
+    let result;
+    if(id)result=await db.from('publishers').update(payload).eq('id',id);
+    else result=await db.from('publishers').insert(payload);
+    if(result.error)throw result.error;
+    notice(id?'Publisher updated successfully.':'Publisher added successfully.');
+    resetPublisherForm();await loadPublishers();
+  }catch(err){notice('Publisher save failed: '+err.message,true);}
+  finally{publisherState.busy=false;$('publisherSaveBtn').disabled=false;}
+});
+$('publisherResetBtn').addEventListener('click',resetPublisherForm);
+$('publisherCancelBtn').addEventListener('click',resetPublisherForm);
+$('publisherRefreshBtn').addEventListener('click',loadPublishers);
+$('publisherSearch').addEventListener('input',renderPublishers);
+
 // Author / poet profiles and works. Requires the companion author-profile SQL schema.
 const authorState={profiles:[],profileLang:'en',profileTranslations:{},works:[],workLang:'en',workTranslations:{},locations:[]};
 const PENDING_AUTHOR_MARKER='markaz_pending_author_page_v1';
