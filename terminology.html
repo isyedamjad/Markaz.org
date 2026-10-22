@@ -23,7 +23,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 </style>
 </head><body><div class="top" id="top">A living archive of Sufi poetry, wisdom and heritage</div><header class="head"><div class="in"><a class="brand" href="home.html"><b>ص</b>Sufi Adab Archive</a><nav class="nav"><a href="home.html" data-nav="Home">Home</a><a href="poetry.html" data-nav="Poetry">Poetry</a><a href="saints.html" data-nav="Saints &amp; Poets">Saints &amp; Poets</a><a href="library.html" data-nav="Library">Library</a><a href="articles.html" data-nav="Articles">Articles</a><a href="heritage.html" data-nav="Heritage">Heritage</a><a href="terminology.html" data-nav="Terminology">Terminology</a></nav><div class="langs"><button data-lang="en" class="active">EN</button><button data-lang="hi">हिं</button><button data-lang="ur">اردو</button></div></div></header><section class="hero"><div><div class="eyebrow" id="eyebrow">WORDS · CONCEPTS · TRADITIONS</div><h1 id="heroTitle">Sufi Terminology</h1><p id="heroDesc">Explore terms and concepts from Sufi literature, spiritual practice and literary traditions.</p></div></section><main class="wrap"><div class="search"><input id="q" type="search" placeholder="Search by title, name or keyword…" aria-label="Search"><button id="clear">Clear search</button></div><div class="heading"><h2 id="sectionTitle">Explore Sufi Terminology</h2><p id="count">Loading entries…</p></div><section class="grid" id="grid"><div class="empty" id="loadingMsg">Loading archive entries…</div></section></main><footer class="foot"><strong>Sufi Adab Archive<br><small>Preserving literature, memory and heritage.</small></strong><span><a href="home.html" data-nav="Home">Home</a> · <a href="library.html">Digital Library</a> · <a href="/about-us.html">About</a></span><span>© <span id="year"></span> Markaz.org</span></footer><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const db=window.supabase.createClient('https://pooatzegjnegutflkcbm.supabase.co','sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN');const glossary='glossary';let lang='en',rows=[];const $=x=>document.getElementById(x);$('year').textContent=new Date().getFullYear();const T={
+const db=window.supabase.createClient('https://pooatzegjnegutflkcbm.supabase.co','sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN');const glossary='glossary';let lang = (localStorage.getItem('markaz_site_language') || 'en'),rows=[];const $=x=>document.getElementById(x);$('year').textContent=new Date().getFullYear();const T={
  en:{top:'A living archive of Sufi poetry, wisdom and heritage',search:'Search by title, name or keyword…',clear:'Clear search',none:'No published entries found.',open:'Explore entry →',loading:'Loading archive entries…',nav:['Home','Poetry','Saints & Poets','Library','Articles','Heritage','Terminology'],brand:'Sufi Adab Archive',home:'Home',heroTitle:"Sufi Terminology",heroDesc:"Explore terms and concepts from Sufi literature, spiritual practice and literary traditions.",sectionTitle:"Explore Sufi Terminology",eyebrow:"WORDS · CONCEPTS · TRADITIONS"},
  hi:{top:'सूफ़ी साहित्य, ज्ञान और विरासत का जीवंत संग्रह',search:'शीर्षक, नाम या शब्द खोजें…',clear:'खोज हटाएँ',none:'कोई प्रकाशित सामग्री नहीं मिली।',open:'विवरण देखें →',loading:'संग्रह की सामग्री लोड हो रही है…',nav:['होम','कविता','सूफ़ी, संत और कवि','डिजिटल लाइब्रेरी','लेख','विरासत','शब्दावली'],brand:'सूफ़ी अदब आर्काइव',heroTitle:"सूफ़ी शब्दावली",heroDesc:"सूफ़ी साहित्य, आध्यात्मिक साधना और साहित्यिक परंपराओं की शब्दावली और अवधारणाओं को समझें।",sectionTitle:"सूफ़ी शब्दावली देखें",eyebrow:"सूफ़ी साहित्य · जीवन · विरासत"},
  ur:{top:'صوفی ادب، حکمت اور ورثے کا زندہ ذخیرہ',search:'عنوان، نام یا لفظ تلاش کریں…',clear:'تلاش صاف کریں',none:'کوئی شائع شدہ مواد نہیں ملا۔',open:'تفصیل دیکھیں ←',loading:'ذخیرے کا مواد لوڈ ہو رہا ہے…',nav:['صفحۂ اول','شاعری','صوفیا، اولیا اور شعرا','ڈیجیٹل کتب خانہ','مقالات','ورثہ','اصطلاحات'],brand:'صوفی ادب آرکائیو',heroTitle:"صوفی اصطلاحات",heroDesc:"صوفی ادب، روحانی معمولات اور ادبی روایتوں کی اصطلاحات اور تصورات کو سمجھیے۔",sectionTitle:"صوفی اصطلاحات دیکھیے",eyebrow:"صوفی ادب · سوانح · ورثہ"}
@@ -59,5 +59,66 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => language(b.dataset.lang)));
 $('q').addEventListener('input', render);
 $('clear').addEventListener('click', () => { $('q').value = ''; render(); });
-async function load(){try{let r=await db.from('content_items').select('id,type,slug,status,source_notes,content_translations(language_code,title,subtitle,excerpt,body,transliteration)').eq('status','published').eq('type',glossary).order('published_at',{ascending:false,nullsFirst:false}).limit(300);if(r.error)throw r.error;rows=(r.data||[]).filter(x=>x.slug);render()}catch(e){console.error(e);$('count').textContent='';$('grid').innerHTML='<div class="empty">Could not load entries. Check Supabase public read permissions.<br><small>'+esc(e.message||'')+'</small></div>'}}language('en');load();
-</script></body></html>
+async function load(){try{let r=await db.from('content_items').select('id,type,slug,status,source_notes,content_translations(language_code,title,subtitle,excerpt,body,transliteration)').eq('status','published').eq('type',glossary).order('published_at',{ascending:false,nullsFirst:false}).limit(300);if(r.error)throw r.error;rows=(r.data||[]).filter(x=>x.slug);render()}catch(e){console.error(e);$('count').textContent='';$('grid').innerHTML='<div class="empty">Could not load entries. Check Supabase public read permissions.<br><small>'+esc(e.message||'')+'</small></div>'}}language(lang);load();
+</script>
+
+
+
+<!-- Markaz.org offline multilingual system: no Google translation -->
+<style id="markaz-language-system-style">
+#markaz-global-language{position:fixed;left:12px;top:12px;z-index:99999;display:flex;align-items:center;gap:3px;padding:5px;background:rgba(255,255,255,.98);border:1px solid #d9dfda;border-radius:999px;box-shadow:0 4px 18px #17252b22;font:600 12px/1.2 system-ui,sans-serif;direction:ltr}
+#markaz-global-language span{padding:0 5px;color:#40514f}
+#markaz-global-language button{border:0;border-radius:999px;background:transparent;color:#263a3d;padding:7px 9px;cursor:pointer;font:inherit;white-space:nowrap}
+#markaz-global-language button[aria-pressed="true"]{background:#24534f;color:#fff}
+#markaz-global-language button:focus-visible{outline:2px solid #a56c3b;outline-offset:2px}
+@media(max-width:600px){#markaz-global-language{left:6px;top:6px;gap:1px;padding:3px}#markaz-global-language span{display:none}#markaz-global-language button{padding:7px 7px;font-size:11px}}
+</style>
+<style>html[dir="rtl"] body{direction:rtl}html[dir="rtl"] #markaz-global-language{direction:ltr}html[dir="rtl"] input,html[dir="rtl"] textarea{ text-align:right }</style>
+<script id="markaz-offline-language-script">
+(function(){
+'use strict';
+var KEY='markaz_site_language', allowed=['en','hi','ur'];
+var dict={"Home":["मुखपृष्ठ","صفحۂ اوّل"],"About Us":["हमारे बारे में","ہمارے بارے میں"],"About":["परिचय","تعارف"],"Articles":["लेख","مضامین"],"Article":["लेख","مضمون"],"Books":["किताबें","کتابیں"],"Book":["किताब","کتاب"],"Library":["पुस्तकालय","کتب خانہ"],"Digital Library":["डिजिटल पुस्तकालय","ڈیجیٹل کتب خانہ"],"Authors":["लेखक","مصنفین"],"Author":["लेखक","مصنف"],"Publishers":["प्रकाशक","ناشرین"],"Publisher":["प्रकाशक","ناشر"],"Poetry":["शायरी","شاعری"],"Ghazals":["ग़ज़लें","غزلیں"],"Naat Shareef":["नात शरीफ़","نعت شریف"],"Manqabat":["मनक़बत","منقبت"],"Saints":["सूफ़ी संत","صوفی بزرگ"],"Sufis, Saints & Poets":["सूफ़ी, संत और शायर","صوفیا، اولیا اور شعرا"],"Understanding Sufism":["सूफ़ीवाद को समझें","تصوف کو سمجھیں"],"Sufism":["सूफ़ीवाद","تصوف"],"Terminology":["शब्दावली","اصطلاحات"],"Places & Heritage":["स्थल और विरासत","مقامات اور ورثہ"],"Heritage":["विरासत","ورثہ"],"Blog":["ब्लॉग","بلاگ"],"Contact Us":["संपर्क करें","رابطہ کریں"],"Contact":["संपर्क","رابطہ"],"Copyright Policy":["कॉपीराइट नीति","حقوقِ اشاعت کی پالیسی"],"Reading Room":["अध्ययन कक्ष","مطالعہ گاہ"],"Read":["पढ़ें","پڑھیں"],"Work":["कार्य","کام"],"Search":["खोजें","تلاش کریں"],"Search…":["खोजें…","تلاش کریں…"],"Search poetry, saints, poets, books and topics…":["शायरी, संतों, शायरों, किताबों और विषयों को खोजें…","شاعری، اولیا، شعرا، کتابوں اور موضوعات میں تلاش کریں…"],"Search books, authors, topics…":["किताबें, लेखक और विषय खोजें…","کتابیں، مصنفین اور موضوعات تلاش کریں…"],"Explore":["देखें","ملاحظہ کریں"],"Explore the Archive":["अभिलेखागार देखें","ذخیرۂ ادب ملاحظہ کریں"],"Learn More":["और जानें","مزید جانیے"],"Read More":["और पढ़ें","مزید پڑھیے"],"View All":["सभी देखें","سب دیکھیں"],"View Details":["विवरण देखें","تفصیلات دیکھیں"],"Back":["वापस","واپس"],"Next":["अगला","اگلا"],"Previous":["पिछला","پچھلا"],"Loading…":["लोड हो रहा है…","لوڈ ہو رہا ہے…"],"Loading...":["लोड हो रहा है...","لوڈ ہو رہا ہے..."],"Loading":["लोड हो रहा है","لوڈ ہو رہا ہے"],"No results found.":["कोई परिणाम नहीं मिला।","کوئی نتیجہ نہیں ملا۔"],"No results found":["कोई परिणाम नहीं मिला","کوئی نتیجہ نہیں ملا"],"Try again":["फिर कोशिश करें","دوبارہ کوشش کریں"],"Submit":["जमा करें","جمع کریں"],"Send Message":["संदेश भेजें","پیغام بھیجیں"],"Name":["नाम","نام"],"Email":["ईमेल","ای میل"],"Message":["संदेश","پیغام"],"Subject":["विषय","موضوع"],"Your Name":["आपका नाम","آپ کا نام"],"Your Email":["आपका ईमेल","آپ کا ای میل"],"Your Message":["आपका संदेश","آپ کا پیغام"],"Read Online":["ऑनलाइन पढ़ें","آن لائن پڑھیے"],"Download":["डाउनलोड","ڈاؤن لوڈ"],"Published":["प्रकाशित","شائع شدہ"],"Author Profile":["लेखक परिचय","مصنف کا تعارف"],"Publisher Profile":["प्रकाशक परिचय","ناشر کا تعارف"],"All rights reserved.":["सर्वाधिकार सुरक्षित।","جملہ حقوق محفوظ ہیں۔"],"Privacy Policy":["गोपनीयता नीति","رازداری کی پالیسی"],"Terms":["नियम एवं शर्तें","شرائط"],"Featured":["विशेष","نمایاں"],"Featured Books":["चयनित पुस्तकें","منتخب کتابیں"],"Latest Articles":["नवीनतम लेख","تازہ مضامین"],"Recent Articles":["हाल के लेख","حالیہ مضامین"],"Recent Books":["हाल की पुस्तकें","حالیہ کتابیں"],"About Markaz.org":["Markaz.org के बारे में","Markaz.org کے بارے میں"],"Markaz.org":["Markaz.org","Markaz.org"],"Language":["भाषा","زبان"],"English":["अंग्रेज़ी","انگریزی"],"Hindi":["हिन्दी","ہندی"],"Urdu":["उर्दू","اردو"],"All":["सभी","سب"],"All Books":["सभी किताबें","تمام کتابیں"],"All Authors":["सभी लेखक","تمام مصنفین"],"Browse":["ब्राउज़ करें","ملاحظہ کریں"],"Categories":["श्रेणियाँ","اقسام"],"Details":["विवरण","تفصیلات"],"Title":["शीर्षक","عنوان"],"Description":["विवरण","تفصیل"],"Year":["वर्ष","سال"]};
+function getLang(){try{var l=localStorage.getItem(KEY);return allowed.indexOf(l)>=0?l:'en'}catch(e){return 'en'}}
+function saveLang(l){try{localStorage.setItem(KEY,l)}catch(e){}}
+function norm(s){return (s||'').replace(/\s+/g,' ').trim()}
+function original(el){if(!el.dataset.markazOriginal){el.dataset.markazOriginal=el.textContent}return el.dataset.markazOriginal}
+function translateTextNode(node,lang){
+ var p=node.parentElement;if(!p||p.closest('script,style,noscript,textarea,code,pre,input,select,option,[contenteditable="true"],#markaz-global-language'))return;
+ if(node.__markazOriginal===undefined)node.__markazOriginal=node.nodeValue;
+ var raw=node.__markazOriginal, key=norm(raw); if(!key)return;
+ var hit=dict[key]; if(hit){var val=lang==='hi'?hit[0]:lang==='ur'?hit[1]:key;
+   if(raw.trim()===raw)node.nodeValue=val;
+   else {var lead=raw.match(/^\s*/)[0],trail=raw.match(/\s*$/)[0];node.nodeValue=lead+val+trail;}
+ } else {node.nodeValue=raw;}
+}
+function apply(lang){
+ if(allowed.indexOf(lang)<0)lang='en';saveLang(lang);
+ document.documentElement.lang=lang;document.documentElement.dir=lang==='ur'?'rtl':'ltr';
+ document.body.classList.toggle('markaz-urdu',lang==='ur');
+ document.querySelectorAll('[data-en],[data-hi],[data-ur]').forEach(function(el){
+   var v=el.getAttribute('data-'+lang);
+   if(v!==null){if(el.matches('input,textarea'))el.placeholder=v;else if(el.children.length===0)el.textContent=v;}
+ });
+ document.querySelectorAll('[data-en-html]').forEach(function(el){var v=el.getAttribute('data-'+lang+'-html')||el.getAttribute('data-en-html');if(v!==null)el.innerHTML=v});
+ var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ nodes.forEach(function(n){translateTextNode(n,lang)});
+ document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(function(el){
+   if(!el.dataset.markazPlaceholder)el.dataset.markazPlaceholder=el.placeholder;
+   var key=norm(el.dataset.markazPlaceholder),hit=dict[key];if(hit)el.placeholder=lang==='hi'?hit[0]:lang==='ur'?hit[1]:el.dataset.markazPlaceholder;
+ });
+ document.querySelectorAll('#markaz-global-language button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.markazLang===lang?'true':'false')});
+}
+function addSwitcher(){
+ if(document.getElementById('markaz-global-language'))return;
+ var box=document.createElement('div');box.id='markaz-global-language';box.setAttribute('aria-label','Website language');
+ box.innerHTML='<span>भाषा / زبان</span><button type="button" data-markaz-lang="en">EN</button><button type="button" data-markaz-lang="hi">हिन्दी</button><button type="button" data-markaz-lang="ur">اردو</button>';
+ document.body.appendChild(box);
+ box.addEventListener('click',function(e){var b=e.target.closest('button[data-markaz-lang]');if(!b)return;apply(b.dataset.markazLang)});
+}
+function start(){addSwitcher();apply(getLang());}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+
+</body></html>
