@@ -326,7 +326,8 @@ html,body{background:#fbf9f8!important;color:#171313!important}body,body *{color
         <h2 style="margin-top:24px">Book title and description by language</h2>
         <p class="small muted language-help"><b>Language guide:</b> Roman = Urdu/Hindi written in Latin letters (Hinglish); हिन्दी = Devanagari; اردو = Urdu script. This book form stores the Latin-script option under the existing <code>roman</code> code. Do not enter English prose in the Roman tab.</p>
         <div class="langtabs">
-          <button type="button" class="langtab active" data-lang="roman">Roman (Hinglish)</button>
+          <button type="button" class="langtab active" data-lang="en">English</button>
+          <button type="button" class="langtab" data-lang="roman">Roman (Hinglish)</button>
           <button type="button" class="langtab" data-lang="hi">हिन्दी</button>
           <button type="button" class="langtab" data-lang="ur">اردو</button>
         </div>
@@ -410,7 +411,7 @@ const $ = id => document.getElementById(id);
 
 const state = {
   user:null, role:null, books:[], people:[], pendingPeople:[],
-  lang:'roman', translations:{}, pdfPath:null, epubPath:null,
+  lang:'en', translations:{}, pdfPath:null, epubPath:null,
   busy:false
 };
 
@@ -509,7 +510,7 @@ db.auth.onAuthStateChange((event,session)=>{
 
 function titleFor(book){
   const translations=book.content_translations||[];
-  const t=translations.find(x=>x.language_code==='roman')||translations[0];
+  const t=translations.find(x=>x.language_code==='en')||translations.find(x=>x.language_code==='roman')||translations[0];
   return t?.title||book.slug||'Untitled book';
 }
 async function loadBooks(){
@@ -588,6 +589,7 @@ $('authorSearchInput').addEventListener('change',()=>{const value=$('authorSearc
 
 function blankTranslations(){
   return {
+    en:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:''},
     roman:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:''},
     ur:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:''},
     hi:{id:null,title:'',subtitle:'',excerpt:'',transliteration:'',translation_note:''}
@@ -629,7 +631,7 @@ function newBook(){
   $('pdfCurrent').textContent='No PDF linked.';
   $('epubCurrent').textContent='No EPUB linked.';
   $('coverPreview').removeAttribute('src');
-  switchLang('roman');showSection('editor');
+  switchLang('en');showSection('editor');
 }
 async function editBook(id){
   const b=state.books.find(x=>x.id===id);if(!b)return;
@@ -807,7 +809,7 @@ $('bookForm').addEventListener('submit',async e=>{
       :await db.from('book_details').insert(details);
     if(result.error)throw new Error('Book details save failed: '+result.error.message);
 
-    for(const lang of ['roman','ur','hi']){
+    for(const lang of ['en','roman','ur','hi']){
       const t=state.translations[lang];
       if(t?.title)await saveTranslation(id,lang,t);
     }

@@ -245,6 +245,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
             ur: { noBook: 'کوئی کتاب منتخب نہیں کی گئی۔', notFound: 'کتاب نہیں ملی یا دستیاب نہیں ہے۔', unavailable: 'منتخب زبان میں اس کتاب کا عنوان دستیاب نہیں۔', noCover: 'سرورق دستیاب نہیں', readNow: 'ابھی پڑھیں' }
         };
         function selectedBookLanguage() {
+            const params = new URLSearchParams(window.location.search);
+            const urlLanguage = (params.get('lang') || '').toLowerCase();
+            if (BOOK_LANGUAGES.includes(urlLanguage)) return urlLanguage;
             try {
                 const value = localStorage.getItem('markaz_site_language');
                 return BOOK_LANGUAGES.includes(value) ? value : 'en';
