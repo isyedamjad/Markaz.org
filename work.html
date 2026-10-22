@@ -776,29 +776,50 @@ async function load(){
   }
 }
 
-/* Language switching */
-document.querySelectorAll('[data-lang]').forEach(button => {
-  button.addEventListener('click', () => {
-    const selected = button.dataset.lang;
-    if (!SUPPORTED_LANGUAGES.includes(selected)) return;
+/* One language controller for the page tabs and the shared site selector.
+   It updates content immediately; no refresh or database re-query is needed. */
+let applyingWorkLanguage = false;
+function setWorkLanguage(selected, persist = true){
+  if (!SUPPORTED_LANGUAGES.includes(selected) || applyingWorkLanguage) return;
+  applyingWorkLanguage = true;
+  try {
     lang = selected;
-    try { localStorage.setItem('markaz_site_language', lang); } catch (_) {}
-    updateLanguageControls();
-    render();
+    if (persist) {
+      try { localStorage.setItem('markaz_site_language', lang); } catch (_) {}
+    }
     document.documentElement.lang = lang === 'ur' ? 'ur' : (lang === 'hi' ? 'hi' : 'en');
     document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
-    document.dispatchEvent(new CustomEvent('markaz:language-change', { detail: { language: lang } }));
-  });
+    document.body.dir = lang === 'ur' ? 'rtl' : 'ltr';
+    updateLanguageControls();
+    if (work) render();
+    if (archiveWorks.length || $('worksArchive') && !$('worksArchive').classList.contains('hidden')) renderArchive();
+    /* Let the shared language system translate static labels after dynamic render. */
+    document.dispatchEvent(new Event('markaz:refresh-language'));
+  } finally {
+    applyingWorkLanguage = false;
+  }
+}
+
+document.querySelectorAll('button[data-lang]').forEach(button => {
+  button.addEventListener('click', () => setWorkLanguage(button.dataset.lang));
 });
 
-/* Keep the work content synchronized with the shared multilingual selector. */
+/* Synchronize with the floating EN / हिन्दी / اردو selector used site-wide. */
 document.addEventListener('markaz:language-change', event => {
   const selected = event.detail && event.detail.language;
   if (!SUPPORTED_LANGUAGES.includes(selected)) return;
-  lang = selected;
-  updateLanguageControls();
-  if (work) render();
-  if (archiveWorks.length) renderArchive();
+  if (selected === lang) {
+    updateLanguageControls();
+    return;
+  }
+  setWorkLanguage(selected);
+});
+
+/* Another tab may change the saved site language while this page is open. */
+window.addEventListener('storage', event => {
+  if (event.key === 'markaz_site_language' && SUPPORTED_LANGUAGES.includes(event.newValue)) {
+    setWorkLanguage(event.newValue, false);
+  }
 });
 
 /* Font-size controls */
@@ -887,7 +908,7 @@ document.addEventListener('markaz:language-change',function(e){
   if(allowed.indexOf(selected)>=0)apply(selected);
 });
 document.addEventListener('markaz:refresh-language',function(){apply(getLang())});
-function start(){addSwitcher();apply(getLang());}
+function start(){addSwitcher();apply(getLang());document.dispatchEvent(new CustomEvent('markaz:language-change',{detail:{language:getLang()}}));}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 </script>
