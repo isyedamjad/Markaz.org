@@ -368,6 +368,20 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 
 </style>
+
+<style id="authors-page-enhancements">
+.author-search-wrap{margin:22px 0 4px;max-width:620px}
+.author-search{width:100%;padding:14px 17px;border-radius:14px!important;font-size:15px;box-shadow:0 5px 18px rgba(23,37,43,.045)!important}
+.author-list-card{min-height:112px}
+.author-list-card[hidden]{display:none!important}
+.authors-directory>h2{margin-bottom:8px}
+.profile-kicker{font-size:11px;letter-spacing:.12em;font-weight:800;color:#8b642f;text-transform:uppercase}
+.profile-name{overflow-wrap:anywhere}
+.profile-tabs{scrollbar-width:thin}
+.tab-btn:focus-visible,.author-list-card a:focus-visible{outline:3px solid #c49a55;outline-offset:3px}
+@media(max-width:480px){.author-list-card{padding:14px!important;gap:12px!important}.author-list-card img{width:62px!important;height:62px!important;flex-basis:62px!important}.author-list-card .work-title{font-size:17px}.author-search{font-size:16px}}
+</style>
+
 </head>
 
 <body>
@@ -409,7 +423,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
   let profile = null;
   let translations = [];
   let works = [];
-  let currentLang = (function(){ try { const saved=localStorage.getItem("markaz-lang"); return LABELS[saved] ? saved : "en"; } catch (_) { return "en"; } })();
+  let currentLang = (function(){ try { const saved=localStorage.getItem("markaz-lang"); return ["en","hi","ur"].includes(saved) ? saved : "en"; } catch (_) { return "en"; } })();
   let currentTab = "profile";
   let loading = false;
 
@@ -436,6 +450,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       unknown: "An unexpected error occurred.",
       authorsListTitle: "All Authors & Poets",
       authorsListSubtitle: "Explore profiles of all published authors and scholars.",
+      searchPlaceholder: "Search authors, poets and scholars…",
+      viewProfile: "View Profile",
+      noAuthors: "No matching authors found. Try another search.",
       tabs: {
         profile: "Profile",
         naat: "Naat",
@@ -467,6 +484,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       unknown: "एक अनजान त्रुटि हुई।",
       authorsListTitle: "सभी लेखक और शायर",
       authorsListSubtitle: "सभी प्रकाशित लेखकों और विद्वानों की प्रोफ़ाइल देखें।",
+      searchPlaceholder: "लेखक, शायर और विद्वान खोजें…",
+      viewProfile: "प्रोफ़ाइल देखें",
+      noAuthors: "कोई मेल खाती प्रोफ़ाइल नहीं मिली। दूसरा नाम खोजें।",
       tabs: {
         profile: "प्रोफ़ाइल",
         naat: "नात",
@@ -498,6 +518,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       unknown: "ایک غیر متوقع خرابی پیش آئی۔",
       authorsListTitle: "تمام مصنفین اور شعرا",
       authorsListSubtitle: "تمام شائع شدہ مصنفین اور محققین کے پروفائلز دیکھیں۔",
+      searchPlaceholder: "مصنفین، شعرا اور محققین تلاش کریں…",
+      viewProfile: "پروفائل دیکھیں",
+      noAuthors: "کوئی متعلقہ پروفائل نہیں ملی۔ دوسرا نام تلاش کریں۔",
       tabs: {
         profile: "پروفائل",
         naat: "نعت",
@@ -574,29 +597,77 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       button.setAttribute("aria-pressed", button.dataset.lang === currentLang ? "true" : "false");
     });
 
-    const cards = authorsList.map(author => {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("type") || "";
+    const typeTitles = {poet:"Poets & Shayars",author:"Authors & Writers",scholar:"Scholars & Researchers",mufti:"Muftis",naatkhwan:"Naatkhwans",book_contributor:"Book Contributors",sufi:"Sufi Personalities",saint:"Saints & Mashaikh"};
+    const heading = type ? (typeTitles[type] || "People & Contributors") : L.authorsListTitle;
+    const prepared = (authorsList || []).map(author => {
+      const tr = pickTranslation(author.author_profile_translations || []);
+      const name = tr.display_name || author.display_name || author.real_name || tr.real_name || author.pen_name || tr.pen_name || author.slug || "Author";
+      return {author, name, searchText:[name,author.real_name,tr.real_name,author.pen_name,tr.pen_name,author.slug].filter(Boolean).join(" ").toLocaleLowerCase()};
+    }).sort((a,b) => a.name.localeCompare(b.name, currentLang === "ur" ? "ur" : currentLang === "hi" ? "hi" : "en", {sensitivity:"base"}));
+
+    const cards = prepared.map(({author,name,searchText}) => {
       const img = author.profile_image_url || PLACEHOLDER;
-      const authorTranslations = author.author_profile_translations || [];
-      const translated = pickTranslation(authorTranslations);
-      const name = translated.display_name || author.display_name || author.real_name || translated.real_name || author.pen_name || translated.pen_name || author.slug || "Author";
-      return '<article class="work-card" style="display:flex;gap:15px;align-items:center;">' +
-        '<img src="' + escapeHTML(img) + '" alt="' + escapeHTML(name) + '" style="width:70px;height:70px;object-fit:cover;border-radius:50%;" onerror="this.src=\'' + PLACEHOLDER + '\'">' +
-        '<div>' +
-          '<h3 class="work-title" style="margin:0 0 5px;"><a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" style="color:#292321 !important;text-decoration:none;">' + escapeHTML(name) + '</a></h3>' +
-          '<a href="authors.html?slug=' + encodeURIComponent(author.slug) + '" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:12px;padding:6px 12px;margin-top:5px;color:#ffffff !important;">View Profile</a>' +
-        '</div>' +
-      '</article>';
+      const url = "authors.html?slug=" + encodeURIComponent(author.slug);
+      return '<article class="work-card author-list-card" data-search="' + escapeHTML(searchText) + '" style="display:flex;gap:15px;align-items:center;">' +
+        '<img loading="lazy" src="' + escapeHTML(img) + '" alt="' + escapeHTML(name) + '" style="width:76px;height:76px;flex:0 0 76px;object-fit:cover;border-radius:50%;border:2px solid var(--gold);" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'">' +
+        '<div style="min-width:0;flex:1;">' +
+          '<h3 class="work-title" style="margin:0 0 5px;"><a href="' + url + '" style="text-decoration:none;">' + escapeHTML(name) + '</a></h3>' +
+          '<a href="' + url + '" class="primary-btn" style="display:inline-block;text-decoration:none;font-size:12px;padding:6px 13px;margin-top:5px;">' + escapeHTML(L.viewProfile) + ' <span aria-hidden="true">↗</span></a>' +
+        '</div></article>';
     }).join("");
 
     contentEl.innerHTML =
-      '<section class="panel">' +
-        '<h2>' + escapeHTML((new URLSearchParams(window.location.search).get("type") || "") ? ({poet:"Poets & Shayars",author:"Authors & Writers",scholar:"Scholars & Researchers",mufti:"Muftis",naatkhwan:"Naatkhwans",book_contributor:"Book Contributors",sufi:"Sufi Personalities",saint:"Saints & Mashaikh"}[new URLSearchParams(window.location.search).get("type")] || "People & Contributors") : L.authorsListTitle) + '</h2>' +
+      '<section class="panel authors-directory">' +
+        '<p class="profile-kicker" style="margin-top:0;">Markaz.org · Directory</p>' +
+        '<h2>' + escapeHTML(heading) + '</h2>' +
         '<p class="status-detail" style="margin-bottom:20px;">' + escapeHTML(L.authorsListSubtitle) + '</p>' +
-        (cards ? '<div class="work-grid">' + cards + '</div>' : '<div class="empty">No authors found.</div>') +
+        '<div class="author-search-wrap"><label for="authorSearch" style="display:block;margin-bottom:7px;">' + escapeHTML(L.searchPlaceholder) + '</label>' +
+        '<input id="authorSearch" type="search" class="author-search" placeholder="' + escapeHTML(L.searchPlaceholder) + '" autocomplete="off" aria-label="' + escapeHTML(L.searchPlaceholder) + '">' +
+        '<p id="authorResultCount" class="status-detail" aria-live="polite" style="font-size:12px;margin:9px 2px 17px;"></p></div>' +
+        '<div id="authorCards" class="work-grid">' + cards + '</div>' +
+        '<div id="authorEmpty" class="empty" hidden>' + escapeHTML(L.noAuthors) + '</div>' +
       '</section>';
 
+    const search = document.getElementById("authorSearch");
+    const cardNodes = Array.from(document.querySelectorAll(".author-list-card"));
+    const count = document.getElementById("authorResultCount");
+    const empty = document.getElementById("authorEmpty");
+    function filterAuthors() {
+      const q = search.value.trim().toLocaleLowerCase();
+      let shown = 0;
+      cardNodes.forEach(card => {
+        const match = !q || (card.dataset.search || "").includes(q);
+        card.hidden = !match;
+        if (match) shown++;
+      });
+      count.textContent = shown + " / " + cardNodes.length;
+      empty.hidden = shown !== 0;
+    }
+    search.addEventListener("input", filterAuthors);
+    filterAuthors();
     statusEl.hidden = true;
     contentEl.hidden = false;
+  }
+
+  function formatFullDate(value) {
+    if (!value) return "";
+    const raw = String(value).trim();
+    // Parse date-only values as local calendar dates to avoid timezone shifts.
+    let d = null;
+    let m = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (m) d = new Date(Number(m[1]), Number(m[2])-1, Number(m[3]));
+    if (!d) {
+      m = raw.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+      if (m) d = new Date(Number(m[3]), Number(m[2])-1, Number(m[1]));
+    }
+    if (!d && /^\d{4}-\d{2}-\d{2}T/.test(raw)) {
+      const parts = raw.slice(0,10).split("-");
+      d = new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2]));
+    }
+    if (!d || Number.isNaN(d.getTime())) return raw;
+    return d.getDate() + " " + ["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()] + " " + d.getFullYear();
   }
 
   function renderProfile() {
@@ -673,7 +744,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
     if (!availableTabs.includes(currentTab)) currentTab = availableTabs[0] || "profile";
 
     let heroFactsHTML = "";
-    if (profile.birth_date) heroFactsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.born)}</span>${escapeHTML(profile.birth_date)}</div>`;
+    if (profile.birth_date) heroFactsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.born)}</span>${escapeHTML(formatFullDate(profile.birth_date))}</div>`;
     if (domicile) heroFactsHTML += `<div class="fact"><span class="fact-label">${escapeHTML(L.domicile)}</span>${escapeHTML(domicile)}</div>`;
 
     let tabsHTML = '<nav class="profile-tabs" aria-label="Author sections">';
@@ -692,7 +763,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       if (realName) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.realName)}:</span> ${escapeHTML(realName)}</div>`);
       if (penName) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.penName)}:</span> ${escapeHTML(penName)}</div>`);
       if (profile.birth_place) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.birthPlace)}:</span> ${escapeHTML(profile.birth_place)}</div>`);
-      if (profile.death_date) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.died)}:</span> ${escapeHTML(profile.death_date)}</div>`);
+      if (profile.death_date) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.died)}:</span> ${escapeHTML(formatFullDate(profile.death_date))}</div>`);
       if (profile.death_place) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.deathPlace)}:</span> ${escapeHTML(profile.death_place)}</div>`);
 
       const infoSectionHTML = infoItems.length ? `<div class="profile-info-list">${infoItems.join('')}</div>` : '';
@@ -735,7 +806,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
           '<img class="portrait" src="' + escapeHTML(imageURL) + '" alt="' + escapeHTML(displayName) + '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'">' +
         '</div>' +
         '<div>' +
-          '<p class="profile-kicker">Markaz.org · Sufi Literature & Heritage</p>' +
+          '<p class="profile-kicker" data-profile-kicker="true">${escapeHTML(({en:"Markaz.org Profile",hi:"मरकज़ ओर्ग प्रोफाइल",ur:"مرکز آرگنائزیشن پروفائل"})[currentLang])}</p>' +
           '<h1 class="profile-name">' + escapeHTML(displayName) + '</h1>' +
           ((t.short_bio && !t.short_bio.includes("poori biography likhein")) ? '<p class="profile-subtitle">' + escapeHTML(t.short_bio) + '</p>' : '') +
           (heroFactsHTML ? '<div class="facts">' + heroFactsHTML + '</div>' : '') +
