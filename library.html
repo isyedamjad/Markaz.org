@@ -880,12 +880,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
         <option value="en">English</option>
       </select>
 
-      <select class="field" id="formatFilter"
-        aria-label="Filter by format">
-        <option value="all">All formats</option>
-        <option value="pdf">PDF available</option>
-        <option value="epub">EPUB available</option>
-      </select>
+
     </div>
 
     <div class="section-head">
@@ -1000,14 +995,12 @@ const copy = {
     heading: 'Books for reading and research',
     search: 'Search books, authors or keywords',
     allLang: 'All available languages',
-    pdf: 'PDF available',
-    epub: 'EPUB available',
     loading: 'Loading books…',
     none: 'No books found. Try another title or search term.',
     error: 'The library could not be loaded. Please try again.',
-    read: 'Book details →',
-    book: 'BOOK',
-    by: 'Published by',
+    book: 'Book',
+    by: 'By',
+    year: 'Published',
     count: n => `${n} ${n === 1 ? 'book' : 'books'}`,
     retry: 'Try again'
   },
@@ -1021,14 +1014,12 @@ const copy = {
     heading: 'अध्ययन और शोध के लिए किताबें',
     search: 'किताब, लेखक या शब्द से खोजें',
     allLang: 'सभी उपलब्ध भाषाएँ',
-    pdf: 'PDF उपलब्ध',
-    epub: 'EPUB उपलब्ध',
     loading: 'किताबें लोड हो रही हैं…',
     none: 'कोई किताब नहीं मिली। दूसरा शब्द आज़माएँ।',
     error: 'पुस्तकालय लोड नहीं हो सका। दोबारा प्रयास करें।',
-    read: 'किताब का विवरण →',
     book: 'किताब',
-    by: 'प्रकाशक',
+    by: 'द्वारा',
+    year: 'प्रकाशित',
     count: n => `${n} किताबें`,
     retry: 'फिर कोशिश करें'
   },
@@ -1042,14 +1033,12 @@ const copy = {
     heading: 'مطالعے اور تحقیق کے لیے کتابیں',
     search: 'کتاب، مصنف یا لفظ تلاش کریں',
     allLang: 'تمام دستیاب زبانیں',
-    pdf: 'PDF دستیاب',
-    epub: 'EPUB دستیاب',
     loading: 'کتابیں لوڈ ہو رہی ہیں…',
     none: 'کوئی کتاب نہیں ملی۔ دوسرا لفظ تلاش کریں۔',
     error: 'کتب خانہ لوڈ نہیں ہو سکا۔ دوبارہ کوشش کریں۔',
-    read: 'کتاب کی تفصیل ←',
     book: 'کتاب',
-    by: 'ناشر',
+    by: 'از',
+    year: 'اشاعت',
     count: n => `${n} کتابیں`,
     retry: 'دوبارہ کوشش کریں'
   }
@@ -1143,7 +1132,7 @@ function languageLabel(code) {
     en: 'English',
     hi: 'Hindi',
     ur: 'Urdu',
-    roman: 'English (Hinglish)'
+    roman: 'Roman'
   };
 
   return labels[code] || code || '';
@@ -1243,8 +1232,9 @@ function searchableText(book) {
 
   const parts = [
     book.slug,
-    details.publisher,
     details.edition,
+    details.publication_year,
+    book.author_name,
     details.isbn,
     details.language_original
   ];
@@ -1265,7 +1255,6 @@ function searchableText(book) {
 function matchesFilters(book) {
   const query = normalise($('searchInput').value);
   const selectedLanguage = $('languageFilter').value;
-  const selectedFormat = $('formatFilter').value;
   const details = book.book_details || {};
   const languages = bookLanguages(book);
 
@@ -1280,19 +1269,6 @@ function matchesFilters(book) {
     return false;
   }
 
-  if (
-    selectedFormat === 'pdf' &&
-    !details.pdf_storage_path
-  ) {
-    return false;
-  }
-
-  if (
-    selectedFormat === 'epub' &&
-    !details.epub_storage_path
-  ) {
-    return false;
-  }
 
   return true;
 }
@@ -1305,81 +1281,40 @@ function bookCardHTML(book, index) {
   const t = copy[lang];
   const translation = translationFor(book);
   const details = book.book_details || {};
-
-  const title = cleanText(translation.title) ||
-    cleanText(book.slug) ||
-    t.book;
-
-  const publisher = cleanText(details.publisher);
-
-  const description = cleanText(
-    translation.excerpt || translation.subtitle
-  );
-
-  const languages = bookLanguages(book)
-    .map(languageLabel)
-    .join(' · ');
-
-  const formats = [
-    details.pdf_storage_path ? 'PDF' : '',
-    details.epub_storage_path ? 'EPUB' : ''
-  ].filter(Boolean).join(' · ') || t.book;
-
-  const bookUrl =
-    'book.html?slug=' + encodeURIComponent(book.slug || '');
-
+  const title = cleanText(translation.title) || cleanText(book.slug) || t.book;
+  const author = cleanText(book.author_name);
+  const year = cleanText(details.publication_year);
+  const language = languageLabel(details.language_original || '');
+  const description = cleanText(translation.excerpt || translation.subtitle);
+  const bookUrl = 'book.html?slug=' + encodeURIComponent(book.slug || '');
   const cover = coverHTML(book, title);
-
   return `
-    <article class="book-card"
+    <article class="book-card book-card-clickable" data-book-url="${escapeHtml(bookUrl)}"
+      tabindex="0" role="link" aria-label="${escapeHtml(title)} — ${escapeHtml(author || 'Markaz.org')}"
       style="animation-delay:${Math.min(index * 35, 280)}ms">
-
-      <a class="cover-link"
-        href="${bookUrl}"
-        aria-label="${escapeHtml(title)}">
-
-        ${cover}
-
-      </a>
-
+      <div class="cover-link">${cover}</div>
       <div class="book-info">
-
-        <span class="tag">${escapeHtml(formats)}</span>
-
-        <h3>
-          <a href="${bookUrl}">
-            ${escapeHtml(title)}
-          </a>
-        </h3>
-
-        ${publisher ? `
-          <p class="author">
-            ${escapeHtml(t.by)}:
-            ${escapeHtml(publisher)}
-          </p>
-        ` : ''}
-
-        ${languages ? `
-          <p class="author">
-            ${escapeHtml(languages)}
-          </p>
-        ` : ''}
-
-        ${description ? `
-          <p class="book-desc">
-            ${escapeHtml(description)}
-          </p>
-        ` : ''}
-
-        <div class="card-actions">
-          <a class="btn" href="${bookUrl}">
-            ${escapeHtml(t.read)}
-          </a>
-        </div>
-
+        <h3>${escapeHtml(title)}</h3>
+        ${author ? `<p class="author book-byline">${escapeHtml(t.by)} ${escapeHtml(author)}</p>` : ''}
+        ${year ? `<p class="author book-year">${escapeHtml(t.year)} ${escapeHtml(year)}</p>` : ''}
+        ${language ? `<span class="tag language-tag">${escapeHtml(language)}</span>` : ''}
+        ${description ? `<p class="book-desc">${escapeHtml(description)}</p>` : ''}
       </div>
     </article>
   `;
+}
+
+function initialiseBookCards() {
+  document.querySelectorAll('.book-card-clickable').forEach(card => {
+    const go = () => { if (card.dataset.bookUrl) window.location.href = card.dataset.bookUrl; };
+    card.addEventListener('click', event => {
+      if (event.target.closest('a,button,input,select')) return;
+      go();
+    });
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); go(); }
+    });
+  });
 }
 
 /* ==========================================
@@ -1415,6 +1350,7 @@ function render() {
     .join('');
 
   initialiseCovers();
+  initialiseBookCards();
 }
 
 /* ==========================================
@@ -1452,8 +1388,7 @@ function setLanguage(next) {
   $('searchInput').placeholder = t.search;
 
   $('languageFilter').options[0].textContent = t.allLang;
-  $('formatFilter').options[1].textContent = t.pdf;
-  $('formatFilter').options[2].textContent = t.epub;
+  try { localStorage.setItem('markaz_site_language', next); } catch (_) {}
 
   render();
 }
@@ -1470,7 +1405,19 @@ document.querySelectorAll('[data-lang]').forEach(button => {
 
 $('searchInput').addEventListener('input', render);
 $('languageFilter').addEventListener('change', render);
-$('formatFilter').addEventListener('change', render);
+
+// Keep this page in sync with Markaz.org's global language switcher immediately.
+document.addEventListener('click', event => {
+  const button = event.target.closest('#markaz-global-language button[data-markaz-lang]');
+  if (button && button.dataset.markazLang && button.dataset.markazLang !== lang) {
+    setLanguage(button.dataset.markazLang);
+  }
+});
+window.addEventListener('storage', event => {
+  if (event.key === 'markaz_site_language' && event.newValue && event.newValue !== lang) {
+    setLanguage(event.newValue);
+  }
+});
 
 /* ==========================================
    LOAD PUBLISHED BOOKS
@@ -1509,7 +1456,7 @@ async function loadBooks() {
         ),
         book_details(
           content_id,
-          publisher,
+          author_id,
           publication_year,
           edition,
           isbn,
@@ -1530,8 +1477,23 @@ async function loadBooks() {
 
     if (error) throw error;
 
-    books = (data || []).filter(book => book.slug);
-
+    const { data: people, error: peopleError } = await client
+      .from('content_items')
+      .select('id,slug,content_translations(language_code,title)')
+      .eq('type', 'person')
+      .limit(1000);
+    if (peopleError) console.warn('Author names could not be loaded:', peopleError.message);
+    const peopleById = new Map((people || []).map(person => {
+      const translations = person.content_translations || [];
+      const preferred = translations.find(item => item.language_code === lang) ||
+        translations.find(item => item.language_code === 'roman') ||
+        translations.find(item => item.language_code === 'en') || translations[0] || {};
+      return [person.id, cleanText(preferred.title || person.slug || '')];
+    }));
+    books = (data || []).filter(book => book.slug).map(book => {
+      const details = book.book_details || {};
+      return { ...book, author_name: details.author_id ? (peopleById.get(details.author_id) || '') : '' };
+    });
     render();
 
   } catch (error) {
@@ -1660,6 +1622,19 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 @media(max-width:600px){.book-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cover:before{inset:7px}.book-info{padding:11px}.book-info h3{font-size:.94rem;line-height:1.45;min-height:4.1em;margin:10px 0 7px}.book-info .tag{font-size:.59rem;padding:4px 8px}.author{font-size:.74rem}.book-desc{font-size:.73rem;min-height:0}.card-actions .btn{width:100%;min-height:39px;padding:8px 10px;font-size:.78rem}.toolbar{top:5px;padding:9px;border-radius:14px;gap:9px}}
 @media(max-width:360px){.book-grid{gap:9px}.book-info{padding:9px}.fallback-title{font-size:.9rem}.cover-fallback{padding:12px}}
 @media(prefers-reduced-motion:reduce){.book-card,.cover img{animation:none!important;transition:none!important}}
+</style>
+
+
+<style id="markaz-library-card-fixes">
+#formatFilter{display:none!important}
+.book-card-clickable{cursor:pointer;outline-offset:4px}
+.book-card-clickable:focus-visible{outline:3px solid #c7a15a}
+.book-card-clickable .book-info h3{margin:12px 0 8px;line-height:1.4;font-size:1.03rem}
+.book-card-clickable .book-byline{font-weight:650;color:#65202d!important;margin:0 0 5px}
+.book-card-clickable .book-year{margin:0 0 8px;color:#6d706b!important}
+.book-card-clickable .language-tag{display:inline-flex;margin:2px 0 7px;background:#f5ecdc!important;color:#6a4b22!important}
+.book-card-clickable .book-desc{margin-top:6px}
+@media(max-width:600px){.book-card-clickable .book-info h3{font-size:.91rem}.book-card-clickable .book-byline,.book-card-clickable .book-year{font-size:.72rem}}
 </style>
 
 </body>
