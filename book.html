@@ -149,9 +149,46 @@
             padding: 40px;
             color: var(--muted);
             background: #fff;
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid var(--line);
+            box-shadow: 0 12px 35px rgba(23,39,43,.06);
         }
+        main { max-width: 1080px; margin: clamp(22px,4vw,48px) auto; }
+        .detail-card {
+            position: relative;
+            overflow: hidden;
+            gap: clamp(24px,4vw,48px);
+            padding: clamp(20px,4vw,42px);
+            border-radius: 24px;
+            border-color: #e2dfd5;
+            background: linear-gradient(135deg,#fff 0%,#fffdf8 68%,#f6efe2 100%);
+            box-shadow: 0 22px 60px rgba(32,42,39,.09);
+            animation: card-arrive .45s ease both;
+        }
+        .detail-card:before { content:""; position:absolute; width:260px; height:260px; right:-150px; top:-155px; border:1px solid #e5d4b3; border-radius:50%; box-shadow:0 0 0 18px #b58a4808,0 0 0 38px #b58a4806; pointer-events:none; }
+        .cover-box {
+            position:relative; z-index:1; flex-basis:clamp(200px,27vw,285px);
+            border-radius:16px; border:1px solid #d8c49d; padding:6px;
+            background:#fffaf0; box-shadow:0 16px 34px rgba(40,36,25,.16);
+            aspect-ratio:3/4; flex-shrink:0;
+        }
+        .cover-box img { display:block; border-radius:10px; object-fit:contain; background:#f2eee5; }
+        .info-box { min-width:0; position:relative; z-index:1; padding-top:4px; }
+        h1 { overflow-wrap:anywhere; margin-bottom:8px; color:#183137; }
+        .author-byline { margin:0 0 20px; color:#075e59; font-size:1.02rem; font-weight:750; line-height:1.65; }
+        .meta-list { padding-top:18px; border-top:1px solid #e6e0d3; }
+        .meta-list li { color:#4b5a5d; }
+        .meta-list li strong { color:#1b3035; }
+        .btn-read {
+            background:#075e59 !important; color:#fff !important; border:2px solid #075e59;
+            box-shadow:0 8px 20px rgba(7,94,89,.2); min-height:48px; padding:12px 28px;
+            display:inline-flex; align-items:center; justify-content:center; gap:9px;
+        }
+        .btn-read:before { content:"↗"; font-size:1.1em; }
+        .btn-read:hover,.btn-read:focus-visible { background:#043f3c !important; color:#fff !important; border-color:#043f3c; }
+        @keyframes card-arrive { from {opacity:0; transform:translateY(8px)} to {opacity:1; transform:translateY(0)} }
+        @media(prefers-reduced-motion:reduce){.detail-card{animation:none}}
+
         @media(max-width: 768px) {
             .detail-card {
                 flex-direction: column;
@@ -212,7 +249,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
             </div>
             <div class="info-box">
                 <h1 id="title">Book Title</h1>
-                
+                <p id="author-byline" class="author-byline" hidden></p>
                 <ul id="meta-list" class="meta-list">
                     <!-- Dynamic details will inject here -->
                 </ul>
@@ -240,11 +277,13 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
         const BOOK_LANGUAGES = ['en', 'hi', 'ur'];
         const BOOK_MESSAGES = {
-            en: { noBook: 'No book selected.', notFound: 'Book not found or unavailable.', unavailable: 'This book title is not available in the selected language.', noCover: 'No cover available', readNow: 'Read Now' },
-            hi: { noBook: 'कोई पुस्तक चयनित नहीं है।', notFound: 'पुस्तक नहीं मिली या उपलब्ध नहीं है।', unavailable: 'इस भाषा में पुस्तक का शीर्षक उपलब्ध नहीं है।', noCover: 'कवर उपलब्ध नहीं', readNow: 'अभी पढ़ें' },
-            ur: { noBook: 'کوئی کتاب منتخب نہیں کی گئی۔', notFound: 'کتاب نہیں ملی یا دستیاب نہیں ہے۔', unavailable: 'منتخب زبان میں اس کتاب کا عنوان دستیاب نہیں۔', noCover: 'سرورق دستیاب نہیں', readNow: 'ابھی پڑھیں' }
+            en: { noBook: 'No book selected.', notFound: 'Book not found or unavailable.', unavailable: 'This book title is not available in the selected language.', noCover: 'No cover available', readNow: 'Read Now', author: 'Author:' },
+            hi: { noBook: 'कोई पुस्तक चयनित नहीं है।', notFound: 'पुस्तक नहीं मिली या उपलब्ध नहीं है।', unavailable: 'इस भाषा में पुस्तक का शीर्षक उपलब्ध नहीं है।', noCover: 'कवर उपलब्ध नहीं', readNow: 'अभी पढ़ें', author: 'लेखक:' },
+            ur: { noBook: 'کوئی کتاب منتخب نہیں کی گئی۔', notFound: 'کتاب نہیں ملی یا دستیاب نہیں ہے۔', unavailable: 'منتخب زبان میں اس کتاب کا عنوان دستیاب نہیں۔', noCover: 'سرورق دستیاب نہیں', readNow: 'ابھی پڑھیں', author: 'مصنف:' }
         };
+        let activeBookLanguage = null;
         function selectedBookLanguage() {
+            if (activeBookLanguage && BOOK_LANGUAGES.includes(activeBookLanguage)) return activeBookLanguage;
             const params = new URLSearchParams(window.location.search);
             const urlLanguage = (params.get('lang') || '').toLowerCase();
             if (BOOK_LANGUAGES.includes(urlLanguage)) return urlLanguage;
@@ -315,6 +354,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
                         .eq('language_code', currentLanguage);
                     const localizedAuthor = selectedTranslation(authorTranslations);
                     if (localizedAuthor) authorName = localizedAuthor.title;
+                    else authorName = personData.verified_name || '';
 
                     const { data: itemData } = await db
                         .from('content_items')
@@ -331,20 +371,32 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
                 authorName = details.author || details.writer || '';
             }
 
+            // Prominent author byline directly beneath the book title.
+            const byline = $('author-byline');
+            byline.replaceChildren();
+            if (authorName && String(authorName).trim()) {
+                const label = document.createElement('strong');
+                label.textContent = BOOK_MESSAGES[currentLanguage].author + ' ';
+                const name = document.createElement('span');
+                name.textContent = authorName;
+                byline.append(label, name);
+                byline.hidden = false;
+            } else {
+                byline.hidden = true;
+            }
+
             // Dynamic fields generation
             const metaContainer = $('meta-list');
             metaContainer.innerHTML = '';
 
             const fieldsList = [
-                { key: 'author', label: 'Author', value: authorName, isAuthorLink: true, authorSlug: authorSlug },
-                { key: 'translator', label: 'Translator', value: details.translator },
-                { key: 'editor', label: 'Editor', value: details.editor },
-                { key: 'publisher', label: 'Publisher', value: details.publisher, isPublisherLink: true },
-                { key: 'page_count', label: 'Page counts', value: details.page_count || details.pages },
-                { key: 'publication_year', label: 'Publication year', value: details.publication_year || details.year, isYearLink: true },
-                { key: 'edition', label: 'Edition', value: details.edition },
-                { key: 'language', label: 'Language', value: details.language_original || details.language, isLangLink: true },
-                { key: 'notes', label: 'Notes', value: details.notes || details.description }
+                { key: 'translator', label: currentLanguage === 'hi' ? 'अनुवादक' : currentLanguage === 'ur' ? 'مترجم' : 'Translator', value: details.translator },
+                { key: 'editor', label: currentLanguage === 'hi' ? 'संपादक' : currentLanguage === 'ur' ? 'مدیر' : 'Editor', value: details.editor },
+                { key: 'page_count', label: currentLanguage === 'hi' ? 'पृष्ठ संख्या' : currentLanguage === 'ur' ? 'صفحات' : 'Pages', value: details.page_count || details.pages },
+                { key: 'publication_year', label: currentLanguage === 'hi' ? 'प्रकाशन वर्ष' : currentLanguage === 'ur' ? 'سنِ اشاعت' : 'Publication year', value: details.publication_year || details.year, isYearLink: true },
+                { key: 'edition', label: currentLanguage === 'hi' ? 'संस्करण' : currentLanguage === 'ur' ? 'ایڈیشن' : 'Edition', value: details.edition },
+                { key: 'language', label: currentLanguage === 'hi' ? 'भाषा' : currentLanguage === 'ur' ? 'زبان' : 'Language', value: details.language_original || details.language, isLangLink: true },
+                { key: 'notes', label: currentLanguage === 'hi' ? 'टिप्पणियाँ' : currentLanguage === 'ur' ? 'نوٹس' : 'Notes', value: details.notes || details.description }
             ];
 
             fieldsList.forEach(item => {
@@ -378,10 +430,15 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
             $('state').hidden = true;
             $('book-content').hidden = false;
             document.title = `${title} | Markaz.org`;
-            document.dispatchEvent(new CustomEvent('markaz:refresh-language'));
+            document.dispatchEvent(new CustomEvent('markaz:book-rendered'));
         }
 
         loadDetail();
+        document.addEventListener('markaz:language-changed', function(event) {
+            const next = event && event.detail && event.detail.language;
+            activeBookLanguage = BOOK_LANGUAGES.includes(next) ? next : selectedBookLanguage();
+            loadDetail();
+        });
     </script>
 
 
