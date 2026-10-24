@@ -341,6 +341,21 @@ main { max-width:1180px; padding:34px 22px 70px; }
 }
 @media(prefers-reduced-motion:reduce) { *,*:before,*:after { scroll-behavior:auto!important;transition:none!important;animation:none!important; } }
 
+
+.book-profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px;margin:18px 0 8px}
+.book-profile-card{display:flex;gap:16px;align-items:stretch;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--paper);box-shadow:var(--shadow);min-width:0;transition:transform .2s ease,box-shadow .2s ease}
+.book-profile-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(71,33,39,.1)}
+.book-cover-link{flex:0 0 104px;align-self:flex-start}
+.book-cover{display:block;width:104px;height:148px;object-fit:cover;border-radius:8px;background:#efe4d6;box-shadow:0 5px 14px rgba(0,0,0,.12)}
+.book-cover-placeholder{display:grid;place-items:center;padding:10px;text-align:center;color:var(--wine);font:700 14px/1.4 'Playfair Display',serif;border:1px solid var(--gold)}
+.book-profile-details{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+.book-status{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#78602f;font-weight:800}
+.book-profile-details h3{font:700 20px/1.35 'Playfair Display',serif;margin:0;overflow-wrap:anywhere}
+.book-profile-details h3 a{text-decoration:none;color:var(--ink)}
+.book-meta,.books-intro{margin:0;color:var(--muted);font-size:14px}
+.book-open{margin-top:auto;padding-top:7px;font-size:13px;font-weight:800;text-decoration:none;color:var(--wine)}
+html[dir="rtl"] .book-profile-card{direction:rtl}html[dir="rtl"] .book-profile-details{align-items:flex-start}
+@media(max-width:420px){.book-profile-card{gap:12px;padding:12px}.book-cover-link{flex-basis:86px}.book-cover{width:86px;height:124px}.book-profile-details h3{font-size:17px}}
 </style>
 <style id="markaz-shared-design">
 
@@ -423,6 +438,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
   let profile = null;
   let translations = [];
   let works = [];
+  let profileBooks = [];
   let currentLang = (function(){ try { const saved=localStorage.getItem("markaz-lang"); return ["en","hi","ur"].includes(saved) ? saved : "en"; } catch (_) { return "en"; } })();
   let currentTab = "profile";
   let loading = false;
@@ -453,13 +469,26 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       searchPlaceholder: "Search authors, poets and scholars…",
       viewProfile: "View Profile",
       noAuthors: "No matching authors found. Try another search.",
+      booksIntro: "Published books by this author.",
+      noBooks: "No published books are linked to this author yet.",
+      published: "Published",
+      publisher: "Publisher",
+      year: "Year",
+      viewBook: "View book",
       tabs: {
         profile: "Profile",
         naat: "Naat",
         manqabat: "Manqabat",
         ghazal: "Ghazal",
         article: "Articles",
-        sher: "Sher"
+        sher: "Sher",
+        book: "Books",
+        booksIntro: "Published books by this author.",
+        noBooks: "No published books are linked to this author yet.",
+        published: "Published",
+        publisher: "Publisher",
+        year: "Year",
+        viewBook: "View book"
       }
     },
     hi: {
@@ -487,13 +516,26 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       searchPlaceholder: "लेखक, शायर और विद्वान खोजें…",
       viewProfile: "प्रोफ़ाइल देखें",
       noAuthors: "कोई मेल खाती प्रोफ़ाइल नहीं मिली। दूसरा नाम खोजें।",
+      booksIntro: "इस लेखक की प्रकाशित पुस्तकें।",
+      noBooks: "इस लेखक से जुड़ी कोई प्रकाशित पुस्तक अभी उपलब्ध नहीं है।",
+      published: "प्रकाशित",
+      publisher: "प्रकाशक",
+      year: "वर्ष",
+      viewBook: "पुस्तक देखें",
       tabs: {
         profile: "प्रोफ़ाइल",
         naat: "नात",
         manqabat: "मनक़बत",
         ghazal: "ग़ज़ल",
         article: "लेख",
-        sher: "शेर"
+        sher: "शेर",
+        book: "पुस्तकें",
+        booksIntro: "इस लेखक की प्रकाशित पुस्तकें।",
+        noBooks: "इस लेखक से जुड़ी कोई प्रकाशित पुस्तक अभी उपलब्ध नहीं है।",
+        published: "प्रकाशित",
+        publisher: "प्रकाशक",
+        year: "वर्ष",
+        viewBook: "पुस्तक देखें"
       }
     },
     ur: {
@@ -521,13 +563,26 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       searchPlaceholder: "مصنفین، شعرا اور محققین تلاش کریں…",
       viewProfile: "پروفائل دیکھیں",
       noAuthors: "کوئی متعلقہ پروفائل نہیں ملی۔ دوسرا نام تلاش کریں۔",
+      booksIntro: "اس مصنف کی شائع شدہ کتابیں۔",
+      noBooks: "ابھی اس مصنف سے منسلک کوئی شائع شدہ کتاب موجود نہیں۔",
+      published: "شائع شدہ",
+      publisher: "ناشر",
+      year: "سنِ اشاعت",
+      viewBook: "کتاب دیکھیے",
       tabs: {
         profile: "پروفائل",
         naat: "نعت",
         manqabat: "منقبت",
         ghazal: "غزل",
         article: "مقالات",
-        sher: "اشعار"
+        sher: "اشعار",
+        book: "کتب",
+        booksIntro: "اس مصنف کی شائع شدہ کتابیں۔",
+        noBooks: "ابھی اس مصنف سے منسلک کوئی شائع شدہ کتاب موجود نہیں۔",
+        published: "شائع شدہ",
+        publisher: "ناشر",
+        year: "سنِ اشاعت",
+        viewBook: "کتاب دیکھیے"
       }
     }
   };
@@ -739,8 +794,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
     const availableTabs = [];
     if (profileHasContent) availableTabs.push("profile");
     Object.keys(tabCounts).forEach(key => {
-      if (key && key !== "profile" && tabCounts[key] > 0) availableTabs.push(key);
+      if (key && key !== "profile" && key !== "book" && tabCounts[key] > 0) availableTabs.push(key);
     });
+    if (profileBooks.length) { tabCounts.book = profileBooks.length; availableTabs.push("book"); }
     if (!availableTabs.includes(currentTab)) currentTab = availableTabs[0] || "profile";
 
     let heroFactsHTML = "";
@@ -758,7 +814,19 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
     let mainContentHTML = "";
 
-    if (currentTab === 'profile') {
+    if (currentTab === "book") {
+      const bookCards = profileBooks.map(book => {
+        const bt = book.content_translations || [];
+        const wanted = currentLang === "ur" ? ["ur","roman","hi","en"] : currentLang === "hi" ? ["hi","roman","en","ur"] : ["en","roman","ur","hi"];
+        const tr = wanted.map(code => bt.find(row => row.language_code === code)).find(Boolean) || bt[0] || {};
+        const title = tr.title || book.slug || "Untitled book";
+        const details = Array.isArray(book.book_details) ? (book.book_details[0] || {}) : (book.book_details || {});
+        const meta = [details.publisher ? escapeHTML(L.publisher) + ": " + escapeHTML(details.publisher) : "", details.publication_year ? escapeHTML(L.year) + ": " + escapeHTML(details.publication_year) : ""].filter(Boolean).join(" · ");
+        const cover = book.cover_image_url || "";
+        return `<article class="book-profile-card">${cover ? `<a class="book-cover-link" href="book.html?slug=${encodeURIComponent(book.slug)}"><img class="book-cover" loading="lazy" src="${escapeHTML(cover)}" alt="${escapeHTML(title)}" onerror="this.style.display='none'"></a>` : `<div class="book-cover book-cover-placeholder" aria-hidden="true">Markaz.org</div>`}<div class="book-profile-details"><span class="book-status">${escapeHTML(L.published)}</span><h3><a href="book.html?slug=${encodeURIComponent(book.slug)}">${escapeHTML(title)}</a></h3>${meta ? `<p class="book-meta">${meta}</p>` : ""}<a class="book-open" href="book.html?slug=${encodeURIComponent(book.slug)}">${escapeHTML(L.viewBook)} <span aria-hidden="true">→</span></a></div></article>`;
+      }).join("");
+      mainContentHTML = `<section class="books-section"><p class="books-intro">${escapeHTML(L.booksIntro)}</p><div class="book-profile-grid">${bookCards || `<div class="empty">${escapeHTML(L.noBooks)}</div>`}</div></section>`;
+    } else if (currentTab === 'profile') {
       let infoItems = [];
       if (realName) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.realName)}:</span> ${escapeHTML(realName)}</div>`);
       if (penName) infoItems.push(`<div class="profile-info-item"><span class="profile-info-label">${escapeHTML(L.penName)}:</span> ${escapeHTML(penName)}</div>`);
@@ -806,7 +874,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
           '<img class="portrait" src="' + escapeHTML(imageURL) + '" alt="' + escapeHTML(displayName) + '" onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'">' +
         '</div>' +
         '<div>' +
-          '<p class="profile-kicker" data-profile-kicker="true">${escapeHTML(({en:"Markaz.org Profile",hi:"मरकज़ ओर्ग प्रोफाइल",ur:"مرکز آرگنائزیشن پروفائل"})[currentLang])}</p>' +
+          '<p class="profile-kicker" data-profile-kicker="true">' + escapeHTML(({en:"Markaz.org Profile",hi:"मरकज़ ओर्ग प्रोफाइल",ur:"مرکز آرگنائزیشن پروفائل"})[currentLang] || "Markaz.org Profile") + '</p>' +
           '<h1 class="profile-name">' + escapeHTML(displayName) + '</h1>' +
           ((t.short_bio && !t.short_bio.includes("poori biography likhein")) ? '<p class="profile-subtitle">' + escapeHTML(t.short_bio) + '</p>' : '') +
           (heroFactsHTML ? '<div class="facts">' + heroFactsHTML + '</div>' : '') +
@@ -896,6 +964,20 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
       translations = results[0].data || [];
       works = results[1].data || [];
+      profileBooks = [];
+
+      // Books in Markaz.org's main digital library are stored in content_items/book_details,
+      // not author_works. Resolve the matching public author/person record by slug first.
+      const personResult = await db.from("content_items").select("id,slug").eq("type", "person").eq("slug", profile.slug).maybeSingle();
+      if (personResult.error) console.warn("Could not resolve library author record:", personResult.error.message);
+      if (personResult.data && personResult.data.id) {
+        const booksResult = await db.from("content_items")
+          .select("id,type,slug,status,cover_image_url,content_translations(language_code,title,subtitle,excerpt),book_details!inner(author_id,publisher,publication_year)")
+          .eq("type", "book").eq("status", "published").eq("book_details.author_id", personResult.data.id)
+          .order("published_at", { ascending: false, nullsFirst: false });
+        if (booksResult.error) console.warn("Could not load published author books:", booksResult.error.message);
+        else profileBooks = booksResult.data || [];
+      }
 
       renderProfile();
 
