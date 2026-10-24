@@ -172,10 +172,24 @@
             background:#fffaf0; box-shadow:0 16px 34px rgba(40,36,25,.16);
             aspect-ratio:3/4; flex-shrink:0;
         }
-        .cover-box img { display:block; border-radius:10px; object-fit:contain; background:#f2eee5; }
+        .cover-box { padding:7px; display:block; overflow:hidden; background:#fffaf0; }
+        .cover-actions { position:absolute; z-index:4; top:14px; right:14px; }
+        .share-btn { width:42px; height:42px; display:grid; place-items:center; border-radius:50%; border:1px solid rgba(255,255,255,.85); background:rgba(255,253,247,.96); color:#075e59; box-shadow:0 5px 18px rgba(20,35,32,.2); cursor:pointer; }
+        .share-btn svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+        .share-btn:hover { background:#075e59; color:#fff; }
+        .cover-reader-link { position:absolute; inset:7px; display:block; border-radius:10px; overflow:hidden; background:#f2eee5; }
+        .cover-reader-link img { display:block; width:100%; height:100%; border-radius:10px; object-fit:contain; background:#f2eee5; }
+        .cover-open-hint { position:absolute; left:10px; right:10px; bottom:10px; padding:7px 10px; border-radius:999px; background:rgba(15,53,49,.92); color:#fff; text-align:center; font-size:.78rem; font-weight:700; opacity:0; transform:translateY(5px); transition:opacity .2s,transform .2s; }
+        .cover-reader-link:hover .cover-open-hint,.cover-reader-link:focus-visible .cover-open-hint { opacity:1; transform:translateY(0); }
         .info-box { min-width:0; position:relative; z-index:1; padding-top:4px; }
         h1 { overflow-wrap:anywhere; margin-bottom:8px; color:#183137; }
-        .author-byline { margin:0 0 20px; color:#075e59; font-size:1.02rem; font-weight:750; line-height:1.65; }
+        .author-byline { margin:0 0 20px; color:#075e59; font-size:.94rem; font-weight:750; line-height:1.7; }
+        .author-byline a { color:#075e59!important; text-decoration:none; border-bottom:1px solid #c6d9d3; }
+        .author-byline a:hover { color:#043f3c!important; border-color:#a7782d; }
+        h1 { font-size:clamp(1.55rem,2.5vw,2.15rem)!important; }
+        .meta-list li { font-size:.88rem!important; }
+        .btn-read { font-size:.94rem!important; min-height:44px!important; }
+        .cover-box:focus-within { outline:3px solid #d4a54d; outline-offset:4px; }
         .meta-list { padding-top:18px; border-top:1px solid #e6e0d3; }
         .meta-list li { color:#4b5a5d; }
         .meta-list li strong { color:#1b3035; }
@@ -190,6 +204,9 @@
         @media(prefers-reduced-motion:reduce){.detail-card{animation:none}}
 
         @media(max-width: 768px) {
+            .cover-box { width: min(100%, 280px); }
+            .cover-open-hint { opacity:1; transform:none; font-size:.74rem; }
+            .share-btn { width:40px; height:40px; }
             .detail-card {
                 flex-direction: column;
                 padding: 20px;
@@ -245,7 +262,15 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
         
         <div id="book-content" class="detail-card" hidden>
             <div class="cover-box">
-                <img id="cover" src="" alt="Book Cover">
+                <div class="cover-actions">
+                    <button id="share-btn" class="share-btn" type="button" aria-label="Share this book" title="Share this book">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5M5 12.5v6A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5v-6"/></svg>
+                    </button>
+                </div>
+                <a id="cover-reader-link" class="cover-reader-link" href="#" aria-label="Read this book">
+                    <img id="cover" src="" alt="Book Cover">
+                    <span class="cover-open-hint" id="cover-open-hint">Open book</span>
+                </a>
             </div>
             <div class="info-box">
                 <h1 id="title">Book Title</h1>
@@ -277,9 +302,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
         const BOOK_LANGUAGES = ['en', 'hi', 'ur'];
         const BOOK_MESSAGES = {
-            en: { noBook: 'No book selected.', notFound: 'Book not found or unavailable.', unavailable: 'This book title is not available in the selected language.', noCover: 'No cover available', readNow: 'Read Now', author: 'Author:' },
-            hi: { noBook: 'कोई पुस्तक चयनित नहीं है।', notFound: 'पुस्तक नहीं मिली या उपलब्ध नहीं है।', unavailable: 'इस भाषा में पुस्तक का शीर्षक उपलब्ध नहीं है।', noCover: 'कवर उपलब्ध नहीं', readNow: 'अभी पढ़ें', author: 'लेखक:' },
-            ur: { noBook: 'کوئی کتاب منتخب نہیں کی گئی۔', notFound: 'کتاب نہیں ملی یا دستیاب نہیں ہے۔', unavailable: 'منتخب زبان میں اس کتاب کا عنوان دستیاب نہیں۔', noCover: 'سرورق دستیاب نہیں', readNow: 'ابھی پڑھیں', author: 'مصنف:' }
+            en: { noBook: 'No book selected.', notFound: 'Book not found or unavailable.', unavailable: 'This book title is not available in the selected language.', noCover: 'No cover available', readNow: 'Read Now', author: 'Author:', openBook: 'Open book', share: 'Share book', shareError: 'Unable to share this book link.' },
+            hi: { noBook: 'कोई पुस्तक चयनित नहीं है।', notFound: 'पुस्तक नहीं मिली या उपलब्ध नहीं है।', unavailable: 'इस भाषा में पुस्तक का शीर्षक उपलब्ध नहीं है।', noCover: 'कवर उपलब्ध नहीं', readNow: 'अभी पढ़ें', author: 'लेखक:', openBook: 'पुस्तक पढ़ें', share: 'पुस्तक साझा करें', shareError: 'पुस्तक का लिंक साझा नहीं हो सका।' },
+            ur: { noBook: 'کوئی کتاب منتخب نہیں کی گئی۔', notFound: 'کتاب نہیں ملی یا دستیاب نہیں ہے۔', unavailable: 'منتخب زبان میں اس کتاب کا عنوان دستیاب نہیں۔', noCover: 'سرورق دستیاب نہیں', readNow: 'ابھی پڑھیں', author: 'مصنف:', openBook: 'کتاب پڑھیے', share: 'کتاب شیئر کریں', shareError: 'کتاب کا لنک شیئر نہیں ہو سکا۔' }
         };
         let activeBookLanguage = null;
         function selectedBookLanguage() {
@@ -377,8 +402,16 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
             if (authorName && String(authorName).trim()) {
                 const label = document.createElement('strong');
                 label.textContent = BOOK_MESSAGES[currentLanguage].author + ' ';
-                const name = document.createElement('span');
-                name.textContent = authorName;
+                let name;
+                if (authorSlug) {
+                    name = document.createElement('a');
+                    name.href = `authors.html?slug=${encodeURIComponent(authorSlug)}`;
+                    name.textContent = authorName;
+                    name.setAttribute('aria-label', `${BOOK_MESSAGES[currentLanguage].author} ${authorName}`);
+                } else {
+                    name = document.createElement('span');
+                    name.textContent = authorName;
+                }
                 byline.append(label, name);
                 byline.hidden = false;
             } else {
@@ -424,7 +457,13 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
             });
 
             // Read Now button link pointing to reader page with slug
-            $('read-btn').href = `book-reader.html?slug=${encodeURIComponent(slug)}`;
+            const readerUrl = `book-reader.html?slug=${encodeURIComponent(slug)}`;
+            $('read-btn').href = readerUrl;
+            $('cover-reader-link').href = readerUrl;
+            $('cover-reader-link').setAttribute('aria-label', `${BOOK_MESSAGES[currentLanguage].readNow}: ${title}`);
+            $('cover-open-hint').textContent = BOOK_MESSAGES[currentLanguage].openBook;
+            $('share-btn').setAttribute('aria-label', BOOK_MESSAGES[currentLanguage].share);
+            $('share-btn').title = BOOK_MESSAGES[currentLanguage].share;
             $('read-btn').textContent = BOOK_MESSAGES[selectedBookLanguage()].readNow;
             $('read-btn').hidden = !matched;
             $('state').hidden = true;
@@ -488,6 +527,7 @@ function apply(lang){
    var key=norm(el.dataset.markazPlaceholder),hit=dict[key];if(hit)el.placeholder=lang==='hi'?hit[0]:lang==='ur'?hit[1]:el.dataset.markazPlaceholder;
  });
  document.querySelectorAll('#markaz-global-language button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.markazLang===lang?'true':'false')});
+  document.dispatchEvent(new CustomEvent('markaz:language-changed',{detail:{language:lang}}));
 }
 function addSwitcher(){
  if(document.getElementById('markaz-global-language'))return;
