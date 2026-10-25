@@ -410,155 +410,122 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 
 </style>
-
-/* Responsive justified reading — poems, naats, ghazals, articles and prose */
-<style id="markaz-responsive-justified-reading">
-  html, body {
+<style id="markaz-rekhta-responsive-reading">
+/* Rekhta-inspired responsive reading layout */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+.shell, #entry, #workHead, #body, #body .couplet, #body .misra,
+#body .misra-text, #body p, #translitWrap, #translit {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+#body {
+  width: 100%;
+  font-size: var(--reader-size, 16px) !important;
+  line-height: 1.85;
+  text-align: justify !important;
+  text-justify: inter-word;
+  text-align-last: start;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+}
+#body .couplet {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 1.2em;
+}
+#body .misra {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  text-align: justify !important;
+  text-justify: inter-word;
+  text-align-last: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+  line-height: 1.8;
+}
+#body .misra-text {
+  display: inline;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+}
+#body p {
+  width: 100%;
+  margin-inline: 0;
+  text-align: justify !important;
+  text-justify: inter-word;
+  text-align-last: start;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+  line-height: 1.85;
+  margin-bottom: 1.15em;
+}
+#body[dir="rtl"],
+#body[dir="rtl"] .misra,
+#body[dir="rtl"] p {
+  direction: rtl;
+  text-align: justify !important;
+  text-align-last: right;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: none;
+}
+#body[dir="rtl"] .misra-text {
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
+#translit {
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: start;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  font-size: 0.92rem;
+  line-height: 1.85;
+}
+.work-head, .byline, .subtitle, .crumb {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+@media (max-width: 760px) {
+  .shell {
     width: 100%;
-    max-width: 100%;
-    overflow-x: clip;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
   }
-
-  .shell, #entry, #workHead, #body, #translitWrap, #translit,
-  #body .couplet, #body .misra, #body .misra-text,
-  #body p, #body span {
-    box-sizing: border-box;
-    min-width: 0;
-    max-width: 100%;
-  }
-
-  /* Match the Rekhta-style flowing, justified reading surface. */
   #body {
-    width: 100%;
-    text-align: justify;
-    text-justify: inter-word;
-    text-align-last: start;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    hyphens: auto;
+    font-size: var(--reader-size, 15px) !important;
+    line-height: 1.85;
+    padding-inline: 0;
   }
-
-  #body .misra {
-    width: 100%;
-    text-align: justify;
-    text-justify: inter-word;
-    text-align-last: start;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    hyphens: auto;
-  }
-
-  #body .misra-text {
-    display: inline;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    hyphens: auto;
-  }
-
-  #body p {
-    width: 100%;
-    margin-inline: 0;
-    text-align: justify;
-    text-justify: inter-word;
-    text-align-last: start;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    hyphens: auto;
-  }
-
-  /* RTL Urdu remains right-aligned and correctly shaped. */
-  #body[dir="rtl"],
-  #body[dir="rtl"] .misra,
-  #body[dir="rtl"] p {
-    direction: rtl;
-    text-align: justify;
-    text-align-last: right;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    hyphens: none;
-  }
-
-  #body[dir="rtl"] .misra-text {
-    direction: rtl;
-    unicode-bidi: plaintext;
-  }
-
-  /* Long Roman Urdu words, URLs and pasted text never widen the viewport. */
-  #body *,
-  #translit {
-    max-inline-size: 100%;
-    overflow-wrap: anywhere;
-  }
-
-  #translit {
-    text-align: justify;
-    text-justify: inter-word;
-    text-align-last: start;
-    white-space: pre-wrap;
-    word-break: normal;
-  }
-
-  .work-head, .byline, .subtitle, .crumb {
-    min-width: 0;
-    overflow-wrap: anywhere;
-    word-break: normal;
-  }
-
-  @media (max-width: 760px) {
-    .shell {
-      width: 100%;
-      padding-left: clamp(12px, 5.5vw, 22px) !important;
-      padding-right: clamp(12px, 5.5vw, 22px) !important;
-    }
-
-    #body {
-      font-size: var(--reader-size, 15px);
-      line-height: 1.9;
-      padding-inline: 0;
-    }
-
-    #body .couplet {
-      width: 100%;
-      margin-bottom: 1.15em;
-    }
-
-    #body .misra {
-      line-height: 1.8;
-    }
-
-    #body[dir="rtl"] {
-      line-height: 2.15;
-    }
-
-    #body[dir="rtl"] .misra {
-      line-height: 2.15;
-    }
-
-    #body p {
-      line-height: 1.9;
-      margin-bottom: 1.35em;
-    }
-
-    #translit {
-      line-height: 1.9;
-    }
-  }
-
-  @media (max-width: 360px) {
-    .shell {
-      padding-left: 10px !important;
-      padding-right: 10px !important;
-    }
-
-    #body {
-      font-size: max(14px, var(--reader-size, 15px));
-    }
-  }
+  #body .couplet { margin-bottom: 1.05em; }
+  #body .misra { line-height: 1.75; }
+  #body[dir="rtl"] { line-height: 2.05; }
+  #body[dir="rtl"] .misra { line-height: 2.05; }
+  #body p { line-height: 1.85; margin-bottom: 1.15em; }
+  #translit { font-size: 0.9rem; line-height: 1.8; }
+}
+@media (max-width: 380px) {
+  .shell { padding-left: 14px !important; padding-right: 14px !important; }
+}
 </style>
-
 </head>
 
 <body>
@@ -613,7 +580,7 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       <button type="button" data-lang="hi" aria-pressed="false">हिन्दी</button>
     </div>
 
-    <div class="poem" id="body" aria-label="Literary work text" style="text-align:justify;text-justify:inter-word;overflow-wrap:anywhere;"></div>
+    <div class="poem" id="body" aria-label="Literary work text"></div>
 
     <section id="translitWrap" class="translit hidden" aria-labelledby="translitHeading">
       <h2 id="translitHeading">Transliteration</h2>
@@ -641,7 +608,7 @@ function readSelectedLanguage(){
   } catch (_) { return 'en'; }
 }
 let lang = readSelectedLanguage();
-let fontSize = 18;
+let fontSize = 16;
 
 const VERSE_TYPES = ['ghazal','naat','manqabat','salam','salaam','hamd','poetry','kalam','kalaam','sher','bait','rubai','qaseeda','marsiya','nazm','doha','manzoom'];
 
