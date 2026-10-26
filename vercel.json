@@ -1,56 +1,213 @@
 {
-  "version": 2,
-  "routes": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
     {
-      "src": "^/work\\.html/([^/]+)/?$",
-      "dest": "/work.html?slug=$1"
+      "source": "/authors/:slug",
+      "destination": "/authors.html?slug=:slug&category=authors"
     },
     {
-      "src": "^/article\\.html/([^/]+)/?$",
-      "dest": "/article.html?slug=$1"
+      "source": "/authors/:slug/",
+      "destination": "/authors.html?slug=:slug&category=authors"
     },
     {
-      "src": "^/ghazal\\.html/([^/]+)/?$",
-      "dest": "/ghazal.html?slug=$1"
+      "source": "/poets/:slug",
+      "destination": "/authors.html?slug=:slug&category=poets"
     },
     {
-      "src": "^/naat\\.html/([^/]+)/?$",
-      "dest": "/naat.html?slug=$1"
+      "source": "/poets/:slug/",
+      "destination": "/authors.html?slug=:slug&category=poets"
     },
     {
-      "src": "^/manqabat\\.html/([^/]+)/?$",
-      "dest": "/manqabat.html?slug=$1"
+      "source": "/historians/:slug",
+      "destination": "/authors.html?slug=:slug&category=historians"
     },
     {
-      "src": "^/salaam\\.html/([^/]+)/?$",
-      "dest": "/salaam.html?slug=$1"
+      "source": "/historians/:slug/",
+      "destination": "/authors.html?slug=:slug&category=historians"
     },
     {
-      "src": "^/hamd\\.html/([^/]+)/?$",
-      "dest": "/hamd.html?slug=$1"
+      "source": "/sufis/:slug",
+      "destination": "/authors.html?slug=:slug&category=sufis"
     },
     {
-      "src": "^/nazm\\.html/([^/]+)/?$",
-      "dest": "/nazm.html?slug=$1"
+      "source": "/sufis/:slug/",
+      "destination": "/authors.html?slug=:slug&category=sufis"
     },
     {
-      "src": "^/sher\\.html/([^/]+)/?$",
-      "dest": "/sher.html?slug=$1"
+      "source": "/saints/:slug",
+      "destination": "/authors.html?slug=:slug&category=saints"
     },
     {
-      "src": "^/rubai\\.html/([^/]+)/?$",
-      "dest": "/rubai.html?slug=$1"
+      "source": "/saints/:slug/",
+      "destination": "/authors.html?slug=:slug&category=saints"
     },
     {
-      "src": "^/qaseeda\\.html/([^/]+)/?$",
-      "dest": "/qaseeda.html?slug=$1"
+      "source": "/scholars/:slug",
+      "destination": "/authors.html?slug=:slug&category=scholars"
     },
     {
-      "src": "^/marsiya\\.html/([^/]+)/?$",
-      "dest": "/marsiya.html?slug=$1"
+      "source": "/scholars/:slug/",
+      "destination": "/authors.html?slug=:slug&category=scholars"
     },
     {
-      "handle": "filesystem"
+      "source": "/writers/:slug",
+      "destination": "/authors.html?slug=:slug&category=writers"
+    },
+    {
+      "source": "/writers/:slug/",
+      "destination": "/authors.html?slug=:slug&category=writers"
+    },
+    {
+      "source": "/publishers/:slug",
+      "destination": "/authors.html?slug=:slug&category=publishers"
+    },
+    {
+      "source": "/publishers/:slug/",
+      "destination": "/authors.html?slug=:slug&category=publishers"
+    },
+    {
+      "source": "/translators/:slug",
+      "destination": "/authors.html?slug=:slug&category=translators"
+    },
+    {
+      "source": "/translators/:slug/",
+      "destination": "/authors.html?slug=:slug&category=translators"
+    },
+    {
+      "source": "/editors/:slug",
+      "destination": "/authors.html?slug=:slug&category=editors"
+    },
+    {
+      "source": "/editors/:slug/",
+      "destination": "/authors.html?slug=:slug&category=editors"
+    },
+    {
+      "source": "/calligraphers/:slug",
+      "destination": "/authors.html?slug=:slug&category=calligraphers"
+    },
+    {
+      "source": "/calligraphers/:slug/",
+      "destination": "/authors.html?slug=:slug&category=calligraphers"
+    },
+    {
+      "source": "/musicians/:slug",
+      "destination": "/authors.html?slug=:slug&category=musicians"
+    },
+    {
+      "source": "/musicians/:slug/",
+      "destination": "/authors.html?slug=:slug&category=musicians"
+    },
+    {
+      "source": "/researchers/:slug",
+      "destination": "/authors.html?slug=:slug&category=researchers"
+    },
+    {
+      "source": "/researchers/:slug/",
+      "destination": "/authors.html?slug=:slug&category=researchers"
+    },
+    {
+      "source": "/teachers/:slug",
+      "destination": "/authors.html?slug=:slug&category=teachers"
+    },
+    {
+      "source": "/teachers/:slug/",
+      "destination": "/authors.html?slug=:slug&category=teachers"
+    },
+    {
+      "source": "/work.html/:slug",
+      "destination": "/work.html?slug=:slug"
+    },
+    {
+      "source": "/work.html/:slug/",
+      "destination": "/work.html?slug=:slug"
+    },
+    {
+      "source": "/article.html/:slug",
+      "destination": "/article.html?slug=:slug"
+    },
+    {
+      "source": "/article.html/:slug/",
+      "destination": "/article.html?slug=:slug"
+    },
+    {
+      "source": "/ghazal.html/:slug",
+      "destination": "/ghazal.html?slug=:slug"
+    },
+    {
+      "source": "/ghazal.html/:slug/",
+      "destination": "/ghazal.html?slug=:slug"
+    },
+    {
+      "source": "/naat.html/:slug",
+      "destination": "/naat.html?slug=:slug"
+    },
+    {
+      "source": "/naat.html/:slug/",
+      "destination": "/naat.html?slug=:slug"
+    },
+    {
+      "source": "/manqabat.html/:slug",
+      "destination": "/manqabat.html?slug=:slug"
+    },
+    {
+      "source": "/manqabat.html/:slug/",
+      "destination": "/manqabat.html?slug=:slug"
+    },
+    {
+      "source": "/salaam.html/:slug",
+      "destination": "/salaam.html?slug=:slug"
+    },
+    {
+      "source": "/salaam.html/:slug/",
+      "destination": "/salaam.html?slug=:slug"
+    },
+    {
+      "source": "/hamd.html/:slug",
+      "destination": "/hamd.html?slug=:slug"
+    },
+    {
+      "source": "/hamd.html/:slug/",
+      "destination": "/hamd.html?slug=:slug"
+    },
+    {
+      "source": "/nazm.html/:slug",
+      "destination": "/nazm.html?slug=:slug"
+    },
+    {
+      "source": "/nazm.html/:slug/",
+      "destination": "/nazm.html?slug=:slug"
+    },
+    {
+      "source": "/sher.html/:slug",
+      "destination": "/sher.html?slug=:slug"
+    },
+    {
+      "source": "/sher.html/:slug/",
+      "destination": "/sher.html?slug=:slug"
+    },
+    {
+      "source": "/rubai.html/:slug",
+      "destination": "/rubai.html?slug=:slug"
+    },
+    {
+      "source": "/rubai.html/:slug/",
+      "destination": "/rubai.html?slug=:slug"
+    },
+    {
+      "source": "/qaseeda.html/:slug",
+      "destination": "/qaseeda.html?slug=:slug"
+    },
+    {
+      "source": "/qaseeda.html/:slug/",
+      "destination": "/qaseeda.html?slug=:slug"
+    },
+    {
+      "source": "/marsiya.html/:slug",
+      "destination": "/marsiya.html?slug=:slug"
+    },
+    {
+      "source": "/marsiya.html/:slug/",
+      "destination": "/marsiya.html?slug=:slug"
     }
   ]
 }
