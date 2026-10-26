@@ -1,109 +1,56 @@
 {
-  "rewrites": [
+  "version": 2,
+  "routes": [
     {
-      "source": "/poets",
-      "destination": "/authors.html?type=poet"
+      "src": "^/work\\.html/([^/]+)/?$",
+      "dest": "/work.html?slug=$1"
     },
     {
-      "source": "/authors",
-      "destination": "/authors.html?type=author"
+      "src": "^/article\\.html/([^/]+)/?$",
+      "dest": "/article.html?slug=$1"
     },
     {
-      "source": "/scholars",
-      "destination": "/authors.html?type=scholar"
+      "src": "^/ghazal\\.html/([^/]+)/?$",
+      "dest": "/ghazal.html?slug=$1"
     },
     {
-      "source": "/muftis",
-      "destination": "/authors.html?type=mufti"
+      "src": "^/naat\\.html/([^/]+)/?$",
+      "dest": "/naat.html?slug=$1"
     },
     {
-      "source": "/naatkhwan",
-      "destination": "/authors.html?type=naatkhwan"
+      "src": "^/manqabat\\.html/([^/]+)/?$",
+      "dest": "/manqabat.html?slug=$1"
     },
     {
-      "source": "/sufis",
-      "destination": "/authors.html?type=sufi"
+      "src": "^/salaam\\.html/([^/]+)/?$",
+      "dest": "/salaam.html?slug=$1"
     },
     {
-      "source": "/saints",
-      "destination": "/authors.html?type=saint"
+      "src": "^/hamd\\.html/([^/]+)/?$",
+      "dest": "/hamd.html?slug=$1"
     },
     {
-      "source": "/contributors",
-      "destination": "/authors.html?type=book_contributor"
+      "src": "^/nazm\\.html/([^/]+)/?$",
+      "dest": "/nazm.html?slug=$1"
     },
     {
-      "source": "/translators",
-      "destination": "/authors.html?type=translator"
+      "src": "^/sher\\.html/([^/]+)/?$",
+      "dest": "/sher.html?slug=$1"
     },
     {
-      "source": "/editors",
-      "destination": "/authors.html?type=editor"
+      "src": "^/rubai\\.html/([^/]+)/?$",
+      "dest": "/rubai.html?slug=$1"
     },
     {
-      "source": "/qawwals",
-      "destination": "/authors.html?type=qawwal"
+      "src": "^/qaseeda\\.html/([^/]+)/?$",
+      "dest": "/qaseeda.html?slug=$1"
     },
     {
-      "source": "/historians",
-      "destination": "/authors.html?type=historian"
+      "src": "^/marsiya\\.html/([^/]+)/?$",
+      "dest": "/marsiya.html?slug=$1"
     },
     {
-      "source": "/people",
-      "destination": "/authors.html?type=other"
-    },
-    {
-      "source": "/poets/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/authors/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/scholars/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/muftis/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/naatkhwan/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/sufis/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/saints/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/contributors/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/translators/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/editors/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/qawwals/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/historians/:slug",
-      "destination": "/authors.html?slug=:slug"
-    },
-    {
-      "source": "/people/:slug",
-      "destination": "/authors.html?slug=:slug"
+      "handle": "filesystem"
     }
   ]
 }
-
