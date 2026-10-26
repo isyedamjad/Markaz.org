@@ -858,7 +858,7 @@ function renderArchive(){
   $('worksGrid').innerHTML=shown.map(item=>{
     const title=workTitle(item), author=workAuthor(item), profileUrl=workProfileUrl(item);
     const type=String(item.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_');
-    return `<article class="work-card"><span class="work-category">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' '))}</span><h2>${esc(title)}</h2><p class="work-author">${author?'By ':''}${author?(profileUrl?`<a href="${esc(profileUrl)}">${esc(author)}</a>`:esc(author)):'Author not listed'}</p><a class="open-work" href="${type==='article'?'/article.html':'/work.html'}?slug=${encodeURIComponent(item.slug||'')}">Read work →</a></article>`;
+    return `<article class="work-card"><span class="work-category">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' '))}</span><h2>${esc(title)}</h2><p class="work-author">${author?'By ':''}${author?(profileUrl?`<a href="${esc(profileUrl)}">${esc(author)}</a>`:esc(author)):'Author not listed'}</p><a class="open-work" href="/${({ghazal:'ghazal',naat:'naat',manqabat:'manqabat',salam:'salaam',salaam:'salaam',hamd:'hamd',nazm:'nazm',sher:'sher',bait:'sher',rubai:'rubai',qaseeda:'qaseeda',marsiya:'marsiya',poetry:'work',kalam:'work',kalaam:'work',doha:'work',manzoom:'work',article:'article'}[type]||'work')}.html/${encodeURIComponent(item.slug||'')}">Read work →</a></article>`;
   }).join('');
   $('archiveEmpty').classList.toggle('hidden',shown.length>0);
   document.dispatchEvent(new Event('markaz:refresh-language'));
@@ -880,7 +880,10 @@ async function loadWorksArchive(){
 
 async function load(){
   const params = new URLSearchParams(window.location.search);
-  const slug = (params.get('slug') || '').trim();
+  const pathMatch = window.location.pathname.match(/\.html\/([^/]+)\/?$/i);
+  let pathSlug = '';
+  if(pathMatch){ try { pathSlug = decodeURIComponent(pathMatch[1]); } catch (_) { pathSlug = pathMatch[1]; } }
+  const slug = (pathSlug || params.get('slug') || '').trim();
 
   if(!slug){
     $('loading').classList.add('hidden');
