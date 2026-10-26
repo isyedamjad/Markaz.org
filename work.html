@@ -567,8 +567,8 @@ html, body {
 
 <main id="worksArchive" class="works-archive hidden">
   <header class="archive-heading">
-    <h1>Kalaam &amp; Poetry</h1>
-    <p>Explore published ghazals, naats, manqabats, salaams and other literary works.</p>
+    <h1 id="archiveTitle">Kalaam &amp; Poetry</h1>
+    <p id="archiveDescription">Explore published ghazals, naats, manqabats, salaams and other literary works.</p>
   </header>
   <nav id="categoryTabs" class="category-tabs" aria-label="Filter works by category"></nav>
   <div id="archiveLoading" class="archive-state">Loading published works…</div>
@@ -613,6 +613,10 @@ html, body {
 
 <script>
 'use strict';
+const PAGE_CATEGORY = null;
+const PAGE_IS_ARTICLE = false;
+const PAGE_IS_MAIN_ARCHIVE = true;
+
 
 const SUPABASE_URL = 'https://pooatzegjnegutflkcbm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN';
@@ -835,15 +839,26 @@ function workProfileUrl(item){
   return '/'+(paths[String(profile.profile_type||'poet').toLowerCase()]||'people')+'/'+encodeURIComponent(profile.slug);
 }
 function renderArchive(){
-  const types=[...new Set(archiveWorks.map(w=>String(w.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_')))];
-  const ordered=['all',...Object.keys(CATEGORY_LABELS).filter(k=>k!=='all'&&types.includes(k)),...types.filter(k=>!CATEGORY_LABELS[k])];
+  const normalize = w => String(w.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_');
+  const poetryTypes = ['ghazal','naat','manqabat','salam','salaam','hamd','poetry','kalam','kalaam','sher','bait','rubai','qaseeda','marsiya','nazm','doha','manzoom'];
+  let eligible = archiveWorks.filter(w => PAGE_IS_ARTICLE ? normalize(w)==='article' : (PAGE_CATEGORY ? normalize(w)===PAGE_CATEGORY : poetryTypes.includes(normalize(w))));
+  if(PAGE_IS_ARTICLE){
+    $('archiveTitle').textContent = 'Articles';
+    $('archiveDescription').textContent = 'Read essays, research and literary articles from the Markaz.org archive.';
+  } else if(PAGE_CATEGORY){
+    const label = CATEGORY_LABELS[PAGE_CATEGORY] || PAGE_CATEGORY;
+    $('archiveTitle').textContent = label + (['salaam','salam','hamd'].includes(PAGE_CATEGORY) ? 's' : 's');
+    $('archiveDescription').textContent = 'Explore published ' + label.toLowerCase() + ' from the Markaz.org literary archive.';
+  }
+  const types=[...new Set(eligible.map(w=>normalize(w)))];
+  const ordered=PAGE_CATEGORY || PAGE_IS_ARTICLE ? types : ['all',...Object.keys(CATEGORY_LABELS).filter(k=>k!=='all'&&types.includes(k)),...types.filter(k=>!CATEGORY_LABELS[k])];
   $('categoryTabs').innerHTML=ordered.map(type=>`<button type="button" data-category="${esc(type)}" class="${type===activeCategory?'active':''}">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase()))}</button>`).join('');
   $('categoryTabs').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{activeCategory=btn.dataset.category;renderArchive();}));
-  const shown=activeCategory==='all'?archiveWorks:archiveWorks.filter(w=>String(w.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_')===activeCategory);
+  const shown=(PAGE_CATEGORY || PAGE_IS_ARTICLE) ? eligible : (activeCategory==='all'?eligible:eligible.filter(w=>normalize(w)===activeCategory));
   $('worksGrid').innerHTML=shown.map(item=>{
     const title=workTitle(item), author=workAuthor(item), profileUrl=workProfileUrl(item);
     const type=String(item.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_');
-    return `<article class="work-card"><span class="work-category">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' '))}</span><h2>${esc(title)}</h2><p class="work-author">${author?'By ':''}${author?(profileUrl?`<a href="${esc(profileUrl)}">${esc(author)}</a>`:esc(author)):'Author not listed'}</p><a class="open-work" href="/work.html?slug=${encodeURIComponent(item.slug||'')}">Read work →</a></article>`;
+    return `<article class="work-card"><span class="work-category">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' '))}</span><h2>${esc(title)}</h2><p class="work-author">${author?'By ':''}${author?(profileUrl?`<a href="${esc(profileUrl)}">${esc(author)}</a>`:esc(author)):'Author not listed'}</p><a class="open-work" href="${type==='article'?'/article.html':'/work.html'}?slug=${encodeURIComponent(item.slug||'')}">Read work →</a></article>`;
   }).join('');
   $('archiveEmpty').classList.toggle('hidden',shown.length>0);
   document.dispatchEvent(new Event('markaz:refresh-language'));

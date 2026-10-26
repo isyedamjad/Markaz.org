@@ -1,54 +1,394 @@
-
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#652e36">
-<meta name="description" content="Discover inspiring Manqabat dedicated to Ahl al-Bayt and Sufi saints.">
-<title>Manqabat — Markaz.org</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#075e59">
+<meta name="description" content="Read poetry, ghazals, naats and literary works in a calm, beautifully typeset reading room at Markaz.org.">
+<title>Reading Room | Markaz.org</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;500;600&family=Noto+Serif+Devanagari:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--w:#652e36;--d:#472127;--g:#b58a48;--p:#fbf7f0;--i:#2d2523;--m:#756965;--l:#e4d7c8;--s:'Playfair Display',Georgia,serif;--f:'DM Sans',Arial,sans-serif}
-*{box-sizing:border-box}body{margin:0;background:var(--p);color:var(--i);font:16px/1.7 var(--f)}
-a{color:inherit;text-decoration:none}button,input{font:inherit}
-.top{background:var(--d);color:#f8ecdc;text-align:center;padding:8px;font-size:.78rem}
-.head{position:sticky;top:0;background:#fbf7f0f5;border-bottom:1px solid var(--l);z-index:2}
-.in{max-width:1150px;margin:auto;padding:14px 22px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-.brand{font:700 1.2rem var(--s);color:var(--d);margin-right:auto}
-.brand b{display:inline-grid;place-items:center;background:var(--w);color:#ead8b5;border:1px solid var(--g);width:42px;height:42px;border-radius:50% 50% 50% 8px;margin-right:9px}
-.nav,.langs{display:flex;gap:13px;flex-wrap:wrap}.nav a{font-size:.82rem}
-.langs button{border:0;padding:6px 9px;border-radius:20px;background:#efe4d6;color:var(--d);cursor:pointer}
-.langs .active{background:var(--w);color:white}
-.hero{background:linear-gradient(115deg,var(--d),var(--w),#7d4146);color:#fff8ef}
-.hero>div{max-width:1150px;margin:auto;padding:60px 24px 70px}
-.eyebrow{font-size:.7rem;letter-spacing:.2em;color:#ead8b5;font-weight:bold}
-.hero h1{font:600 clamp(2.4rem,5vw,4.3rem)/1.12 var(--s);margin:16px 0}
-.hero p{max-width:720px;color:#f0e3dc;line-height:1.9}
-.wrap{max-width:1150px;margin:auto;padding:0 24px 70px}
-.search{display:flex;gap:10px;padding:16px;background:#fffdf9;border:1px solid var(--l);margin-top:-26px;box-shadow:0 18px 48px #43222012}
-.search input{flex:1;min-width:0;padding:13px;border:1px solid var(--l)}
-.search button{background:var(--w);color:white;border:0;padding:12px 18px;cursor:pointer}
-.heading{display:flex;justify-content:space-between;align-items:end;margin:38px 0 20px;gap:15px}
-.heading h2{font:600 clamp(1.7rem,3vw,2.4rem) var(--s);color:var(--d);margin:0}
-.heading p{color:var(--m);font-size:.84rem}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.card{background:#fffdf9;border:1px solid var(--l);padding:23px;min-height:190px;display:flex;flex-direction:column;transition:.2s}
-.card:hover{transform:translateY(-3px);border-color:#c6a978;box-shadow:0 18px 48px #43222012}
-.type{font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;color:var(--g);font-weight:bold}
-.card h3{font:600 1.35rem/1.4 var(--s);color:var(--d);margin:10px 0}
-.card p{font-size:.88rem;color:var(--m);margin:0 0 15px}
-.open{margin-top:auto;color:var(--w);font-weight:bold;font-size:.85rem}
-.empty{grid-column:1/-1;padding:30px;background:#fffdf9;border:1px solid var(--l);text-align:center;color:var(--m)}
-.foot{background:#352023;color:#d7c5bb;padding:28px max(24px,calc((100% - 1100px)/2));display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:.82rem}
-.foot strong{font:1.2rem var(--s);color:#fff5e8}
-[dir=rtl] body{font-family:'Noto Nastaliq Urdu',serif}[dir=rtl] .grid,[dir=rtl] .search{direction:rtl}
-@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.in{gap:12px}}
-@media(max-width:560px){.grid{grid-template-columns:1fr}.hero>div{padding:42px 18px 58px}.search{flex-direction:column}.heading{align-items:start;flex-direction:column}}
+:root{
+  color-scheme:light;
+  --ink:#202124;
+  --muted:#72777d;
+  --paper:#fff;
+  --white:#fff;
+  --teal:#075e59;
+  --deep:#153b3b;
+  --accent:#20b6d8;
+  --line:#e9edf0;
+  --soft:#f4f7f8;
+  --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+  --sans:'DM Sans',Arial,sans-serif;
+  --reader-size:17px;
+}
+
+*{box-sizing:border-box}
+html{
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:16px/1.75 var(--sans);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-wrap:break-word;
+}
+a{color:var(--teal);text-decoration:none}
+button,select{font:inherit}
+button{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+}
+
+/* Brand/navigation bar */
+.mast{
+  position:relative;
+  z-index:5;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+}
+.mast-in{
+  width:100%;
+  max-width:1180px;
+  min-height:76px;
+  margin:0 auto;
+  padding:13px 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:22px;
+}
+.brand{
+  display:inline-block;
+  color:var(--deep);
+  font:700 1.48rem/1.2 var(--serif);
+  white-space:nowrap;
+}
+.brand small{
+  display:block;
+  margin-top:5px;
+  color:#7a7d80;
+  font:600 .66rem/1.35 var(--sans);
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.tools{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:9px;
+  flex-wrap:wrap;
+}
+.tools button{
+  min-height:39px;
+  padding:7px 13px;
+  border:1px solid #e7e8e8;
+  border-radius:999px;
+  background:#fff;
+  color:#292d30;
+  cursor:pointer;
+  transition:border-color .18s ease,background .18s ease;
+}
+.tools button:hover{border-color:#a8dce6;background:#f8fdfe}
+.tools a{
+  padding:7px 5px;
+  color:#315e60;
+  font-size:.92rem;
+  white-space:nowrap;
+}
+
+/* Main reading column */
+.shell{
+  width:100%;
+  max-width:100%;
+  margin:0 auto;
+  padding:18px clamp(12px,2.4vw,32px) 54px;
+}
+.crumb{
+  margin:0 0 23px;
+  color:#7d8185;
+  font-size:.84rem;
+  line-height:1.6;
+}
+.crumb a{color:#777d81}
+.crumb a:hover{color:var(--teal)}
+.state{
+  padding:22px 24px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+  color:var(--muted);
+  overflow-wrap:anywhere;
+}
+.work-head{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding:7px 0 24px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+}
+.kicker{
+  order:3;
+  margin-top:12px;
+  color:#858b90;
+  font:700 .7rem/1.5 var(--sans);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+h1{
+  order:1;
+  width:100%;
+  margin:0;
+  color:#202124;
+  font:700 clamp(1.9rem,4.5vw,2.65rem)/1.25 Georgia,'Times New Roman',serif;
+  letter-spacing:-.025em;
+  overflow-wrap:anywhere;
+}
+.byline{
+  order:2;
+  margin-top:13px;
+  color:var(--accent);
+  font:700 .91rem/1.65 var(--sans);
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.subtitle{
+  order:4;
+  margin:14px 0 0;
+  color:#62686d;
+  font:400 1.03rem/1.75 var(--serif);
+  overflow-wrap:anywhere;
+}
+.hidden{display:none!important}\n.author-profile-link{color:inherit;text-decoration:underline;text-decoration-color:#b7c9c5;text-underline-offset:4px}.author-profile-link:hover{color:var(--teal)}
+
+/* Language options: no layout switch; poetry always uses the same layout */
+.reader-controls{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:9px;
+  padding:17px 0 13px;
+}
+.reader-controls button{
+  min-height:39px;
+  padding:7px 14px;
+  border:1px solid #e4e8ea;
+  border-radius:999px;
+  background:#fff;
+  color:#303437;
+  font-size:.9rem;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,color .18s ease;
+}
+.reader-controls button:hover{border-color:#a8dce6}
+.reader-controls button.active{
+  background:#e7f7fa;
+  border-color:#b5e7f0;
+  color:#0d6678;
+}
+
+/* Sufinama-inspired flowing poem: both misras stack naturally */
+.poem{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  margin:0;
+  padding:24px 0 44px;
+  color:#202124;
+  font-size:var(--reader-size);
+  line-height:1.75;
+  overflow-wrap:normal;
+  transition:font-size .15s ease;
+}
+.poem[dir="rtl"]{
+  direction:rtl;
+  text-align:right;
+  font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif;
+  font-size:calc(var(--reader-size) + 1px);
+  line-height:2.35;
+}
+.poem[lang="hi"]{
+  font-family:'Noto Serif Devanagari','Noto Sans Devanagari',serif;
+  font-style:normal;
+}
+.poem[lang="roman"]{
+  font-family:Georgia,'Times New Roman',serif;
+  font-style:italic;
+  letter-spacing:.012em;
+}
+.poem[lang="en"]{
+  font-family:Georgia,'Times New Roman',serif;
+  font-style:italic;
+  letter-spacing:.012em;
+}
+
+/* Each couplet is a calm, open block—not two side-by-side columns */
+.translation-unavailable{color:#687579;font-style:normal;font-size:.9rem;padding:18px 0}
+.poem .couplet{
+  display:block;
+  width:100%;
+  max-width:100%;
+  margin:0 0 1.45em;
+  padding:0;
+  border:0;
+}
+.poem .misra-text{white-space:normal;display:inline;max-width:100%;overflow-wrap:anywhere;word-break:normal;transform:none!important;transform-origin:left center}
+.poem[dir="rtl"] .misra-text{transform-origin:right center}
+.poem .misra{
+  display:block;
+  width:100%;
+  min-width:0;
+  margin:0;
+  padding:0;
+  color:inherit;
+  text-align:left;
+  font-size:1em;
+  font-weight:400;
+  line-height:1.82;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  max-width:100%;
+  word-break:normal;
+  hyphens:auto;
+}
+.poem .misra + .misra{margin-top:.08em}
+.poem[dir="rtl"] .misra{
+  direction:rtl;
+  text-align:right;
+  font-family:'Noto Nastaliq Urdu','Noto Naskh Arabic',serif;
+  line-height:2.3;
+}
+.poem p{
+  margin:0 0 1.45em;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-height:1.95;
+}
+.poem.nazm p{margin-bottom:1.1em}
+
+.translit{
+  padding:24px 0;
+  border-top:1px solid var(--line);
+  color:#656c71;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font:italic 1.02rem/1.95 Georgia,'Times New Roman',serif;
+}
+.translit h2{
+  margin:0 0 12px;
+  color:#292d30;
+  font:600 1.1rem/1.4 var(--serif);
+}
+
+/* Distraction-free reading */
+.reader-mode{background:#fff}
+.reader-mode .mast,
+.reader-mode .crumb,
+.reader-mode .reader-controls,
+.reader-mode .footer{display:none}
+.reader-mode .shell{max-width:980px;padding-top:25px}
+.reader-mode .work-head{padding-top:7px}
+
+.footer{
+  padding:23px 16px;
+  background:#f7f9fa;
+  border-top:1px solid var(--line);
+  color:#737a7f;
+  text-align:center;
+  font-size:.82rem;
+}
+
+@media(min-width:900px){
+  .poem{max-width:100%;padding-top:28px}
+  .poem .couplet{margin-bottom:1.5em}
+}
+@media(max-width:760px){
+  .mast-in{padding:12px 18px;gap:14px}
+  .shell{padding:20px 22px 58px}
+  .poem{padding:21px 0 36px}
+}
+@media(max-width:620px){
+  :root{--reader-size:15px}
+  .poem{font-size:var(--reader-size);padding-left:0;padding-right:0}
+  .poem[dir="rtl"]{font-size:var(--reader-size);}
+  .poem .couplet{margin-bottom:1.15em}
+  .poem .misra{line-height:1.65}
+
+  .mast-in{align-items:flex-start;flex-direction:column;padding:12px 15px;gap:11px}
+  .brand{font-size:1.3rem}
+  .brand small{font-size:.62rem}
+  .tools{width:100%;justify-content:flex-start;gap:6px}
+  .tools button{min-height:36px;padding:6px 10px;font-size:.82rem}
+  .tools a{padding:6px 3px;font-size:.84rem}
+  .shell{padding:14px 10px 38px}
+  .crumb{margin-bottom:17px;font-size:.78rem}
+  .work-head{padding:5px 0 20px}
+  h1{font-size:clamp(1.45rem,6vw,2rem);line-height:1.28;letter-spacing:-.02em}
+  .byline{margin-top:11px;font-size:.8rem;letter-spacing:.13em;line-height:1.7}
+  .subtitle{margin-top:11px;font-size:.98rem}
+  .kicker{margin-top:9px;font-size:.66rem}
+  .reader-controls{gap:7px;padding:14px 0 9px}
+  .reader-controls button{min-height:36px;padding:6px 11px;font-size:.83rem}
+  .poem{padding:18px 0 28px;font-size:var(--reader-size);line-height:1.75}
+  .poem .couplet{margin-bottom:1.05em}
+  .poem .misra{line-height:1.65}
+  .poem[dir="rtl"]{font-size:calc(var(--reader-size) + 1px);line-height:2}
+  .poem[dir="rtl"] .misra{line-height:1.95}
+  .translit{padding:19px 0;font-size:.94rem}
+}
+@media(max-width:380px){
+  .shell{padding-left:9px;padding-right:9px}
+  .tools{gap:5px}
+  .tools button{padding:6px 9px}
+  .reader-controls{gap:6px}
+  .reader-controls button{padding:6px 9px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important}
+}
+
+/* Published works archive */
+.works-archive{max-width:1180px;margin:0 auto;padding:24px 22px 70px}
+.archive-heading{padding:10px 0 22px;border-bottom:1px solid var(--line)}
+.archive-heading h1{font-size:clamp(1.8rem,4vw,2.5rem)}
+.archive-heading p{margin:8px 0 0;color:var(--muted)}
+.category-tabs{display:flex;gap:8px;overflow-x:auto;padding:18px 0 15px;scrollbar-width:thin}
+.category-tabs button{flex:0 0 auto;border:1px solid #dce6e2;background:#fff;color:var(--deep);border-radius:999px;padding:9px 15px;font-size:.88rem}
+.category-tabs button.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.works-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.work-card{display:flex;flex-direction:column;min-width:0;padding:20px;border:1px solid var(--line);border-radius:17px;background:#fff;box-shadow:0 8px 24px rgba(21,59,59,.045)}
+.work-card .work-category{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--teal);font-weight:700}
+.work-card h2{margin:10px 0 8px;font:600 1.15rem/1.45 var(--serif);overflow-wrap:anywhere}
+.work-card .work-author{margin:0 0 18px;color:var(--muted);font-size:.9rem}
+.work-card .work-author a{color:var(--teal);text-decoration:underline;text-underline-offset:3px}
+.work-card .open-work{margin-top:auto;display:block;text-align:center;border-radius:999px;padding:10px 14px;background:var(--teal);color:#fff;font-weight:700}
+.archive-state{padding:25px 15px;color:var(--muted);text-align:center}
+@media(max-width:800px){.works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.works-archive{padding:18px 14px 45px}.works-grid{grid-template-columns:1fr;gap:11px}.work-card{padding:17px}.category-tabs{margin-right:-14px}}
+
 </style>
-<style>
+<style id="markaz-shared-design">
+
 /* MARKAZ.ORG — high-contrast editorial design system */
 :root{color-scheme:light;--mz-ink:#17252b;--mz-ink-soft:#35464b;--mz-muted:#59696d;--mz-paper:#fbfaf7;--mz-white:#fff;--mz-panel:#f1f4f1;--mz-line:#dce3df;--mz-teal:#075e59;--mz-teal-deep:#064743;--mz-gold:#a7782d;--mz-gold-pale:#f3e8d2;--mz-shadow:0 16px 42px rgba(23,37,43,.08);--mz-radius:18px;--mz-serif:Georgia,'Times New Roman',serif;--mz-sans:Inter,'Segoe UI',Arial,sans-serif}
-html{scroll-behavior:smooth;background:var(--mz-paper)}body{background:var(--mz-paper)!important;color:var(--mz-ink)!important;font-family:var(--mz-sans)!important;line-height:1.7!important;font-size:16px!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body *{box-sizing:border-box}p,li,dd,dt,label,small,.muted,.eyebrow,.tag,.brand-sub,.brand-subtitle,.subtitle,.description,.meta,.date,.status-detail{color:var(--mz-ink-soft)}p{line-height:1.8}a{color:var(--mz-teal)!important;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:var(--mz-gold)!important}button,input,select,textarea{font:inherit}button,.btn,[type=submit],[role=button]{transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}button:hover,.btn:hover,[type=submit]:hover{transform:translateY(-1px)}:focus-visible{outline:3px solid #d4a54d!important;outline-offset:3px!important}img{max-width:100%}
+html{scroll-behavior:smooth;background:var(--mz-paper)}body{background:var(--mz-paper)!important;color:var(--mz-ink)!important;font-family:var(--mz-sans)!important;line-height:1.7!important;font-size:16px!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body *{box-sizing:border-box}p,li,dd,dt,label,small,.muted,.eyebrow,.tag,.brand-sub,.brand-subtitle,.subtitle,.description,.meta,.date,.status-detail{color:var(--mz-ink-soft)}p{line-height:1.8}a{color:var(--mz-teal)!important;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:var(--mz-gold)!important}button,input,select,textarea{font:inherit}button,.btn,[type=submit],[role=button]{transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}button:hover,.btn:hover,[type=submit]:hover{transform:translateY(-1px)}:focus-visible{outline:3px solid #d4a54d!important;outline-offset:3px!important}img{max-width:100%} .shell,article,.work-head,.poem,.couplet,.misra{min-width:0;max-width:100%;} .poem{overflow-wrap:anywhere;}
 /* Shared mastheads and navigation */
 .topline,.top,.topbar,.topline *{border-color:var(--mz-line)}.topline,.top{background:#f0f3ef!important;color:var(--mz-ink)!important}.topline a,.top a{color:var(--mz-ink)!important}.site-header,.head,.header,.topbar,.headrow{background:rgba(255,255,255,.97)!important;color:var(--mz-ink)!important;border-bottom:1px solid var(--mz-line)!important;box-shadow:0 5px 24px rgba(23,37,43,.035)!important}.header-inner,.head .in,.headrow,.topbar{max-width:1240px}.brand,.brand-name,.brandname,.brandmark{color:var(--mz-ink)!important}.brand-name,.brandname{font-family:var(--mz-serif)!important;font-weight:700!important;letter-spacing:-.035em}.brand-sub,.brand-subtitle,.brand .small,.tag{color:var(--mz-muted)!important}.brand-mark,.brandmark,.mark{background:var(--mz-teal)!important;color:white!important;border-color:var(--mz-teal)!important}.nav a,.nav button,.navright a,.header-actions a,.lang,.lang-btn,.languages button,.lang-switch button{color:var(--mz-ink-soft)!important;font-weight:600!important}.nav a:hover,.nav a.active,.lang.active,.lang-btn.active,.lang-switch .active{color:var(--mz-teal)!important}.nav a.active:after,.nav a:hover:after{background:var(--mz-gold)!important}.menu-toggle{color:var(--mz-ink)!important;border-color:var(--mz-line)!important}
 /* Hero panels */
@@ -68,109 +408,577 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 /* Responsive and reduced-motion refinements */
 @media(max-width:760px){body{font-size:15px!important}.hero{padding:clamp(1.5rem,6vw,2.6rem)!important}.hero h1,.heroTitle,h1{font-size:clamp(2rem,9vw,3.3rem)!important}.nav{gap:.55rem!important}.panel,.card,.lead-card,.book-card,.poem-card,.article-card{border-radius:14px!important}.header-inner,.head .in,.headrow{padding-left:1rem!important;padding-right:1rem!important}table{display:block;overflow-x:auto}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+
 </style>
-</head>
-<body>
-<div class="top" id="top">A living archive of Sufi poetry, wisdom and heritage</div>
-<header class="head">
-  <div class="in">
-    <a class="brand" href="home.html"><b>ص</b>Markaz.org</a>
-    <nav class="nav">
-      <a href="home.html" data-nav="Home">Home</a>
-      <a href="ghazals.html" data-nav="Ghazals">Ghazals</a>
-      <a href="naat.html" data-nav="Naat">Naat</a>
-      <a href="manqabat.html" data-nav="Manqabat">Manqabat</a>
-      <a href="library.html" data-nav="Library">Library</a>
-      <a href="articles.html" data-nav="Articles">Articles</a>
-    </nav>
-    <div class="langs">
-      <button data-lang="en" class="active">EN</button>
-      <button data-lang="hi">हिं</button>
-      <button data-lang="ur">اردو</button>
-    </div>
-  </div>
-</header>
-<section class="hero">
-  <div>
-    <div class="eyebrow" id="eyebrow">AHL AL-BAYT · SAINTS · DEVOTION</div>
-    <h1 id="heroTitle">Manqabat Collection</h1>
-    <p id="heroDesc">Explore spiritual poetry written in praise of the Ahl al-Bayt, Imams, and revered Sufi saints.</p>
-  </div>
-</section>
-<main class="wrap">
-  <div class="search">
-    <input id="q" type="search" placeholder="Search manqabat title or keyword…" aria-label="Search">
-    <button id="clear">Clear</button>
-  </div>
-  <div class="heading">
-    <h2 id="sectionTitle">Explore Manqabat</h2>
-    <p id="count">Loading entries…</p>
-  </div>
-  <section class="grid" id="grid">
-    <div class="empty">Loading manqabat…</div>
-  </section>
-</main>
-<footer class="foot">
-  <strong>Markaz.org<br><small>Preserving literature, memory and heritage.</small></strong>
-  <span>© <span id="year"></span> Markaz.org</span>
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const db = window.supabase.createClient('https://pooatzegjnegutflkcbm.supabase.co','sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN');
-let lang = (localStorage.getItem('markaz_site_language') || 'en'), rows = [];
-const $ = x => document.getElementById(x);
-$('year').textContent = new Date().getFullYear();
 
-const T = {
-  en: { top: 'A living archive of Sufi poetry, wisdom and heritage', search: 'Search manqabat title or keyword…', clear: 'Clear', none: 'No published manqabats found.', open: 'Read manqabat →', loading: 'Loading manqabats…', heroTitle: "Manqabat Collection", heroDesc: "Explore spiritual poetry written in praise of the Ahl al-Bayt, Imams, and revered Sufi saints.", sectionTitle: "Explore Manqabat", eyebrow: "AHL AL-BAYT · SAINTS · DEVOTION" },
-  hi: { top: 'सूफ़ी साहित्य, ज्ञान और विरासत का जीवंत संग्रह', search: 'मनक़बत का शीर्षक या शब्द खोजें…', clear: 'हटाएँ', none: 'कोई प्रकाशित मनक़बत नहीं मिली।', open: 'मनक़बत पढ़ें →', loading: 'मनक़बत लोड हो रही हैं…', heroTitle: "मनक़बत संग्रह", heroDesc: "अहल अल-बैत, इमामों और महान सूफ़ी संतों की शान में लिखी गई आध्यात्मिक कविताएँ पढ़ें।", sectionTitle: "मनक़बत देखें", eyebrow: "अहल अल-बैत · संत · भक्ति" },
-  ur: { top: 'صوفی ادب، حکمت اور ورثے کا زندہ ذخیرہ', search: 'منقبت کا عنوان یا لفظ تلاش کریں…', clear: 'صاف کریں', none: 'کوئی شائع شدہ منقبت نہیں ملی۔', open: 'منقبت پڑھیے ←', loading: 'منقبتیں لوڈ ہو رہی ہیں…', heroTitle: "منقبت کا مجموعہ", heroDesc: "اہلِ بیت، ائمہ کرام اور بزرگانِ دین کی مناقب اور شان میں کہی گئی عقیدت مندانہ شاعری ملاحظہ کیجیے۔", sectionTitle: "منقبتیں تلاش کریں", eyebrow: "اہلِ بیت · اولیاء · عقیدت" }
-};
-
-function esc(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
-function tr(a){
-  a = a || [];
-  let order = lang === 'hi' ? ['hi','roman','ur'] : lang === 'ur' ? ['ur','roman','hi'] : ['en','roman','hi','ur'];
-  for(let l of order){ let t = a.find(x => x.language_code === l && (x.title || x.excerpt || x.body)); if(t) return t; }
-  return a.find(x => x.title) || {};
+<style id="markaz-rekhta-linewrap-final">
+/* Rekhta-inspired reading: compact type, natural word spacing, no viewport overflow. */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
 }
-function render(){
-  let q = $('q').value.trim().toLowerCase();
-  let list = rows.filter(x => [x.slug, ...(x.author_work_translations||[]).flatMap(y => [y.title, y.excerpt, y.body])].filter(Boolean).join(' ').toLowerCase().includes(q));
-  $('count').textContent = list.length + ' entries';
-  $('grid').innerHTML = list.length ? list.map(x => {
-    let t = tr(x.author_work_translations);
-    return '<article class="card"><span class="type">Manqabat</span><h3>'+esc(t.title||x.slug)+'</h3><p>'+esc(t.excerpt||'')+'</p><a class="open" href="work.html?slug='+encodeURIComponent(x.slug)+'">'+esc(T[lang].open)+'</a></article>';
-  }).join('') : '<div class="empty">'+esc(T[lang].none)+'</div>';
+.shell, #entry, #workHead, #body, #body .couplet, #body .misra,
+#body .misra-text, #body p, #translitWrap, #translit {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
 }
-function language(l){
-  lang = ['en','hi','ur'].includes(l) ? l : 'en';
-  let d = T[lang];
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
-  document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-  $('top').textContent = d.top; $('q').placeholder = d.search; $('clear').textContent = d.clear;
-  $('heroTitle').textContent = d.heroTitle; $('heroDesc').textContent = d.heroDesc;
-  $('sectionTitle').textContent = d.sectionTitle; $('eyebrow').textContent = d.eyebrow;
-  render();
+#body {
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.85;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+  text-align: left;
+  letter-spacing: 0;
 }
-document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => language(b.dataset.lang)));
-$('q').addEventListener('input', render);
-$('clear').addEventListener('click', () => { $('q').value = ''; render(); });
-
-async function load(){
-  try {
-    let r = await db.from('author_works').select('id,slug,status,work_type,author_work_translations(language_code,title,subtitle,excerpt,body,transliteration)').eq('status','published').eq('work_type','manqabat').order('created_at',{ascending:false});
-    if(r.error) throw r.error;
-    rows = (r.data || []).filter(x => x.slug);
-    render();
-  } catch(e) {
-    console.error(e);
-    $('count').textContent = '';
-    $('grid').innerHTML = '<div class="empty">Could not load manqabat. Check permissions.</div>';
+#body .couplet {
+  display: block;
+  width: 100%;
+  margin: 0 0 1.15em;
+  text-align: justify;
+  text-justify: inter-word;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+}
+#body .misra {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  text-align: left;
+  text-align-last: left;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+  line-height: 1.8;
+}
+#body .misra-text {
+  display: inline;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+  letter-spacing: 0;
+}
+#body p {
+  width: 100%;
+  margin: 0 0 1.2em;
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: left;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+  line-height: 1.85;
+}
+#body[dir="rtl"],
+#body[dir="rtl"] .misra,
+#body[dir="rtl"] p {
+  direction: rtl;
+  text-align: right;
+  text-align-last: right;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+#body[dir="rtl"] .misra-text {
+  unicode-bidi: plaintext;
+}
+#translit {
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: normal;
+  text-align: left;
+  line-height: 1.85;
+}
+@media (max-width: 760px) {
+  .shell {
+    width: 100%;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+  #body {
+    font-size: 15px !important;
+    line-height: 1.85;
+  }
+  #body .couplet {
+    margin-bottom: 1.1em;
+  }
+  #body .misra {
+    line-height: 1.8;
+  }
+  #body[dir="rtl"] {
+    font-size: 16px !important;
+    line-height: 2.05;
+  }
+  #body[dir="rtl"] .misra {
+    line-height: 2.05;
+  }
+  #body p, #translit {
+    line-height: 1.85;
   }
 }
-language(lang); load();
+@media (max-width: 380px) {
+  .shell {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  #body {
+    font-size: 14px !important;
+  }
+  #body[dir="rtl"] {
+    font-size: 15px !important;
+  }
+}
+</style>
+
+</head>
+
+<body>
+<header class="mast">
+  <div class="mast-in">
+    <a class="brand" href="/home.html">
+      Markaz.org
+      <small>Poetry · People · Heritage</small>
+    </a>
+    <nav class="tools" aria-label="Reading room navigation and controls">
+      <button id="smaller" type="button" aria-label="Decrease text size">A−</button>
+      <button id="larger" type="button" aria-label="Increase text size">A+</button>
+      <button id="readerToggle" type="button" aria-pressed="false">Focus reading</button>
+      <a href="/poets">Poets</a>
+      <a href="/library.html">Library</a>
+    </nav>
+  </div>
+</header>
+
+<main id="worksArchive" class="works-archive hidden">
+  <header class="archive-heading">
+    <h1 id="archiveTitle">Kalaam &amp; Poetry</h1>
+    <p id="archiveDescription">Explore published ghazals, naats, manqabats, salaams and other literary works.</p>
+  </header>
+  <nav id="categoryTabs" class="category-tabs" aria-label="Filter works by category"></nav>
+  <div id="archiveLoading" class="archive-state">Loading published works…</div>
+  <div id="worksGrid" class="works-grid"></div>
+  <div id="archiveEmpty" class="archive-state hidden">No published works in this category yet.</div>
+</main>
+
+<main class="shell">
+  <nav class="crumb" aria-label="Breadcrumb">
+    <a href="/home.html">Home</a> /
+    <a href="/poetry.html">Poetry</a> /
+    <span id="pageLabel">Poetry</span>
+  </nav>
+
+  <div id="loading" class="state" role="status">Opening the reading room…</div>
+  <div id="error" class="state hidden" role="alert">This work is unavailable or has not been published.</div>
+
+  <article id="entry" class="hidden">
+    <header class="work-head" id="workHead">
+      <h1 id="title"></h1>
+      <div class="byline" id="byline"></div>
+      <p class="subtitle hidden" id="subtitle"></p>
+      <div class="kicker" id="type">Literary work</div>
+    </header>
+
+    <div class="reader-controls" aria-label="Choose reading language">
+      <button type="button" data-lang="ur" aria-pressed="false">اردو</button>
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="hi" aria-pressed="false">हिन्दी</button>
+    </div>
+
+    <div class="poem" id="body" aria-label="Literary work text"></div>
+
+    <section id="translitWrap" class="translit hidden" aria-labelledby="translitHeading">
+      <h2 id="translitHeading">Transliteration</h2>
+      <div id="translit"></div>
+    </section>
+  </article>
+</main>
+
+<footer class="footer">Markaz.org · A living archive of literature, Sufi thought and heritage</footer>
+
+<script>
+'use strict';
+const PAGE_CATEGORY = 'manqabat';
+const PAGE_IS_ARTICLE = false;
+const PAGE_IS_MAIN_ARCHIVE = false;
+
+
+const SUPABASE_URL = 'https://pooatzegjnegutflkcbm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_i402B2jbhWe_gLBegubEaQ_Nmfpi0vN';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+
+let work = null;
+const SUPPORTED_LANGUAGES = ['en','hi','ur'];
+function readSelectedLanguage(){
+  try {
+    const saved = localStorage.getItem('markaz_site_language');
+    return SUPPORTED_LANGUAGES.includes(saved) ? saved : 'en';
+  } catch (_) { return 'en'; }
+}
+let lang = readSelectedLanguage();
+let fontSize = 16;
+
+const VERSE_TYPES = ['ghazal','naat','manqabat','salam','salaam','hamd','poetry','kalam','kalaam','sher','bait','rubai','qaseeda','marsiya','nazm','doha','manzoom'];
+
+function esc(value){
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  })[char]);
+}
+
+function normalizedType(){
+  return String(work?.work_type || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, '_');
+}
+
+function translation(){
+  const translations = work?.author_work_translations || [];
+  // English/Roman accepts only its own stored aliases. Hindi and Urdu never
+  // borrow text from another language when their translation is missing.
+  const allowedCodes = lang === 'en' ? ['roman','en'] : [lang];
+  return translations.find(t =>
+    allowedCodes.includes(String(t.language_code || '').toLowerCase()) &&
+    (String(t.body || '').trim() || String(t.title || '').trim())
+  ) || {};
+}
+
+/* Blank lines split couplets. Inside a couplet, the first line is misra one;
+   any remaining line(s) form misra two. Both misras are displayed vertically. */
+function bodyHTML(text){
+  if(!text) return '';
+
+  const normalizedText = String(text).replace(/\r\n?/g, '\n').trim();
+  if(!normalizedText) return '';
+
+  const isVerse = VERSE_TYPES.includes(normalizedType());
+  if(isVerse){
+    const blocks = normalizedText.split(/\n\s*\n+/).filter(block => block.trim());
+    return blocks.map(block => {
+      const lines = block.split('\n').map(line => line.trim()).filter(Boolean);
+      if(!lines.length) return '';
+
+      const firstMisra = lines[0];
+      const secondMisra = lines.slice(1).join(' ');
+      return `<div class="couplet">
+        <div class="misra"><span class="misra-text">${esc(firstMisra)}</span></div>
+        ${secondMisra ? `<div class="misra"><span class="misra-text">${esc(secondMisra)}</span></div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  return normalizedText.split(/\n{2,}/).map(paragraph =>
+    '<p>' + esc(paragraph.trim()).replace(/\n/g, '<br>') + '</p>'
+  ).join('');
+}
+
+function updateLanguageControls(){
+  document.querySelectorAll('[data-lang]').forEach(button => {
+    const active = button.dataset.lang === lang;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+}
+
+function fitMisras(){
+  const poem = $('body');
+  if(!poem) return;
+  // Keep every word inside the reading column. Long lines wrap naturally;
+  // no horizontal scaling or clipping that makes poetry unreadable.
+  poem.querySelectorAll('.misra, .misra-text, p').forEach(node => {
+    node.style.maxWidth = '100%';
+    node.style.whiteSpace = 'normal';
+    node.style.overflowWrap = 'break-word';
+    node.style.wordBreak = 'normal';
+    node.style.transform = 'none';
+  });
+}
+
+function updateWorkLabel(authorName, workType){
+  const type = String(workType || 'poetry').replace(/[_-]+/g, ' ').trim();
+  const pretty = type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Poetry';
+  $('pageLabel').textContent = authorName ? pretty + ' by ' + authorName : pretty;
+}
+
+function render(){
+  if(!work) return;
+
+  const t = translation();
+  const type = normalizedType();
+  const poem = $('body');
+  const title = String(t.title || '').trim() ||
+    (lang === 'hi' ? 'इस भाषा में शीर्षक उपलब्ध नहीं है' :
+     lang === 'ur' ? 'اس زبان میں عنوان دستیاب نہیں' :
+     'Title unavailable in this language');
+  $('title').textContent = title;
+
+  $('subtitle').textContent = t.subtitle || '';
+  $('subtitle').classList.toggle('hidden', !t.subtitle);
+  $('type').textContent = (work.work_type || 'literary work').replaceAll('_', ' ');
+
+  const translations = work.author_work_translations || [];
+  const romanTranslation = translations.find(item =>
+    (item.language_code === 'roman' || item.language_code === 'en') && item.transliteration
+  );
+
+  const profileTranslations = work.author_profiles?.author_profile_translations || [];
+  const personCodes = lang === 'en' ? ['roman','en'] : [lang];
+  const person = profileTranslations.find(item =>
+    personCodes.includes(String(item.language_code || '').toLowerCase())
+  ) || {};
+
+  const authorName = person.display_name || '';
+  const year = work.publication_year ? String(work.publication_year) : '';
+  const profileSlug = work.author_profiles?.slug || '';
+  const profileType = String(work.author_profiles?.profile_type || 'poet').toLowerCase();
+  const profilePaths = {poet:'poets',author:'authors',naatkhwan:'naatkhwan',sufi:'sufis',saint:'saints',scholar:'scholars',mufti:'muftis',book_contributor:'contributors',translator:'translators',historian:'historians',qawwal:'qawwals',editor:'editors',other:'people'};
+  const profileUrl = profileSlug ? '/' + (profilePaths[profileType] || 'people') + '/' + encodeURIComponent(profileSlug) : '';
+  const byline = $('byline');
+  byline.replaceChildren();
+  if(authorName && profileUrl){
+    const authorLink = document.createElement('a');
+    authorLink.href = profileUrl;
+    authorLink.textContent = authorName;
+    authorLink.className = 'author-profile-link';
+    byline.appendChild(authorLink);
+  } else if(authorName) {
+    byline.appendChild(document.createTextNode(authorName));
+  }
+  if(year){
+    if(authorName) byline.appendChild(document.createTextNode(' · '));
+    byline.appendChild(document.createTextNode(year));
+  }
+  byline.classList.toggle('hidden', !byline.textContent.trim());
+  updateWorkLabel(authorName, work.work_type);
+
+  const selectedBody = t.body || t.excerpt || '';
+  poem.innerHTML = selectedBody
+    ? bodyHTML(selectedBody)
+    : `<p class="translation-unavailable">${lang === 'en' ? 'Roman Urdu / Hinglish text has not been added for this work yet.' : lang === 'hi' ? 'इस भाषा में पाठ उपलब्ध नहीं है।' : 'اس زبان میں متن دستیاب نہیں ہے۔'}</p>`;
+
+  const isUrdu = lang === 'ur';
+  poem.dir = isUrdu ? 'rtl' : 'ltr';
+  poem.lang = lang;
+  $('workHead').dir = isUrdu ? 'rtl' : 'ltr';
+  $('workHead').style.textAlign = isUrdu ? 'right' : 'left';
+
+  poem.classList.toggle('ghazal', type === 'ghazal');
+  poem.classList.toggle('naat', type === 'naat');
+  poem.classList.toggle('manqabat', type === 'manqabat');
+  poem.classList.toggle('salam', type === 'salam');
+  poem.classList.toggle('hamd', type === 'hamd');
+  poem.classList.toggle('poetry', VERSE_TYPES.includes(type));
+  poem.classList.toggle('nazm', type === 'nazm');
+  poem.style.setProperty('--reader-size', fontSize + 'px');
+  requestAnimationFrame(fitMisras);
+
+  document.documentElement.lang = isUrdu ? 'ur' : (lang === 'hi' ? 'hi' : 'en');
+  updateLanguageControls();
+
+  if(romanTranslation && lang !== 'en'){
+    $('translit').textContent = romanTranslation.transliteration;
+    $('translitWrap').classList.remove('hidden');
+  }else{
+    $('translit').textContent = '';
+    $('translitWrap').classList.add('hidden');
+  }
+
+  document.title = title + ' | Markaz.org';
+  document.dispatchEvent(new Event('markaz:refresh-language'));
+}
+
+const CATEGORY_LABELS = {
+  all:'All works',ghazal:'Ghazal',sher:'Sher',bait:'Bait',nazm:'Nazm',rubai:'Rubai',
+  hamd:'Hamd',naat:'Naat',manqabat:'Manqabat',salaam:'Salaam',salam:'Salaam',
+  marsiya:'Marsiya',qaseeda:'Qaseeda',book:'Books',article:'Articles',letter:'Letters',
+  malfuzat:'Malfuzat',story:'Stories',audio:'Audio',video:'Video',poetry:'Poetry',other:'Other'
+};
+let archiveWorks = [];
+let activeCategory = 'all';
+function selectedLanguageCodes(){
+  return lang === 'en' ? ['roman','en'] : [lang];
+}
+function workTitle(item){
+  const ts=item.author_work_translations||[];
+  const codes=selectedLanguageCodes();
+  const t=ts.find(x=>codes.includes(String(x.language_code||'').toLowerCase()) && String(x.title||'').trim());
+  return t ? t.title : (lang==='hi'?'इस भाषा में शीर्षक उपलब्ध नहीं है':lang==='ur'?'اس زبان میں عنوان دستیاب نہیں':'Title unavailable in this language');
+}
+function workAuthor(item){
+  const profile=item.author_profiles||{};
+  const ts=profile.author_profile_translations||[];
+  const codes=selectedLanguageCodes();
+  const t=ts.find(x=>codes.includes(String(x.language_code||'').toLowerCase()) && String(x.display_name||'').trim());
+  return t ? t.display_name : (lang==='hi'?'लेखक का नाम उपलब्ध नहीं':lang==='ur'?'مصنف کا نام دستیاب نہیں':'Author name unavailable');
+}
+function workProfileUrl(item){
+  const profile=item.author_profiles||{};
+  if(!profile.slug)return '';
+  const paths={poet:'poets',author:'authors',naatkhwan:'naatkhwan',sufi:'sufis',saint:'saints',scholar:'scholars',mufti:'muftis',book_contributor:'contributors',translator:'translators',historian:'historians',qawwal:'qawwals',editor:'editors',other:'people'};
+  return '/'+(paths[String(profile.profile_type||'poet').toLowerCase()]||'people')+'/'+encodeURIComponent(profile.slug);
+}
+function renderArchive(){
+  const normalize = w => String(w.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_');
+  const poetryTypes = ['ghazal','naat','manqabat','salam','salaam','hamd','poetry','kalam','kalaam','sher','bait','rubai','qaseeda','marsiya','nazm','doha','manzoom'];
+  let eligible = archiveWorks.filter(w => PAGE_IS_ARTICLE ? normalize(w)==='article' : (PAGE_CATEGORY ? normalize(w)===PAGE_CATEGORY : poetryTypes.includes(normalize(w))));
+  if(PAGE_IS_ARTICLE){
+    $('archiveTitle').textContent = 'Articles';
+    $('archiveDescription').textContent = 'Read essays, research and literary articles from the Markaz.org archive.';
+  } else if(PAGE_CATEGORY){
+    const label = CATEGORY_LABELS[PAGE_CATEGORY] || PAGE_CATEGORY;
+    $('archiveTitle').textContent = label + (['salaam','salam','hamd'].includes(PAGE_CATEGORY) ? 's' : 's');
+    $('archiveDescription').textContent = 'Explore published ' + label.toLowerCase() + ' from the Markaz.org literary archive.';
+  }
+  const types=[...new Set(eligible.map(w=>normalize(w)))];
+  const ordered=PAGE_CATEGORY || PAGE_IS_ARTICLE ? types : ['all',...Object.keys(CATEGORY_LABELS).filter(k=>k!=='all'&&types.includes(k)),...types.filter(k=>!CATEGORY_LABELS[k])];
+  $('categoryTabs').innerHTML=ordered.map(type=>`<button type="button" data-category="${esc(type)}" class="${type===activeCategory?'active':''}">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase()))}</button>`).join('');
+  $('categoryTabs').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{activeCategory=btn.dataset.category;renderArchive();}));
+  const shown=(PAGE_CATEGORY || PAGE_IS_ARTICLE) ? eligible : (activeCategory==='all'?eligible:eligible.filter(w=>normalize(w)===activeCategory));
+  $('worksGrid').innerHTML=shown.map(item=>{
+    const title=workTitle(item), author=workAuthor(item), profileUrl=workProfileUrl(item);
+    const type=String(item.work_type||'other').trim().toLowerCase().replace(/[\s-]+/g,'_');
+    return `<article class="work-card"><span class="work-category">${esc(CATEGORY_LABELS[type]||type.replaceAll('_',' '))}</span><h2>${esc(title)}</h2><p class="work-author">${author?'By ':''}${author?(profileUrl?`<a href="${esc(profileUrl)}">${esc(author)}</a>`:esc(author)):'Author not listed'}</p><a class="open-work" href="${type==='article'?'/article.html':'/work.html'}?slug=${encodeURIComponent(item.slug||'')}">Read work →</a></article>`;
+  }).join('');
+  $('archiveEmpty').classList.toggle('hidden',shown.length>0);
+  document.dispatchEvent(new Event('markaz:refresh-language'));
+}
+async function loadWorksArchive(){
+  try{
+    const {data,error}=await db.from('author_works')
+      .select('id,slug,work_type,publication_year,author_work_translations(language_code,title),author_profiles(slug,real_name,pen_name,profile_type,author_profile_translations(language_code,display_name))')
+      .eq('status','published').order('created_at',{ascending:false}).limit(1000);
+    if(error)throw error;
+    archiveWorks=data||[];
+    $('archiveLoading').classList.add('hidden');
+    renderArchive();
+  }catch(error){
+    console.error('Could not load published works:',error);
+    $('archiveLoading').textContent='Published works could not be loaded. Check public read permissions for author_works and its translation/profile tables.';
+  }
+}
+
+async function load(){
+  const params = new URLSearchParams(window.location.search);
+  const slug = (params.get('slug') || '').trim();
+
+  if(!slug){
+    $('loading').classList.add('hidden');
+    $('entry').classList.add('hidden');
+    $('worksArchive').classList.remove('hidden');
+    await loadWorksArchive();
+    return;
+  }
+
+  try{
+    const { data, error } = await db
+      .from('author_works')
+      .select('*,author_work_translations(*),author_profiles(slug,real_name,pen_name,profile_type,author_profile_translations(language_code,display_name))')
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .maybeSingle();
+
+    $('loading').classList.add('hidden');
+    if(error) throw error;
+    if(!data) throw new Error('Work not found or not published.');
+
+    work = data;
+    $('entry').classList.remove('hidden');
+    render();
+  }catch(error){
+    console.error('Could not load literary work:', error);
+    $('loading').classList.add('hidden');
+    $('entry').classList.add('hidden');
+    $('error').classList.remove('hidden');
+  }
+}
+
+/* One language controller for the page tabs and the shared site selector.
+   It updates content immediately; no refresh or database re-query is needed. */
+let applyingWorkLanguage = false;
+function setWorkLanguage(selected, persist = true){
+  if (!SUPPORTED_LANGUAGES.includes(selected) || applyingWorkLanguage) return;
+  applyingWorkLanguage = true;
+  try {
+    lang = selected;
+    if (persist) {
+      try { localStorage.setItem('markaz_site_language', lang); } catch (_) {}
+    }
+    document.documentElement.lang = lang === 'ur' ? 'ur' : (lang === 'hi' ? 'hi' : 'en');
+    document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
+    document.body.dir = lang === 'ur' ? 'rtl' : 'ltr';
+    updateLanguageControls();
+    if (work) render();
+    if (archiveWorks.length || $('worksArchive') && !$('worksArchive').classList.contains('hidden')) renderArchive();
+    /* Let the shared language system translate static labels after dynamic render. */
+    document.dispatchEvent(new Event('markaz:refresh-language'));
+  } finally {
+    applyingWorkLanguage = false;
+  }
+}
+
+document.querySelectorAll('button[data-lang]').forEach(button => {
+  button.addEventListener('click', () => setWorkLanguage(button.dataset.lang));
+});
+
+/* Synchronize with the floating EN / हिन्दी / اردو selector used site-wide. */
+document.addEventListener('markaz:language-change', event => {
+  const selected = event.detail && event.detail.language;
+  if (!SUPPORTED_LANGUAGES.includes(selected)) return;
+  if (selected === lang) {
+    updateLanguageControls();
+    return;
+  }
+  setWorkLanguage(selected);
+});
+
+/* Another tab may change the saved site language while this page is open. */
+window.addEventListener('storage', event => {
+  if (event.key === 'markaz_site_language' && SUPPORTED_LANGUAGES.includes(event.newValue)) {
+    setWorkLanguage(event.newValue, false);
+  }
+});
+
+/* Font-size controls */
+$('smaller').addEventListener('click', () => {
+  fontSize = Math.max(14, fontSize - 2);
+  render();
+});
+$('larger').addEventListener('click', () => {
+  fontSize = Math.min(28, fontSize + 2);
+  render();
+});
+
+window.addEventListener('resize', () => requestAnimationFrame(fitMisras));
+
+/* Focus reading */
+$('readerToggle').addEventListener('click', () => {
+  const enabled = document.body.classList.toggle('reader-mode');
+  $('readerToggle').textContent = enabled ? 'Exit focus reading' : 'Focus reading';
+  $('readerToggle').setAttribute('aria-pressed', enabled ? 'true' : 'false');
+});
+
+load();
 </script>
 
 
@@ -226,9 +1034,18 @@ function addSwitcher(){
  var box=document.createElement('div');box.id='markaz-global-language';box.setAttribute('aria-label','Website language');
  box.innerHTML='<span>भाषा / زبان</span><button type="button" data-markaz-lang="en">EN</button><button type="button" data-markaz-lang="hi">हिन्दी</button><button type="button" data-markaz-lang="ur">اردو</button>';
  document.body.appendChild(box);
- box.addEventListener('click',function(e){var b=e.target.closest('button[data-markaz-lang]');if(!b)return;apply(b.dataset.markazLang)});
+ box.addEventListener('click',function(e){
+  var b=e.target.closest('button[data-markaz-lang]');if(!b)return;
+  apply(b.dataset.markazLang);
+  document.dispatchEvent(new CustomEvent('markaz:language-change',{detail:{language:b.dataset.markazLang}}));
+});
 }
-function start(){addSwitcher();apply(getLang());}
+document.addEventListener('markaz:language-change',function(e){
+  var selected=e.detail&&e.detail.language;
+  if(allowed.indexOf(selected)>=0)apply(selected);
+});
+document.addEventListener('markaz:refresh-language',function(){apply(getLang())});
+function start(){addSwitcher();apply(getLang());document.dispatchEvent(new CustomEvent('markaz:language-change',{detail:{language:getLang()}}));}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 </script>
