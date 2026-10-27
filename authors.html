@@ -855,8 +855,28 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
         const tr = pickTranslation(work.author_work_translations || []);
         const title = tr.title || work.slug || "Work";
         const excerpt = tr.excerpt ? `<p class="work-excerpt">${escapeHTML(tr.excerpt)}</p>` : "";
-        const targetPage = work.work_type === 'article' ? 'article.html' : 'work.html';
-        const workUrl = `${targetPage}?slug=${encodeURIComponent(work.slug)}`;
+        // Always use a root-relative URL. The profile can be opened at routes such as
+        // /historians/syed-amjad-hussain, so a relative "work.html" would incorrectly
+        // resolve to /historians/work.html.
+        function getWorkTarget(work) {
+          const normalized = canonicalTab(work.work_type || work.category || currentTab);
+          const pageByType = {
+            article: "article.html",
+            naat: "naat.html",
+            manqabat: "manqabat.html",
+            ghazal: "ghazal.html",
+            salaam: "salaam.html",
+            hamd: "hamd.html",
+            nazm: "nazm.html",
+            sher: "sher.html",
+            rubai: "rubai.html",
+            qaseeda: "qaseeda.html",
+            marsiya: "marsiya.html"
+          };
+          return pageByType[normalized] || "work.html";
+        }
+        const targetPage = getWorkTarget(work);
+        const workUrl = `/${targetPage}?slug=${encodeURIComponent(work.slug || "")}`;
 
         return `<article class="work-card">
           <div class="work-type">${escapeHTML(work.work_type || currentTab)}</div>
