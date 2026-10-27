@@ -457,6 +457,8 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       birthPlace: "Birth Place",
       deathPlace: "Death Place",
       realName: "Real Name",
+      father: "Father", mother: "Mother", spouse: "Spouse", children: "Children", relatives: "Relatives", nationality: "Nationality", education: "Education", occupation: "Occupation", teacher: "Teacher / Mentor", spiritualGuide: "Spiritual Guide", sufiOrder: "Sufi Order", knownFor: "Known For", awards: "Awards & Honours", notableWorks: "Notable Works",
+
       penName: "Pen Name",
       bio: "Biography",
       legacy: "Life & Legacy",
@@ -504,6 +506,8 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       birthPlace: "जन्म स्थान",
       deathPlace: "वफ़ात स्थान",
       realName: "वास्तविक नाम",
+      father: "पिता", mother: "माता", spouse: "जीवनसाथी", children: "संतान", relatives: "रिश्तेदार", nationality: "राष्ट्रीयता", education: "शिक्षा", occupation: "व्यवसाय", teacher: "शिक्षक / मार्गदर्शक", spiritualGuide: "आध्यात्मिक गुरु", sufiOrder: "सूफ़ी सिलसिला", knownFor: "विशेष पहचान", awards: "पुरस्कार एवं सम्मान", notableWorks: "प्रमुख रचनाएँ",
+
       penName: "तखल्लुस / पेन नेम",
       bio: "जीवनी",
       legacy: "जीवन और विरासत",
@@ -551,6 +555,8 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
       birthPlace: "جائے پیدائش",
       deathPlace: "جائے وفات",
       realName: "اصل نام",
+      father: "والد", mother: "والدہ", spouse: "شریکِ حیات", children: "اولاد", relatives: "رشتہ دار", nationality: "قومیت", education: "تعلیم", occupation: "پیشہ", teacher: "استاد / رہنما", spiritualGuide: "روحانی رہنما", sufiOrder: "صوفی سلسلہ", knownFor: "وجۂ شہرت", awards: "اعزازات و انعامات", notableWorks: "نمایاں تصانیف",
+
       penName: "تخلص",
       bio: "سوانح",
       legacy: "زندگی اور علمی وراثت",
@@ -615,7 +621,9 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
     if (!Array.isArray(rows) || !rows.length) return {};
     
     // Check exact match for current selected language with biography content
-    let match = rows.find(x => x.language_code === currentLang && (x.biography || x.display_name));
+    // Each translation may contain only metadata fields (for example relatives or awards).
+    // Prefer the selected language row even when its biography/display name is still empty.
+    let match = rows.find(x => x.language_code === currentLang);
     if (match) return match;
 
     // Fallbacks
@@ -848,25 +856,18 @@ body:has(#loginScreen),body:has(#section-dashboard){background:#f3f6f4!important
 
       // Optional family and biographical fields are shown only when populated.
       const optionalFields = [
-        ["Father", ["father_name", "father", "fatherName"]],
-        ["Mother", ["mother_name", "mother", "motherName"]],
-        ["Spouse", ["spouse_name", "spouse", "wife_name", "husband_name"]],
-        ["Children", ["children", "children_names"]],
-        ["Relatives", ["relatives", "family_members", "family"]],
-        ["Nationality", ["nationality"]],
-        ["Education", ["education", "educational_qualification"]],
-        ["Occupation", ["occupation", "profession"]],
-        ["Teacher / Mentor", ["teacher", "mentor", "teachers", "mentors"]],
-        ["Spiritual Guide", ["spiritual_guide", "murshid", "shaykh"]],
-        ["Sufi Order", ["sufi_order", "silsila"]],
-        ["Known For", ["known_for", "notable_for"]],
-        ["Awards & Honours", ["awards", "honours", "honors"]],
-        ["Works", ["notable_works"]]
+        [L.father, "father_name"], [L.mother, "mother_name"],
+        [L.spouse, "spouse_name"], [L.children, "children"],
+        [L.relatives, "relatives"], [L.nationality, "nationality"],
+        [L.education, "education"], [L.occupation, "occupation"],
+        [L.teacher, "teacher"], [L.spiritualGuide, "spiritual_guide"],
+        [L.sufiOrder, "sufi_order"], [L.knownFor, "known_for"],
+        [L.awards, "awards"], [L.notableWorks, "notable_works"]
       ];
-      const prettyLabel = (value) => value.replace(/([A-Z])/g, " $1").replace(/[_-]+/g, " ").replace(/^./, c => c.toUpperCase());
-      optionalFields.forEach(([label, keys]) => {
-        const key = keys.find(k => profile[k] !== undefined && profile[k] !== null && String(profile[k]).trim() !== "") || keys.find(k => t[k] !== undefined && t[k] !== null && String(t[k]).trim() !== "");
-        if (key) addInfo(prettyLabel(label), profile[key] ?? t[key]);
+      optionalFields.forEach(([label, key]) => {
+        // Prefer language-specific translation; use legacy base-column data as a backward-compatible fallback.
+        const value = (t[key] !== undefined && t[key] !== null && String(t[key]).trim() !== "") ? t[key] : profile[key];
+        addInfo(label, value);
       });
 
       const infoSectionHTML = infoItems.length ? `<div class="profile-info-list">${infoItems.join('')}</div>` : '';
